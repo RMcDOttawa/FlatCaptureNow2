@@ -1,0 +1,454 @@
+JFDML JFormDesigner: "7.0.1.0.272" Java: "13.0.2" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"$sizePolicy": 1
+			"resizable": false
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
+				"maximumSize": new java.awt.Dimension( 650, 605 )
+				"minimumSize": new java.awt.Dimension( 650, 605 )
+				"preferredSize": new java.awt.Dimension( 650, 605 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {par l {seq {par t {comp lightSourcePanel::l:::x, seq l {comp numFlatsField:::p:46:p, space :::p, comp label2:::p::p, space :0:0:x}, comp filtersPanel::l:::x}, space s:::p, par l {comp aduPanel:::::x, comp serverPanel::l:::x, comp binningPanel::l:::x, comp panel4::l:::x}}, seq {comp resetTimesButton:::p:178:p, space :p:361:p, comp closeButton:::p::p}}, space :::p}}"
+					"$verticalGroup": "par l {seq {space :21:21:p, par l:::p {seq {comp aduPanel:::p::p, space u:::p, comp serverPanel:::p::p, space :::x, comp binningPanel:::p::p}, seq {par b {comp numFlatsField::b:p::p, comp label2::b:p::p}, space :::p, comp filtersPanel:::p::p}}, space u:::p, par l {comp lightSourcePanel:::p::p, comp panel4:::::x}, space u:::p, par b {comp resetTimesButton::b:p::p, comp closeButton::b:p::p}, space :0:0:p}}"
+				} ) {
+					name: "contentPanel"
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "numFlatsField"
+						"toolTipText": "Default number of flat frames to take for each filter."
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Flats per filter"
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp label3::l:p::p, comp label4::l:p::p}, space :::p, par l:::p {comp targetADUfield::::97:x, comp aduToleranceField::::97:x}, space :p:5:p, comp label5:::p::p, space :::x}}"
+						"$verticalGroup": "par l {seq {space :::p, par b {comp label3::b:p::p, comp targetADUfield::b:p::p}, space :::p, par b {comp label4::b:p::p, comp label5::b:p::p, comp aduToleranceField::b:p::p}, space :::p}}"
+					} ) {
+						name: "aduPanel"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label3"
+							"text": "Target ADUs:"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label4"
+							"text": "Tolerance:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "targetADUfield"
+							"toolTipText": "Average ADUs desired in flat frame."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "aduToleranceField"
+							"toolTipText": "How close to the target, as a %, do we need to get."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label5"
+							"text": "%"
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {par l:l {par l:l::p {comp label7::l:::x, comp label8::l:p:24:p}, comp label9::l:p:24:p, comp label10::t:p:24:p}, comp label11::l:p:24:p, comp label12::l:p:24:p, comp label13::l:p:16:p, comp label14::l:p:16:p, comp label15::t:p:24:p}, space :::p, par l {seq l {par l {comp useSlot1Checkbox::l:p::p, seq l {space :p:6:p, comp label16:::p::p}}, space :::p, par l {seq {comp label17:::p:60:p, space :0:0:x}, comp filter1NameField:::::x}}, seq {space :p:61:p, comp filter2NameField:::::x}, seq {comp useSlot2Checkbox:::p::p, space :0:0:x}, seq l {comp useSlot3Checkbox:::p::p, space :::p, comp filter3NameField:::::x}, seq l {comp useSlot4Checkbox:::p::p, space :::p, comp filter4NameField:::::x}, seq l {comp useSlot5Checkbox:::p::p, space :::p, comp filter5NameField:::::x}, seq l {comp useSlot6Checkbox:::p::p, space :::p, comp filter6NameField:::::x}, seq l {comp useSlot7Checkbox:::p::p, space :::p, comp filter7NameField:::::x}, seq l {comp useSlot8Checkbox:::p::p, space :::p, comp filter8NameField:::::x}}}, seq l {comp label6:::p::p, space :p:18:p, comp filterWheelCheckbox:::p::p}}, space :::p}}"
+						"$verticalGroup": "par l {seq {space :::p, par b {comp filterWheelCheckbox::b:p::p, comp label6::b:p::p}, space :::p, par l {comp label7:::p::p, par b:l {comp label16::b:p::p, comp label17::b:p::p}}, space :::p, par b {comp label8::b:p::p, comp useSlot1Checkbox::b:p::p, comp filter1NameField::b:p::p}, space :::p, par b {comp label9::b:p::p, comp useSlot2Checkbox::b:p::p, comp filter2NameField::b:p::p}, space :::p, par b {comp label10::b:p::p, comp useSlot3Checkbox::b:p::p, comp filter3NameField::b:p::p}, space :::p, par b {comp useSlot4Checkbox::b:p::p, comp label11::b:p::p, comp filter4NameField::b:p::p}, space :::p, par b {comp useSlot5Checkbox::b:p::p, comp label12::b:p::p, comp filter5NameField::b:p::p}, space :::p, par b {comp useSlot6Checkbox::b:p::p, comp label13::b:p::p, comp filter6NameField::b:p::p}, space :::p, par b {comp useSlot7Checkbox::b:p::p, comp label14::b:p::p, comp filter7NameField::b:p::p}, space :::p, par b {comp useSlot8Checkbox::b:p::p, comp label15::b:p::p, comp filter8NameField::b:p::p}, space :::p}}"
+					} ) {
+						name: "filtersPanel"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label6"
+							"text": "Filters"
+							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label7"
+							"text": "Slot"
+							"font": new java.awt.Font( "Lucida Grande", 1, 13 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label8"
+							"text": "1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label9"
+							"text": "2"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label10"
+							"text": "3"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label11"
+							"text": "4"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label12"
+							"text": "5"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label13"
+							"text": "6"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label14"
+							"text": "7"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label15"
+							"text": "8"
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot1Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 1 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot2Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 2 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot3Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 3 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot4Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 4 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot5Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 5 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot6Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 6 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot7Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 7 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "useSlot8Checkbox"
+							"text": "Use"
+							"toolTipText": "Slot 8 is in use."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label16"
+							"text": "Use?"
+							"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter1NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter2NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter3NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter4NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter5NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter6NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter7NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "filter8NameField"
+							"toolTipText": "Name for this filter (letters only)."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label17"
+							"text": "Name"
+							"font": new com.jformdesigner.model.SwingDerivedFont( null, 1, 0, false )
+						} )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "filterWheelCheckbox"
+							"text": "Use Filter Wheel"
+							"toolTipText": "Use the camera's filter wheel, with the following filters."
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {comp label19:::p::p, comp label20:::p::p}, space :p:10:p, par l {comp serverAddressField:::::x, comp portNumberField:::::x}}, seq l {comp label18:::p::p, space :0:0:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq {space :::p, comp label18:::p::p, space :::p, par b {comp label19::b:p::p, comp serverAddressField::b:p::p}, space :::p, par b {comp label20::b:p::p, comp portNumberField::b:p::p}, space :::p}}"
+					} ) {
+						name: "serverPanel"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label18"
+							"text": "TheSkyX Server"
+							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label19"
+							"text": "Address:"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label20"
+							"text": "Port:"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "serverAddressField"
+							"toolTipText": "IP address or host name of server where TheSkyX is running."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "portNumberField"
+							"toolTipText": "Port number where TheSkyX is listening."
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp label22:::p::p, space :::p, comp bin1DefaultButton:::p::p, space :::p, comp bin1AvailableButton:::p::p, space u:::p, comp bin1OffButton:::p::p}, seq l {comp label25:::p::p, space :::p, comp bin4DefaultButton:::p::p, space :::p, comp bin4AvailableButton:::p::p, space u:::p, comp bin4OffButton:::p::p}, seq l {comp label23:::p::p, space :::p, comp bin2DefaultButton:::p::p, space :::p, comp bin2AvailableButton:::p::p, space u:::p, comp bin2OffButton:::p::p}, seq l {comp label24:::p::p, space :::p, comp bin3DefaultButton:::p::p, space :::p, comp bin3AvailableButton:::p::p, space u:::p, comp bin3OffButton:::p::p}, comp label21::l:p::p}, space :::x}}"
+						"$verticalGroup": "par l {seq {space :::p, comp label21:::p::p, space u:::p, par b {comp label22::b:p::p, comp bin1DefaultButton::b:p::p, comp bin1AvailableButton::b:p::p, comp bin1OffButton::b:p::p}, space :::p, par b {comp label23::b:p::p, comp bin2DefaultButton::b:p::p, comp bin2AvailableButton::b:p::p, comp bin2OffButton::b:p::p}, space :::p, par b {comp label24::b:p::p, comp bin3DefaultButton::b:p::p, comp bin3AvailableButton::b:p::p, comp bin3OffButton::b:p::p}, space :::p, par b {comp label25::b:p::p, comp bin4DefaultButton::b:p::p, comp bin4AvailableButton::b:p::p, comp bin4OffButton::b:p::p}, space :::p}}"
+					} ) {
+						name: "binningPanel"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label21"
+							"text": "Binning"
+							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label22"
+							"text": "1 x 1"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label23"
+							"text": "2 x 2"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label24"
+							"text": "3 x 3"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label25"
+							"text": "4 x 4"
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin1DefaultButton"
+							"text": "Default"
+							"$buttonGroup": new FormReference( "bin1Group" )
+							"toolTipText": "1 x 1 binning is included in plans with default number of frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin1AvailableButton"
+							"text": "Available"
+							"$buttonGroup": new FormReference( "bin1Group" )
+							"toolTipText": "1 x 1 binning is included in plans, with default zero frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin1OffButton"
+							"text": "Off"
+							"$buttonGroup": new FormReference( "bin1Group" )
+							"toolTipText": "1 x 1 binning will not be included in plans."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin2DefaultButton"
+							"text": "Default"
+							"$buttonGroup": new FormReference( "bin2Group" )
+							"toolTipText": "2 x 2 binning is included in plans with default number of frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin2AvailableButton"
+							"text": "Available"
+							"$buttonGroup": new FormReference( "bin2Group" )
+							"toolTipText": "2 x 3 binning is included in plans, with default zero frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin2OffButton"
+							"text": "Off"
+							"$buttonGroup": new FormReference( "bin2Group" )
+							"toolTipText": "2 x 2 binning will not be included in plans."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin3DefaultButton"
+							"text": "Default"
+							"$buttonGroup": new FormReference( "bin3Group" )
+							"toolTipText": "3 x 3 binning is included in plans with default number of frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin3AvailableButton"
+							"text": "Available"
+							"$buttonGroup": new FormReference( "bin3Group" )
+							"toolTipText": "3 x 3 binning is included in plans, with default zero frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin3OffButton"
+							"text": "Off"
+							"$buttonGroup": new FormReference( "bin3Group" )
+							"toolTipText": "3 x 3 binning will not be included in plans."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin4DefaultButton"
+							"text": "Default"
+							"$buttonGroup": new FormReference( "bin4Group" )
+							"toolTipText": "4 x 4 binning is included in plans with default number of frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin4AvailableButton"
+							"text": "Available"
+							"$buttonGroup": new FormReference( "bin4Group" )
+							"toolTipText": "4 x 4 binning is included in plans, with default zero frames."
+						} )
+						add( new FormComponent( "javax.swing.JRadioButton" ) {
+							name: "bin4OffButton"
+							"text": "Off"
+							"$buttonGroup": new FormReference( "bin4Group" )
+							"toolTipText": "4 x 4 binning will not be included in plans."
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp label26::l:p::p, seq l {par t {seq t {comp label28:::p::p, space :::p, comp lightLocationAzField:::p:110:p}, seq l {comp label27:::p::p, space :::p, comp lightLocationAltField:::p:108:p}}, space :::p, comp readScopeButton:::p::p}}, space :::x}}"
+						"$verticalGroup": "par l {seq {space :::p, comp label26:::p::p, space u:::p, par b {comp label27::b:p::p, comp lightLocationAltField::b:p::p, comp readScopeButton::b:p::p}, space :p:9:p, par b {comp label28::b:p::p, comp lightLocationAzField::b:p::p}, space :::p}}"
+					} ) {
+						name: "lightSourcePanel"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label26"
+							"text": "Location of Flat Light Source"
+							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label27"
+							"text": "Alt"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label28"
+							"text": "Az"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "lightLocationAltField"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "lightLocationAzField"
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "readScopeButton"
+							"text": "Read Scope"
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {space :p:8:p, par l {comp label30::l:p::p, comp label29::l:p::p}, space :::p, par l:::p {comp ditherMaximumField:::::x, comp ditherRadiusField:::p:88:p}, space :::p, par l {comp label31:::p::p, comp label32:::p::p}}, comp ditherFlatsCheckbox::l:p::p}, space :::x}}"
+						"$verticalGroup": "par l {seq {space :::p, comp ditherFlatsCheckbox:::p::p, space :::p, par b {comp label29::b:p::p, comp ditherRadiusField::b:p::p, comp label31::b:p::p}, space :::p, par b {comp label30::b:p::p, comp ditherMaximumField::b:p::p, comp label32::b:p::p}, space :::x}}"
+					} ) {
+						name: "panel4"
+						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "ditherFlatsCheckbox"
+							"text": "Dither Flats"
+							"toolTipText": "Dither flats (move scope a small amount between frames)."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label29"
+							"text": "Radius"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label30"
+							"text": "Max Radius"
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "ditherMaximumField"
+							"toolTipText": "Maximum distance dithering will move from light source."
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "ditherRadiusField"
+							"toolTipText": "Size of dithering steps from centre of light source."
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label31"
+							"text": "arc secs"
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label32"
+							"text": "arc secs"
+						} )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "closeButton"
+						"text": "Close"
+						"toolTipText": "Close this preferences window."
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "resetTimesButton"
+						"text": "Reset Time Estimates"
+						"toolTipText": "Reset the stored time estimates for every filter/dither combination."
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label1"
+					"text": "<html>These are defaults, used the next time you run the program or create a session. They do not affect the <i>current</i> session or any saved file."
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "North"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 650, 605 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "bin1Group"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 590 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "bin2Group"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 644 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "bin3Group"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 698 )
+		} )
+		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
+			name: "bin4Group"
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 752 )
+		} )
+		addBindingGroup( new FormBindingGroup( class org.jdesktop.beansbinding.BindingGroup ) {
+			"name": "bindingGroup"
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot1Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter1NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot2Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot3Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter3NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot4Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter4NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot5Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter5NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot6Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter6NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot7Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter7NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot8Checkbox", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter8NameField", "enabled" ) )
+			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter2NameField", "enabled" ) )
+			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherRadiusField", "enabled" ) )
+			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherMaximumField", "enabled" ) )
+		} )
+	}
+}

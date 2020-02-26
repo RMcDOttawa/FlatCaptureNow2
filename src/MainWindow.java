@@ -1,0 +1,687 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import org.jdesktop.beansbinding.*;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+/*
+ * Created by JFormDesigner on Tue Feb 25 15:18:41 EST 2020
+ */
+
+
+
+/**
+ * @author Richard McDonald
+ */
+public class MainWindow extends JFrame {
+    public MainWindow ( AppPreferences preferences) {
+        initComponents();
+    }
+//	public MainWindow() {
+//		initComponents();
+//	}
+
+	private void initComponents() {
+		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+        // Generated using JFormDesigner non-commercial license
+        menuBar1 = new JMenuBar();
+        fileMenu = new JMenu();
+        menuItem1 = new JMenuItem();
+        menuItem2 = new JMenuItem();
+        menuItem3 = new JMenuItem();
+        menuItem4 = new JMenuItem();
+        menuItem5 = new JMenuItem();
+        dialogPane = new JPanel();
+        contentPanel = new JPanel();
+        vSpacer1 = new JPanel(null);
+        serverPanel = new JPanel();
+        label1 = new JLabel();
+        label6 = new JLabel();
+        serverAddressField = new JTextField();
+        label7 = new JLabel();
+        portNumberField = new JTextField();
+        aduPanel = new JPanel();
+        label2 = new JLabel();
+        label8 = new JLabel();
+        targetADUfield = new JTextField();
+        label10 = new JLabel();
+        label9 = new JLabel();
+        aduToleranceField = new JTextField();
+        label11 = new JLabel();
+        optionsPanel = new JPanel();
+        label3 = new JLabel();
+        useFilterWheelCheckbox = new JCheckBox();
+        warmWhenDoneCheckbox = new JCheckBox();
+        mountPanel = new JPanel();
+        label4 = new JLabel();
+        controlMountCheckbox = new JCheckBox();
+        label12 = new JLabel();
+        readScopePositionButton = new JButton();
+        homeMountCheckbox = new JCheckBox();
+        hSpacer1 = new JPanel(null);
+        label13 = new JLabel();
+        lightSourceAltField = new JTextField();
+        label15 = new JLabel();
+        slewToLightCheckbox = new JCheckBox();
+        label14 = new JLabel();
+        lightSourceAzField = new JTextField();
+        label16 = new JLabel();
+        trackingOffCheckbox = new JCheckBox();
+        slewScopeButton = new JButton();
+        cancelSlewButton = new JButton();
+        parkWhenDoneCheckbox = new JCheckBox();
+        label17 = new JLabel();
+        ditherRadiusField = new JTextField();
+        label19 = new JLabel();
+        ditherFlatsCheckbox = new JCheckBox();
+        label18 = new JLabel();
+        ditherMaximumField = new JTextField();
+        label20 = new JLabel();
+        destinationPanel = new JPanel();
+        label5 = new JLabel();
+        remoteOrLocalMessage = new JLabel();
+        useAutosaveButton = new JRadioButton();
+        queryAutosaveButton = new JButton();
+        useLocalFolderButton = new JRadioButton();
+        setLocalFolderButton = new JButton();
+        destinationPath = new JLabel();
+        tablePanel = new JPanel();
+        scrollPane1 = new JScrollPane();
+        framesTable = new JTable();
+        buttonPanel = new JPanel();
+        allOnButton = new JButton();
+        defaultsButton = new JButton();
+        allOffButton = new JButton();
+        hSpacer2 = new JPanel(null);
+        proceedButton = new JButton();
+        label21 = new JLabel();
+
+        //======== this ========
+        var contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+
+        //======== menuBar1 ========
+        {
+
+            //======== fileMenu ========
+            {
+                fileMenu.setText("File");
+
+                //---- menuItem1 ----
+                menuItem1.setText("New");
+                menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, KeyEvent.META_MASK));
+                fileMenu.add(menuItem1);
+
+                //---- menuItem2 ----
+                menuItem2.setText("Open");
+                menuItem2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                fileMenu.add(menuItem2);
+                fileMenu.addSeparator();
+
+                //---- menuItem3 ----
+                menuItem3.setText("Save As\u2026");
+                menuItem3.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()|KeyEvent.SHIFT_MASK));
+                fileMenu.add(menuItem3);
+
+                //---- menuItem4 ----
+                menuItem4.setText("Save");
+                menuItem4.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                fileMenu.add(menuItem4);
+                fileMenu.addSeparator();
+
+                //---- menuItem5 ----
+                menuItem5.setText("Preferences\u2026");
+                menuItem5.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SEMICOLON, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                fileMenu.add(menuItem5);
+            }
+            menuBar1.add(fileMenu);
+        }
+        contentPane.add(menuBar1, BorderLayout.NORTH);
+
+        //======== dialogPane ========
+        {
+            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+            dialogPane.setMinimumSize(new Dimension(880, 675));
+            dialogPane.setLayout(new BorderLayout());
+
+            //======== contentPanel ========
+            {
+                contentPanel.setLayout(new GridBagLayout());
+                ((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
+                ((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+                ((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
+                ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                contentPanel.add(vSpacer1, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 5), 0, 0));
+
+                //======== serverPanel ========
+                {
+                    serverPanel.setBorder(LineBorder.createBlackLineBorder());
+                    serverPanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)serverPanel.getLayout()).columnWidths = new int[] {0, 0, 0};
+                    ((GridBagLayout)serverPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+                    ((GridBagLayout)serverPanel.getLayout()).columnWeights = new double[] {0.0, 1.0, 1.0E-4};
+                    ((GridBagLayout)serverPanel.getLayout()).rowWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0E-4};
+
+                    //---- label1 ----
+                    label1.setText("TheSkyX Server");
+                    label1.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+                    serverPanel.add(label1, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+                    //---- label6 ----
+                    label6.setText("Address");
+                    serverPanel.add(label6, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+                    //---- serverAddressField ----
+                    serverAddressField.setColumns(32);
+                    serverPanel.add(serverAddressField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+                    //---- label7 ----
+                    label7.setText("Port");
+                    serverPanel.add(label7, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+
+                    //---- portNumberField ----
+                    portNumberField.setColumns(6);
+                    serverPanel.add(portNumberField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(serverPanel, new GridBagConstraints(0, 1, 1, 2, 0.5, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 5), 0, 3));
+
+                //======== aduPanel ========
+                {
+                    aduPanel.setBorder(LineBorder.createBlackLineBorder());
+                    aduPanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)aduPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
+                    ((GridBagLayout)aduPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0};
+                    ((GridBagLayout)aduPanel.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 1.0E-4};
+                    ((GridBagLayout)aduPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
+
+                    //---- label2 ----
+                    label2.setText("Flat Frame Exposure Level");
+                    label2.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+                    aduPanel.add(label2, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- label8 ----
+                    label8.setText("Target:");
+                    aduPanel.add(label8, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- targetADUfield ----
+                    targetADUfield.setColumns(8);
+                    aduPanel.add(targetADUfield, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label10 ----
+                    label10.setText("ADUs");
+                    aduPanel.add(label10, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- label9 ----
+                    label9.setText("WIthin:");
+                    aduPanel.add(label9, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
+
+                    //---- aduToleranceField ----
+                    aduToleranceField.setColumns(8);
+                    aduPanel.add(aduToleranceField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
+
+                    //---- label11 ----
+                    label11.setText("%");
+                    aduPanel.add(label11, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(aduPanel, new GridBagConstraints(2, 1, 1, 1, 0.5, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
+
+                //======== optionsPanel ========
+                {
+                    optionsPanel.setBorder(LineBorder.createBlackLineBorder());
+                    optionsPanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)optionsPanel.getLayout()).columnWidths = new int[] {0, 0};
+                    ((GridBagLayout)optionsPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0};
+                    ((GridBagLayout)optionsPanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                    ((GridBagLayout)optionsPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
+
+                    //---- label3 ----
+                    label3.setText("Options");
+                    label3.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+                    optionsPanel.add(label3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- useFilterWheelCheckbox ----
+                    useFilterWheelCheckbox.setText("Use FIlter Wheel");
+                    optionsPanel.add(useFilterWheelCheckbox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- warmWhenDoneCheckbox ----
+                    warmWhenDoneCheckbox.setText("When done warm up CCD");
+                    optionsPanel.add(warmWhenDoneCheckbox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(optionsPanel, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 5), 0, 0));
+
+                //======== mountPanel ========
+                {
+                    mountPanel.setBorder(LineBorder.createBlackLineBorder());
+                    mountPanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)mountPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0, 0, 0};
+                    ((GridBagLayout)mountPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+                    ((GridBagLayout)mountPanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                    ((GridBagLayout)mountPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+                    //---- label4 ----
+                    label4.setText("Mount Control");
+                    label4.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+                    mountPanel.add(label4, new GridBagConstraints(0, 0, 5, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- controlMountCheckbox ----
+                    controlMountCheckbox.setText("Control Mount");
+                    mountPanel.add(controlMountCheckbox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label12 ----
+                    label12.setText("Light Source");
+                    mountPanel.add(label12, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- readScopePositionButton ----
+                    readScopePositionButton.setText("Read Scope");
+                    mountPanel.add(readScopePositionButton, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- homeMountCheckbox ----
+                    homeMountCheckbox.setText("Home Mount");
+                    mountPanel.add(homeMountCheckbox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- hSpacer1 ----
+                    hSpacer1.setMinimumSize(new Dimension(32, 12));
+                    mountPanel.add(hSpacer1, new GridBagConstraints(1, 2, 1, 1, 0.1, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label13 ----
+                    label13.setText("Alt");
+                    mountPanel.add(label13, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- lightSourceAltField ----
+                    lightSourceAltField.setColumns(8);
+                    mountPanel.add(lightSourceAltField, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label15 ----
+                    label15.setText("degrees");
+                    mountPanel.add(label15, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- slewToLightCheckbox ----
+                    slewToLightCheckbox.setText("Slew to Light Source");
+                    mountPanel.add(slewToLightCheckbox, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label14 ----
+                    label14.setText("Az");
+                    mountPanel.add(label14, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 5, 5), 0, 0));
+                    mountPanel.add(lightSourceAzField, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label16 ----
+                    label16.setText("degrees");
+                    mountPanel.add(label16, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- trackingOffCheckbox ----
+                    trackingOffCheckbox.setText("Tracking Off");
+                    mountPanel.add(trackingOffCheckbox, new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- slewScopeButton ----
+                    slewScopeButton.setText("Slew");
+                    mountPanel.add(slewScopeButton, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- cancelSlewButton ----
+                    cancelSlewButton.setText("Cancel");
+                    mountPanel.add(cancelSlewButton, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- parkWhenDoneCheckbox ----
+                    parkWhenDoneCheckbox.setText("Park When Done");
+                    mountPanel.add(parkWhenDoneCheckbox, new GridBagConstraints(0, 5, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label17 ----
+                    label17.setText("Radius");
+                    mountPanel.add(label17, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 5, 5), 0, 0));
+                    mountPanel.add(ditherRadiusField, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- label19 ----
+                    label19.setText("arc sec");
+                    mountPanel.add(label19, new GridBagConstraints(4, 5, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- ditherFlatsCheckbox ----
+                    ditherFlatsCheckbox.setText("Dither Flats");
+                    mountPanel.add(ditherFlatsCheckbox, new GridBagConstraints(0, 6, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
+
+                    //---- label18 ----
+                    label18.setText("Maximum");
+                    mountPanel.add(label18, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+                        new Insets(0, 0, 0, 5), 0, 0));
+                    mountPanel.add(ditherMaximumField, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 5), 0, 0));
+
+                    //---- label20 ----
+                    label20.setText("arc sec");
+                    mountPanel.add(label20, new GridBagConstraints(4, 6, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(mountPanel, new GridBagConstraints(2, 3, 1, 2, 1.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
+
+                //======== destinationPanel ========
+                {
+                    destinationPanel.setBorder(LineBorder.createBlackLineBorder());
+                    destinationPanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)destinationPanel.getLayout()).columnWidths = new int[] {0, 0, 0};
+                    ((GridBagLayout)destinationPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0};
+                    ((GridBagLayout)destinationPanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
+                    ((GridBagLayout)destinationPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+
+                    //---- label5 ----
+                    label5.setText("Destination Folder");
+                    label5.setFont(new Font("Lucida Grande", Font.BOLD, 14));
+                    destinationPanel.add(label5, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- remoteOrLocalMessage ----
+                    remoteOrLocalMessage.setText("TheSkyX is running on a remote machine.");
+                    destinationPanel.add(remoteOrLocalMessage, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- useAutosaveButton ----
+                    useAutosaveButton.setText("Use TheSkyX Autosave Folder");
+                    destinationPanel.add(useAutosaveButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- queryAutosaveButton ----
+                    queryAutosaveButton.setText("Query");
+                    destinationPanel.add(queryAutosaveButton, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- useLocalFolderButton ----
+                    useLocalFolderButton.setText("Use Specified Local Folder");
+                    destinationPanel.add(useLocalFolderButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 5), 0, 0));
+
+                    //---- setLocalFolderButton ----
+                    setLocalFolderButton.setText("Set");
+                    destinationPanel.add(setLocalFolderButton, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 5, 0), 0, 0));
+
+                    //---- destinationPath ----
+                    destinationPath.setText("Display of save-folder path name goes here");
+                    destinationPath.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+                    destinationPanel.add(destinationPath, new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(destinationPanel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 5), 0, 0));
+
+                //======== tablePanel ========
+                {
+                    tablePanel.setBorder(LineBorder.createBlackLineBorder());
+                    tablePanel.setLayout(new GridBagLayout());
+                    ((GridBagLayout)tablePanel.getLayout()).columnWidths = new int[] {0, 0};
+                    ((GridBagLayout)tablePanel.getLayout()).rowHeights = new int[] {0, 0};
+                    ((GridBagLayout)tablePanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                    ((GridBagLayout)tablePanel.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+
+                    //======== scrollPane1 ========
+                    {
+                        scrollPane1.setViewportView(framesTable);
+                    }
+                    tablePanel.add(scrollPane1, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                contentPanel.add(tablePanel, new GridBagConstraints(0, 5, 3, 1, 0.0, 1.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
+
+                //======== buttonPanel ========
+                {
+                    buttonPanel.setLayout(new GridLayout());
+
+                    //---- allOnButton ----
+                    allOnButton.setText("All On");
+                    allOnButton.setMaximumSize(new Dimension(50, 29));
+                    allOnButton.setMinimumSize(new Dimension(50, 29));
+                    buttonPanel.add(allOnButton);
+
+                    //---- defaultsButton ----
+                    defaultsButton.setText("Defaults");
+                    buttonPanel.add(defaultsButton);
+
+                    //---- allOffButton ----
+                    allOffButton.setText("All Off");
+                    buttonPanel.add(allOffButton);
+
+                    //---- hSpacer2 ----
+                    hSpacer2.setMinimumSize(new Dimension(100, 12));
+                    buttonPanel.add(hSpacer2);
+
+                    //---- proceedButton ----
+                    proceedButton.setText("Proceed");
+                    buttonPanel.add(proceedButton);
+                }
+                contentPanel.add(buttonPanel, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 0), 0, 0));
+            }
+            dialogPane.add(contentPanel, BorderLayout.CENTER);
+
+            //---- label21 ----
+            label21.setText("Flat Capture Now");
+            label21.setFont(new Font(".SF NS Text", Font.PLAIN, 24));
+            label21.setHorizontalAlignment(SwingConstants.CENTER);
+            dialogPane.add(label21, BorderLayout.NORTH);
+        }
+        contentPane.add(dialogPane, BorderLayout.CENTER);
+        pack();
+        setLocationRelativeTo(getOwner());
+
+        //---- buttonGroup1 ----
+        var buttonGroup1 = new ButtonGroup();
+        buttonGroup1.add(useAutosaveButton);
+        buttonGroup1.add(useLocalFolderButton);
+
+        //---- bindings ----
+        bindingGroup = new BindingGroup();
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            homeMountCheckbox, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            slewToLightCheckbox, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            trackingOffCheckbox, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            parkWhenDoneCheckbox, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            ditherFlatsCheckbox, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            readScopePositionButton, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            lightSourceAltField, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            lightSourceAzField, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            slewScopeButton, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            controlMountCheckbox, BeanProperty.create("selected"),
+            cancelSlewButton, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            ditherFlatsCheckbox, BeanProperty.create("selected"),
+            ditherRadiusField, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            useAutosaveButton, BeanProperty.create("selected"),
+            queryAutosaveButton, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            useLocalFolderButton, BeanProperty.create("selected"),
+            setLocalFolderButton, BeanProperty.create("enabled")));
+        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
+            ditherFlatsCheckbox, BeanProperty.create("selected"),
+            ditherMaximumField, BeanProperty.create("enabled")));
+        bindingGroup.bind();
+		// JFormDesigner - End of component initialization  //GEN-END:initComponents
+	}
+
+	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+    // Generated using JFormDesigner non-commercial license
+    private JMenuBar menuBar1;
+    private JMenu fileMenu;
+    private JMenuItem menuItem1;
+    private JMenuItem menuItem2;
+    private JMenuItem menuItem3;
+    private JMenuItem menuItem4;
+    private JMenuItem menuItem5;
+    private JPanel dialogPane;
+    private JPanel contentPanel;
+    private JPanel vSpacer1;
+    private JPanel serverPanel;
+    private JLabel label1;
+    private JLabel label6;
+    private JTextField serverAddressField;
+    private JLabel label7;
+    private JTextField portNumberField;
+    private JPanel aduPanel;
+    private JLabel label2;
+    private JLabel label8;
+    private JTextField targetADUfield;
+    private JLabel label10;
+    private JLabel label9;
+    private JTextField aduToleranceField;
+    private JLabel label11;
+    private JPanel optionsPanel;
+    private JLabel label3;
+    private JCheckBox useFilterWheelCheckbox;
+    private JCheckBox warmWhenDoneCheckbox;
+    private JPanel mountPanel;
+    private JLabel label4;
+    private JCheckBox controlMountCheckbox;
+    private JLabel label12;
+    private JButton readScopePositionButton;
+    private JCheckBox homeMountCheckbox;
+    private JPanel hSpacer1;
+    private JLabel label13;
+    private JTextField lightSourceAltField;
+    private JLabel label15;
+    private JCheckBox slewToLightCheckbox;
+    private JLabel label14;
+    private JTextField lightSourceAzField;
+    private JLabel label16;
+    private JCheckBox trackingOffCheckbox;
+    private JButton slewScopeButton;
+    private JButton cancelSlewButton;
+    private JCheckBox parkWhenDoneCheckbox;
+    private JLabel label17;
+    private JTextField ditherRadiusField;
+    private JLabel label19;
+    private JCheckBox ditherFlatsCheckbox;
+    private JLabel label18;
+    private JTextField ditherMaximumField;
+    private JLabel label20;
+    private JPanel destinationPanel;
+    private JLabel label5;
+    private JLabel remoteOrLocalMessage;
+    private JRadioButton useAutosaveButton;
+    private JButton queryAutosaveButton;
+    private JRadioButton useLocalFolderButton;
+    private JButton setLocalFolderButton;
+    private JLabel destinationPath;
+    private JPanel tablePanel;
+    private JScrollPane scrollPane1;
+    private JTable framesTable;
+    private JPanel buttonPanel;
+    private JButton allOnButton;
+    private JButton defaultsButton;
+    private JButton allOffButton;
+    private JPanel hSpacer2;
+    private JButton proceedButton;
+    private JLabel label21;
+    private BindingGroup bindingGroup;
+	// JFormDesigner - End of variables declaration  //GEN-END:variables
+}
