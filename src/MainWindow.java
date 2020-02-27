@@ -38,8 +38,6 @@ public class MainWindow extends JFrame {
      *  Open preferences window to display and record preferences
      */
     private void prefsMenuItemActionPerformed() {
-        // todo prefsMenuItemActionPerformed
-        System.out.println("prefsMenuItemActionPerformed");
         // Create dialog initialized with preferences
         PrefsWindow prefsWindow = new PrefsWindow(this);
         prefsWindow.setUpUI(this.preferences);

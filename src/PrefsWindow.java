@@ -470,8 +470,18 @@ public class PrefsWindow extends JDialog {
     }
 
     private void lightLocationAltFieldActionPerformed() {
-        // TODO lightLocationAltFieldActionPerformed
-        System.out.println("lightLocationAltFieldActionPerformed");
+        String proposedValue = this.lightLocationAltField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, -90.0, +90.0);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setLightSourceAlt(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.lightLocationAltField, valid);
+        this.enableCloseButton();
     }
 
     private void lightLocationAltFieldFocusLost() {
@@ -479,8 +489,18 @@ public class PrefsWindow extends JDialog {
     }
 
     private void lightLocationAzFieldActionPerformed() {
-        // TODO lightLocationAzFieldActionPerformed
-        System.out.println("lightLocationAzFieldActionPerformed");
+        String proposedValue = this.lightLocationAzField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, -360.0, +360.0);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setLightSourceAz(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.lightLocationAzField, valid);
+        this.enableCloseButton();
     }
 
     private void lightLocationAzFieldFocusLost() {
