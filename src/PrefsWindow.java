@@ -8,6 +8,7 @@ import javax.swing.LayoutStyle;
 import javax.swing.border.*;
 import org.jdesktop.beansbinding.*;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 /*
  * Created by JFormDesigner on Tue Feb 25 13:25:52 EST 2020
  */
@@ -31,7 +32,7 @@ public class PrefsWindow extends JDialog {
 	//  Map to record valid/invalid state of validated fields in the UI
     //  Fields not in the map are considered valid.  Fields in the map are valid or not
     //  depending on the boolean stored.
-    private HashMap<JComponent, Boolean> fieldValidity = null;
+    private HashMap<JTextField, Boolean> fieldValidity = null;
 
 	/**
 	 * Create an initialize window controller for displaying and changing preferences
@@ -44,7 +45,7 @@ public class PrefsWindow extends JDialog {
     public void setUpUI(AppPreferences preferences) {
 
         this.preferences = preferences;
-        fieldValidity = new HashMap<JComponent, Boolean>();
+        fieldValidity = new HashMap<JTextField, Boolean>();
 
         // Map binning number and availability to the radio button that represents that setting
         this.binningAvailabilityToButton = new JRadioButton[][]{
@@ -81,8 +82,7 @@ public class PrefsWindow extends JDialog {
         this.populateBinningList();
         this.populateFilterList();
         this.enforceFilterNameUniqueness();
-
-        // todo set up framework for invalid field flagging
+        this.enableCloseButton();
 
     }
 
@@ -122,8 +122,62 @@ public class PrefsWindow extends JDialog {
     }
 
     private void numFlatsFieldActionPerformed() {
-        // TODO numFlatsFieldActionPerformed
-        System.out.println("numFlatsFieldActionPerformed");
+        String proposedValue = this.numFlatsField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 1, 32767);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setDefaultFrameCount(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.numFlatsField, valid);
+        this.enableCloseButton();
+    }
+
+    /**
+     * the CLose button is enabled only if there are no invalid text fields remaining to be corrected
+     */
+    private void enableCloseButton() {
+        this.closeButton.setEnabled(this.allTextFieldsValid());
+    }
+
+    /**
+     * Check all the fields recorded in the field validity map and report if they are all valid
+     * @return (boolean)       Indication that all fields are valid
+     */
+    private boolean allTextFieldsValid() {
+        for (HashMap.Entry<JTextField,Boolean> entry : this.fieldValidity.entrySet()) {
+            boolean isValid = entry.getValue();
+            if (!isValid) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Record the validity of the given text field.
+     * In a dict indexed by the text field, record the validity state so we can, later, quickly check
+     * if all the fields are valid.  Also colour the field red if it is not valid.
+     * @param theField      The Swift JTextField being validated
+     * @param isValid       Whether that field contains valid data
+     */
+    private void recordTextFieldValidity(JTextField theField, boolean isValid) {
+        //  Record validity in map
+        if (this.fieldValidity.containsKey(theField)) {
+            this.fieldValidity.replace(theField, isValid);
+        } else {
+            this.fieldValidity.put(theField, isValid);
+        }
+
+        //  Set background colour
+        Color backgroundColor = Color.RED;
+        if (isValid) {
+            backgroundColor = Color.WHITE;
+        }
+        theField.setBackground(backgroundColor);
     }
 
     private void numFlatsFieldFocusLost() {
