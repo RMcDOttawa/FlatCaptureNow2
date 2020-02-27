@@ -83,7 +83,6 @@ public class PrefsWindow extends JDialog {
         this.populateFilterList();
         this.enforceFilterNameUniqueness();
         this.enableCloseButton();
-
     }
 
     /**
@@ -92,8 +91,37 @@ public class PrefsWindow extends JDialog {
      * we'll check all the "in use" filters for this, and flag as invalid any name fields that are duplicates
      */
     private void enforceFilterNameUniqueness() {
-        //todo Enforce filter name uniqueness
-        System.out.println("enforceFilterNameUniqueness");
+        List<Integer> slotNumbers = this.preferences.getFilterSlotNumbers();
+        int numSlotNumbers = slotNumbers.size();
+        //  Run down the slot numbers list.  At each position, count the total
+        //  number of "in use" filters with that name.  If > 1, set error
+        for (int slotIndex = 0; slotIndex < numSlotNumbers; slotIndex++) {
+            int thisSlotNumber = slotNumbers.get(slotIndex);
+            String thisName = this.preferences.getFilterName(thisSlotNumber);
+            int namesInUse = this.countFiltersInUseNamed(thisName);
+            this.recordTextFieldValidity(this.filterSlotToNameField[slotIndex], namesInUse <= 1);
+        }
+    }
+
+    /**
+     * Count how many filters are In Use and have the given name (case insensitive)
+     * @param filterName        Name to check for
+     * @return (int)            Number found (must be at least 1)
+     */
+    private int countFiltersInUseNamed(String filterName) {
+        List<Integer> slotNumbers = this.preferences.getFilterSlotNumbers();
+        int totalNamesFound = 0;
+        for (int slotNumber : slotNumbers) {
+            if (this.preferences.getFilterUse(slotNumber)) {
+                String thisName = this.preferences.getFilterName(slotNumber);
+//                System.out.println("  Slot " + slotNumber + " named " + thisName);
+                if (filterName.equalsIgnoreCase(thisName)) {
+                    totalNamesFound++;
+//                    System.out.println("      Match, count incremented to " + totalNamesFound);
+                }
+            }
+        }
+        return totalNamesFound;
     }
 
     /**
@@ -180,123 +208,263 @@ public class PrefsWindow extends JDialog {
         theField.setBackground(backgroundColor);
     }
 
+    /**
+     * Losing focus on Number of Flats field triggers the field's action
+     */
     private void numFlatsFieldFocusLost() {
         this.numFlatsFieldActionPerformed();
     }
 
+    /**
+     * "Use Filter Wheel" checkbox changed.  Record the preference.
+     */
     private void filterWheelCheckboxActionPerformed() {
-        // TODO filterWheelCheckboxActionPerformed
-        System.out.println("filterWheelCheckboxActionPerformed");
+        this.preferences.setUseFiterWheel(this.filterWheelCheckbox.isSelected());
     }
 
+    /**
+     * Checkbox for Filter 1 in use has been clicked.  Record the setting.
+     */
     private void useSlot1CheckboxActionPerformed() {
-        // TODO useSlot1CheckboxActionPerformed
-        System.out.println("useSlot1CheckboxActionPerformed");
+        this.preferences.setFilterUse(1, this.useSlot1Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 2 in use has been clicked.  Record the setting.
+     */
     private void useSlot2CheckboxActionPerformed() {
-        // TODO useSlot2CheckboxActionPerformed
-        System.out.println("useSlot2CheckboxActionPerformed");
+        this.preferences.setFilterUse(2, this.useSlot2Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 3 in use has been clicked.  Record the setting.
+     */
     private void useSlot3CheckboxActionPerformed() {
-        // TODO useSlot3CheckboxActionPerformed
-        System.out.println("useSlot3CheckboxActionPerformed");
+        this.preferences.setFilterUse(3, this.useSlot3Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 4 in use has been clicked.  Record the setting.
+     */
     private void useSlot4CheckboxActionPerformed() {
-        // TODO useSlot4CheckboxActionPerformed
-        System.out.println("useSlot4CheckboxActionPerformed");
+        this.preferences.setFilterUse(4, this.useSlot4Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 5 in use has been clicked.  Record the setting.
+     */
     private void useSlot5CheckboxActionPerformed() {
-        // TODO useSlot5CheckboxActionPerformed
-        System.out.println("useSlot5CheckboxActionPerformed");
+        this.preferences.setFilterUse(5, this.useSlot5Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 6 in use has been clicked.  Record the setting.
+     */
     private void useSlot6CheckboxActionPerformed() {
-        // TODO useSlot6CheckboxActionPerformed
-        System.out.println("useSlot6CheckboxActionPerformed");
+        this.preferences.setFilterUse(6, this.useSlot6Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * Checkbox for Filter 7 in use has been clicked.  Record the setting.
+     */
     private void useSlot7CheckboxActionPerformed() {
-        // TODO useSlot7CheckboxActionPerformed
-        System.out.println("useSlot7CheckboxActionPerformed");
+        this.preferences.setFilterUse(7, this.useSlot7Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
     }
 
+    /**
+     * Checkbox for Filter 8 in use has been clicked.  Record the setting.
+     */
     private void useSlot8CheckboxActionPerformed() {
-        // TODO useSlot8CheckboxActionPerformed
-        System.out.println("useSlot8CheckboxActionPerformed");
+        this.preferences.setFilterUse(8, this.useSlot8Checkbox.isSelected());
+        this.enforceFilterNameUniqueness();
+        this.enableCloseButton();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 1
+     * Validate it and store it
+     */
     private void filter1NameFieldActionPerformed() {
-        // TODO filter1NameFieldActionPerformed
-        System.out.println("filter1NameFieldActionPerformed");
+        String proposedFilterName = this.filter1NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(1, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter1NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Determine if proposed filter name is syntactically valid.  We don't check for uniqueness
+     * here, just for syntax.  Starts with a letter, then letters and digits are allowed.
+     * @param proposedFilterName        String to validate as filter name
+     * @return (boolean)                String is a valid filter name
+     */
+    private boolean validateFilterName(String proposedFilterName) {
+        String nameUpper = proposedFilterName.toUpperCase();
+        String validationExpression = "^[A-Z][A-Z0-9]*$";
+        return nameUpper.matches(validationExpression);
+    }
+
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter1NameFieldFocusLost() {
         this.filter1NameFieldActionPerformed();
     }
 
     private void filter2NameFieldActionPerformed() {
-        // TODO filter2NameFieldActionPerformed
-        System.out.println("filter2NameFieldActionPerformed");
+        String proposedFilterName = this.filter2NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(2, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter2NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter2NameFieldFocusLost() {
         this.filter2NameFieldActionPerformed();
     }
 
     private void filter3NameFieldActionPerformed() {
-        // TODO filter3NameFieldActionPerformed
-        System.out.println("filter3NameFieldActionPerformed");
+        String proposedFilterName = this.filter3NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(3, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter3NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter3NameFieldFocusLost() {
         this.filter3NameFieldActionPerformed();
     }
 
     private void filter4NameFieldActionPerformed() {
-        // TODO filter4NameFieldActionPerformed
-        System.out.println("filter4NameFieldActionPerformed");
+        String proposedFilterName = this.filter4NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(4, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter4NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter4NameFieldFocusLost() {
         this.filter4NameFieldActionPerformed();
     }
 
     private void filter5NameFieldActionPerformed() {
-        // TODO filter5NameFieldActionPerformed
-        System.out.println("filter5NameFieldActionPerformed");
+        String proposedFilterName = this.filter5NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(5, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter5NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter5NameFieldFocusLost() {
         this.filter5NameFieldActionPerformed();
     }
 
     private void filter6NameFieldActionPerformed() {
-        // TODO filter6NameFieldActionPerformed
-        System.out.println("filter6NameFieldActionPerformed");
+        String proposedFilterName = this.filter6NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(6, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter6NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter6NameFieldFocusLost() {
         this.filter6NameFieldActionPerformed();
     }
 
     private void filter7NameFieldActionPerformed() {
-        // TODO filter7NameFieldActionPerformed
-        System.out.println("filter7NameFieldActionPerformed");
+        String proposedFilterName = this.filter7NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(7, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter7NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter7NameFieldFocusLost() {
         this.filter7NameFieldActionPerformed();
     }
 
     private void filter8NameFieldActionPerformed() {
-        // TODO filter8NameFieldActionPerformed
-        System.out.println("filter8NameFieldActionPerformed");
+        String proposedFilterName = this.filter8NameField.getText().trim();
+        boolean valid = this.validateFilterName(proposedFilterName);
+        if (valid) {
+            this.preferences.setFilterName(8, proposedFilterName);
+        }
+        this.recordTextFieldValidity(this.filter8NameField, valid);
+        if (valid) {
+            this.enforceFilterNameUniqueness();
+        }
+        this.enableCloseButton();
     }
 
+    /**
+     * Leaving focus on text field is treated like pressing "enter", causing action.
+     */
     private void filter8NameFieldFocusLost() {
         this.filter8NameFieldActionPerformed();
     }
