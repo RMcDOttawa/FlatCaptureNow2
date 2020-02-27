@@ -28,3 +28,13 @@ public class FlatCaptureNow2 {
         }
     }
 }
+
+// todo Make data model from preferences
+// todo Display data model in main window
+// todo populate main window table headers
+// todo Populate main window data
+// todo Accept main window data table cell edits
+// todo Record main window changes in data model
+// todo Read and write files
+// todo Handle file dirtiness
+// todo Open session console window on start of session

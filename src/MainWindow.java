@@ -14,29 +14,46 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 
 /**
+ * Main window controller for the application
  * @author Richard McDonald
  */
 public class MainWindow extends JFrame {
+
+    private AppPreferences preferences = null;
+
     public MainWindow ( AppPreferences preferences) {
+        this.preferences = preferences;
 
         //  Catch main Quit menu so we can check for unsaved data
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
-            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+//        if (Desktop.isDesktopSupported()) {
+//            Desktop desktop = Desktop.getDesktop();
+//            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
 //            desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemClicked());
-        }
+//        }
         initComponents();
     }
-//	public MainWindow() {
-//		initComponents();
-//	}
+
+    /**
+     *  File/Preferences menu item responder.
+     *  Open preferences window to display and record preferences
+     */
+    private void prefsMenuItemActionPerformed() {
+        // todo prefsMenuItemActionPerformed
+        System.out.println("prefsMenuItemActionPerformed");
+        // Create dialog initialized with preferences
+        PrefsWindow prefsWindow = new PrefsWindow(this);
+        prefsWindow.setUpUI(this.preferences);
+        //  Show dialog
+        prefsWindow.setVisible(true);
+        System.out.println("prefsMenuItemActionPerformed: Control returned from prefs window");
+    }
 
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         menuBar1 = new JMenuBar();
         menu1 = new JMenu();
-        menuItem1 = new JMenuItem();
+        prefsMenuItem = new JMenuItem();
         contentPanel = new JPanel();
         label21 = new JLabel();
         vSpacer1 = new JPanel(null);
@@ -112,9 +129,11 @@ public class MainWindow extends JFrame {
             {
                 menu1.setText("File");
 
-                //---- menuItem1 ----
-                menuItem1.setText("text");
-                menu1.add(menuItem1);
+                //---- prefsMenuItem ----
+                prefsMenuItem.setText("Preferences");
+                prefsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SEMICOLON, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                prefsMenuItem.addActionListener(e -> prefsMenuItemActionPerformed());
+                menu1.add(prefsMenuItem);
             }
             menuBar1.add(menu1);
         }
@@ -589,7 +608,7 @@ public class MainWindow extends JFrame {
     // Generated using JFormDesigner non-commercial license
     private JMenuBar menuBar1;
     private JMenu menu1;
-    private JMenuItem menuItem1;
+    private JMenuItem prefsMenuItem;
     private JPanel contentPanel;
     private JLabel label21;
     private JPanel vSpacer1;

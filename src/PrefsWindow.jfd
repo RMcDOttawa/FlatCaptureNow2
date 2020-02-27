@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "7.0.1.0.272" Java: "13.0.2" encoding: "UTF-8"
+JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.5" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -7,6 +7,8 @@ new FormModel {
 			name: "this"
 			"$sizePolicy": 1
 			"resizable": false
+			"modal": true
+			"modalExclusionType": enum java.awt.Dialog$ModalExclusionType APPLICATION_EXCLUDE
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 				name: "dialogPane"
 				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
@@ -21,6 +23,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "numFlatsField"
 						"toolTipText": "Default number of flat frames to take for each filter."
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "numFlatsFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "numFlatsFieldFocusLost", false ) )
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label2"
@@ -43,10 +47,14 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "targetADUfield"
 							"toolTipText": "Average ADUs desired in flat frame."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "targetADUfieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "targetADUfieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "aduToleranceField"
 							"toolTipText": "How close to the target, as a %, do we need to get."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aduToleranceFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "aduToleranceFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label5"
@@ -54,7 +62,7 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {par l:l {par l:l::p {comp label7::l:::x, comp label8::l:p:24:p}, comp label9::l:p:24:p, comp label10::t:p:24:p}, comp label11::l:p:24:p, comp label12::l:p:24:p, comp label13::l:p:16:p, comp label14::l:p:16:p, comp label15::t:p:24:p}, space :::p, par l {seq l {par l {comp useSlot1Checkbox::l:p::p, seq l {space :p:6:p, comp label16:::p::p}}, space :::p, par l {seq {comp label17:::p:60:p, space :0:0:x}, comp filter1NameField:::::x}}, seq {space :p:61:p, comp filter2NameField:::::x}, seq {comp useSlot2Checkbox:::p::p, space :0:0:x}, seq l {comp useSlot3Checkbox:::p::p, space :::p, comp filter3NameField:::::x}, seq l {comp useSlot4Checkbox:::p::p, space :::p, comp filter4NameField:::::x}, seq l {comp useSlot5Checkbox:::p::p, space :::p, comp filter5NameField:::::x}, seq l {comp useSlot6Checkbox:::p::p, space :::p, comp filter6NameField:::::x}, seq l {comp useSlot7Checkbox:::p::p, space :::p, comp filter7NameField:::::x}, seq l {comp useSlot8Checkbox:::p::p, space :::p, comp filter8NameField:::::x}}}, seq l {comp label6:::p::p, space :p:18:p, comp filterWheelCheckbox:::p::p}}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {par l {par l:l {par l:l::p {comp label7::l:::x, comp label8::l:p:24:p}, comp label9::l:p:24:p, comp label10::t:p:24:p}, comp label11::l:p:24:p, comp label12::l:p:24:p, comp label13::l:p:16:p, comp label14::l:p:16:p, comp label15::t:p:24:p}, space :::p, par l {seq l {par l {comp useSlot1Checkbox::l:p::p, seq l {space :p:6:p, comp label16:::p::p}}, space :::p, par l {seq {comp label17:::p:60:p, space :0:0:x}, comp filter1NameField::::219:x}}, seq l {comp useSlot4Checkbox:::p::p, space :::p, comp filter4NameField:::::x}, seq l {comp useSlot5Checkbox:::p::p, space :::p, comp filter5NameField:::::x}, seq l {comp useSlot6Checkbox:::p::p, space :::p, comp filter6NameField:::::x}, seq l {comp useSlot7Checkbox:::p::p, space :::p, comp filter7NameField:::::x}, seq l {comp useSlot8Checkbox:::p::p, space :::p, comp filter8NameField:::::x}, seq l {par l {comp useSlot3Checkbox::l:p::p, comp useSlot2Checkbox::l:p::p}, space :::p, par l {comp filter2NameField::::219:x, comp filter3NameField:::::x}}}}, seq l {comp label6:::p::p, space :p:18:p, comp filterWheelCheckbox:::p::p}}, space :::p}}"
 						"$verticalGroup": "par l {seq {space :::p, par b {comp filterWheelCheckbox::b:p::p, comp label6::b:p::p}, space :::p, par l {comp label7:::p::p, par b:l {comp label16::b:p::p, comp label17::b:p::p}}, space :::p, par b {comp label8::b:p::p, comp useSlot1Checkbox::b:p::p, comp filter1NameField::b:p::p}, space :::p, par b {comp label9::b:p::p, comp useSlot2Checkbox::b:p::p, comp filter2NameField::b:p::p}, space :::p, par b {comp label10::b:p::p, comp useSlot3Checkbox::b:p::p, comp filter3NameField::b:p::p}, space :::p, par b {comp useSlot4Checkbox::b:p::p, comp label11::b:p::p, comp filter4NameField::b:p::p}, space :::p, par b {comp useSlot5Checkbox::b:p::p, comp label12::b:p::p, comp filter5NameField::b:p::p}, space :::p, par b {comp useSlot6Checkbox::b:p::p, comp label13::b:p::p, comp filter6NameField::b:p::p}, space :::p, par b {comp useSlot7Checkbox::b:p::p, comp label14::b:p::p, comp filter7NameField::b:p::p}, space :::p, par b {comp useSlot8Checkbox::b:p::p, comp label15::b:p::p, comp filter8NameField::b:p::p}, space :::p}}"
 					} ) {
 						name: "filtersPanel"
@@ -105,41 +113,49 @@ new FormModel {
 							name: "useSlot1Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 1 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot1CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot2Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 2 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot2CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot3Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 3 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot3CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot4Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 4 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot4CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot5Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 5 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot5CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot6Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 6 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot6CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot7Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 7 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot7CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JCheckBox" ) {
 							name: "useSlot8Checkbox"
 							"text": "Use"
 							"toolTipText": "Slot 8 is in use."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useSlot8CheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label16"
@@ -148,35 +164,51 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter1NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter1NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter1NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter2NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter2NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter2NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter3NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter3NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter3NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter4NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter4NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter4NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter5NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter5NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter5NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter6NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter6NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter6NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter7NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter7NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter7NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "filter8NameField"
-							"toolTipText": "Name for this filter (letters only)."
+							"toolTipText": "Name for this filter (letters and digits only)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filter8NameFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "filter8NameFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label17"
@@ -187,6 +219,7 @@ new FormModel {
 							name: "filterWheelCheckbox"
 							"text": "Use Filter Wheel"
 							"toolTipText": "Use the camera's filter wheel, with the following filters."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "filterWheelCheckboxActionPerformed", false ) )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -211,15 +244,19 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "serverAddressField"
 							"toolTipText": "IP address or host name of server where TheSkyX is running."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "serverAddressFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "serverAddressFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "portNumberField"
 							"toolTipText": "Port number where TheSkyX is listening."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "portNumberFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "portNumberFieldFocusLost", false ) )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp label22:::p::p, space :::p, comp bin1DefaultButton:::p::p, space :::p, comp bin1AvailableButton:::p::p, space u:::p, comp bin1OffButton:::p::p}, seq l {comp label25:::p::p, space :::p, comp bin4DefaultButton:::p::p, space :::p, comp bin4AvailableButton:::p::p, space u:::p, comp bin4OffButton:::p::p}, seq l {comp label23:::p::p, space :::p, comp bin2DefaultButton:::p::p, space :::p, comp bin2AvailableButton:::p::p, space u:::p, comp bin2OffButton:::p::p}, seq l {comp label24:::p::p, space :::p, comp bin3DefaultButton:::p::p, space :::p, comp bin3AvailableButton:::p::p, space u:::p, comp bin3OffButton:::p::p}, comp label21::l:p::p}, space :::x}}"
-						"$verticalGroup": "par l {seq {space :::p, comp label21:::p::p, space u:::p, par b {comp label22::b:p::p, comp bin1DefaultButton::b:p::p, comp bin1AvailableButton::b:p::p, comp bin1OffButton::b:p::p}, space :::p, par b {comp label23::b:p::p, comp bin2DefaultButton::b:p::p, comp bin2AvailableButton::b:p::p, comp bin2OffButton::b:p::p}, space :::p, par b {comp label24::b:p::p, comp bin3DefaultButton::b:p::p, comp bin3AvailableButton::b:p::p, comp bin3OffButton::b:p::p}, space :::p, par b {comp label25::b:p::p, comp bin4DefaultButton::b:p::p, comp bin4AvailableButton::b:p::p, comp bin4OffButton::b:p::p}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp label25:::p::p, space :::p, comp bin4DefaultButton:::p::p, space :::p, comp bin4AvailableButton:::p::p, space u:::p, comp bin4OffButton:::p::p}, seq l {comp label24:::p::p, space :::p, comp bin3DefaultButton:::p::p, space :::p, comp bin3AvailableButton:::p::p, space u:::p, comp bin3OffButton:::p::p}, comp label21::l:p::p, seq l {par t:::p {comp label22:::::x, comp label23:::::x}, space :::p, par l {seq {comp bin2DefaultButton:::p::p, space :::p, comp bin2AvailableButton:::p::p, space u:::p, comp bin2OffButton:::p::p}, seq {comp bin1DefaultButton:::p::p, space :::p, comp bin1AvailableButton:::p::p, space u:::p, comp bin1OffButton:::p::p}}}}, space ::26:x}}"
+						"$verticalGroup": "par l {seq {space :::p, comp label21:::p::p, space u:::p, par b {comp label22::b:p::p, comp bin1DefaultButton::b:p::p, comp bin1AvailableButton::b:p::p, comp bin1OffButton::b:p::p}, space :::p, par b {comp label23::b:p::p, comp bin2AvailableButton::b:p::p, comp bin2OffButton::b:p::p, comp bin2DefaultButton::b:p::p}, space :::p, par b {comp label24::b:p::p, comp bin3DefaultButton::b:p::p, comp bin3AvailableButton::b:p::p, comp bin3OffButton::b:p::p}, space :::p, par b {comp label25::b:p::p, comp bin4DefaultButton::b:p::p, comp bin4AvailableButton::b:p::p, comp bin4OffButton::b:p::p}, space :::p}}"
 					} ) {
 						name: "binningPanel"
 						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
@@ -249,72 +286,84 @@ new FormModel {
 							"text": "Default"
 							"$buttonGroup": new FormReference( "bin1Group" )
 							"toolTipText": "1 x 1 binning is included in plans with default number of frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin1DefaultButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin1AvailableButton"
 							"text": "Available"
 							"$buttonGroup": new FormReference( "bin1Group" )
 							"toolTipText": "1 x 1 binning is included in plans, with default zero frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin1AvailableButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin1OffButton"
 							"text": "Off"
 							"$buttonGroup": new FormReference( "bin1Group" )
 							"toolTipText": "1 x 1 binning will not be included in plans."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin1OffButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin2DefaultButton"
 							"text": "Default"
 							"$buttonGroup": new FormReference( "bin2Group" )
 							"toolTipText": "2 x 2 binning is included in plans with default number of frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin2DefaultButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin2AvailableButton"
 							"text": "Available"
 							"$buttonGroup": new FormReference( "bin2Group" )
 							"toolTipText": "2 x 3 binning is included in plans, with default zero frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin2AvailableButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin2OffButton"
 							"text": "Off"
 							"$buttonGroup": new FormReference( "bin2Group" )
 							"toolTipText": "2 x 2 binning will not be included in plans."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin2OffButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin3DefaultButton"
 							"text": "Default"
 							"$buttonGroup": new FormReference( "bin3Group" )
 							"toolTipText": "3 x 3 binning is included in plans with default number of frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin3DefaultButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin3AvailableButton"
 							"text": "Available"
 							"$buttonGroup": new FormReference( "bin3Group" )
 							"toolTipText": "3 x 3 binning is included in plans, with default zero frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin3AvailableButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin3OffButton"
 							"text": "Off"
 							"$buttonGroup": new FormReference( "bin3Group" )
 							"toolTipText": "3 x 3 binning will not be included in plans."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin3OffButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin4DefaultButton"
 							"text": "Default"
 							"$buttonGroup": new FormReference( "bin4Group" )
 							"toolTipText": "4 x 4 binning is included in plans with default number of frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin4DefaultButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin4AvailableButton"
 							"text": "Available"
 							"$buttonGroup": new FormReference( "bin4Group" )
 							"toolTipText": "4 x 4 binning is included in plans, with default zero frames."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin4AvailableButtonActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JRadioButton" ) {
 							name: "bin4OffButton"
 							"text": "Off"
 							"$buttonGroup": new FormReference( "bin4Group" )
 							"toolTipText": "4 x 4 binning will not be included in plans."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "bin4OffButtonActionPerformed", false ) )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -338,13 +387,18 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "lightLocationAltField"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "lightLocationAltFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "lightLocationAltFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "lightLocationAzField"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "lightLocationAzFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "lightLocationAzFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "readScopeButton"
 							"text": "Read Scope"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "readScopeButtonActionPerformed", false ) )
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -357,6 +411,7 @@ new FormModel {
 							name: "ditherFlatsCheckbox"
 							"text": "Dither Flats"
 							"toolTipText": "Dither flats (move scope a small amount between frames)."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherFlatsCheckboxActionPerformed", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label29"
@@ -369,10 +424,14 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "ditherMaximumField"
 							"toolTipText": "Maximum distance dithering will move from light source."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherMaximumFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "ditherMaximumFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JTextField" ) {
 							name: "ditherRadiusField"
 							"toolTipText": "Size of dithering steps from centre of light source."
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherRadiusFieldActionPerformed", false ) )
+							addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "ditherRadiusFieldFocusLost", false ) )
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label31"
@@ -387,11 +446,13 @@ new FormModel {
 						name: "closeButton"
 						"text": "Close"
 						"toolTipText": "Close this preferences window."
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "closeButtonActionPerformed", false ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "resetTimesButton"
 						"text": "Reset Time Estimates"
 						"toolTipText": "Reset the stored time estimates for every filter/dither combination."
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "resetTimesButtonActionPerformed", false ) )
 					} )
 				}, new FormLayoutConstraints( class java.lang.String ) {
 					"value": "Center"
@@ -407,7 +468,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 650, 605 )
+			"size": new java.awt.Dimension( 650, 615 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
 			name: "bin1Group"
@@ -432,23 +493,23 @@ new FormModel {
 		addBindingGroup( new FormBindingGroup( class org.jdesktop.beansbinding.BindingGroup ) {
 			"name": "bindingGroup"
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot1Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter1NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot2Checkbox", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot3Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter3NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot3Checkbox", "selected", "filter3NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot4Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter4NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot4Checkbox", "selected", "filter4NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot5Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter5NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot5Checkbox", "selected", "filter5NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot6Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter6NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot6Checkbox", "selected", "filter6NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot7Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter7NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot7Checkbox", "selected", "filter7NameField", "enabled" ) )
 			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "useSlot8Checkbox", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter8NameField", "enabled" ) )
-			addBinding( new FormBinding( "filterWheelCheckbox", "selected", "filter2NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot8Checkbox", "selected", "filter8NameField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot2Checkbox", "selected", "filter2NameField", "enabled" ) )
 			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherRadiusField", "enabled" ) )
 			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherMaximumField", "enabled" ) )
+			addBinding( new FormBinding( "useSlot1Checkbox", "selected", "filter1NameField", "enabled" ) )
 		} )
 	}
 }

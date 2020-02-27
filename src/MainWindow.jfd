@@ -481,8 +481,10 @@ new FormModel {
 					name: "menu1"
 					"text": "File"
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem1"
-						"text": "text"
+						name: "prefsMenuItem"
+						"text": "Preferences"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 59, 4356, false )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "prefsMenuItemActionPerformed", false ) )
 					} )
 				} )
 			}

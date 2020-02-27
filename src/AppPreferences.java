@@ -10,8 +10,10 @@ public class AppPreferences {
     private static final String USE_FILTER_WHEEL = "use_filter_wheel";
     private static final String FLAT_FRAME_DEFAULT_COUNT_SETTING = "flat_frame_default_count";
     private static final String FILTER_SLOT_NUMBERS = "filter_slot_numbers";
+    private static final String FILTER_USE_PREFIX = "filter_use";
+    private static final String FILTER_NAME_PREFIX = "filter_name";
     private static final String BINNING_NUMBERS = "binning_numbers";
-    private static final String BINNING_AVAILABILITY = "binning_availability";
+    private static final String BINNING_AVAILABILITY_PREFIX = "binning_availability";
     private static final String EXPOSURE_ESTIMATE = "exposure_estimate";
     private static final String TARGET_ADU_SETTING = "target_adus";
     private static final String TARGET_ADU_TOLERANCE = "target_adu_tolerance";
@@ -29,7 +31,6 @@ public class AppPreferences {
     public static AppPreferences createPreferences() {
         AppPreferences thePrefsObject = new AppPreferences();
         thePrefsObject.preferences = Preferences.userRoot().node("FlatCaptureNow2");
-        System.out.println("Preferences object path: " + thePrefsObject.preferences.absolutePath());
         return thePrefsObject;
     }
 
@@ -52,11 +53,11 @@ public class AppPreferences {
     }
 
     //  Target ADU value for flat frame exposure (determines exposure length)
-    public double getTargetADUs() {
-        return this.preferences.getDouble(TARGET_ADU_SETTING, 25000.0);
+    public int getTargetADUs() {
+        return this.preferences.getInt(TARGET_ADU_SETTING, 25000);
     }
-    public void setTargetADUs(double value) {
-        this.preferences.putDouble(TARGET_ADU_SETTING, value);
+    public void setTargetADUs(int value) {
+        this.preferences.putInt(TARGET_ADU_SETTING, value);
     }
 
     //  Percentage tolerance for the target ADU (how close is close enough)
@@ -137,20 +138,26 @@ public class AppPreferences {
 
     //  For every filter slot number we store a name.  Get and Set these with single methods
     public String getFilterName(int slotNumber) {
-        System.out.println("Preferences/getFilterName stub " + slotNumber);
-        return "STUB-" + slotNumber;
+        String key = FILTER_NAME_PREFIX + ":" + slotNumber;
+        String filterName = this.preferences.get(key, "Filter" + slotNumber);
+        return filterName ;
     }
+
     public void setFilterName(int slotNumber, String name) {
-        System.out.println("Preferences/setFilterName stub " + slotNumber + ", " + name);
+        String key = FILTER_NAME_PREFIX + ":" + slotNumber;
+        this.preferences.put(key, name);
     }
 
     //  For every filter slot number we store a "use" flag.  Get and Set these with single methods
     public boolean getFilterUse(int slotNumber) {
-        System.out.println("Preferences/getFilterUse stub " + slotNumber);
-        return false;
+        String key = FILTER_USE_PREFIX + ":" + slotNumber;
+        boolean inUse = this.preferences.getBoolean(key, false);
+        return inUse ;
     }
+
     public void setFilterUse(int slotNumber, boolean useFilter) {
-        System.out.println("Preferences/setFilterUse stub " + slotNumber + ", " + useFilter);
+        String key = FILTER_USE_PREFIX + ":" + slotNumber;
+        this.preferences.putBoolean(key, useFilter);
     }
 
     //  What binning numbers do we support?
@@ -173,7 +180,7 @@ public class AppPreferences {
     //    }
 
     public BinningAvailability getBinningAvailability(int binningLevel) {
-        String key = BINNING_AVAILABILITY + ":" + binningLevel;
+        String key = BINNING_AVAILABILITY_PREFIX + ":" + binningLevel;
         int codeNumber = this.preferences.getInt(key, 1);
         switch (codeNumber) {
             case 0:
@@ -188,7 +195,7 @@ public class AppPreferences {
     }
 
     public void setBinningAvailability(int binningLevel, BinningAvailability availability) {
-        String key = BINNING_AVAILABILITY + ":" + binningLevel;
+        String key = BINNING_AVAILABILITY_PREFIX + ":" + binningLevel;
         int codeNumber = 1;
         switch (availability) {
             case OFF:
