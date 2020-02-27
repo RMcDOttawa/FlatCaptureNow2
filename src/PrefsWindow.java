@@ -513,17 +513,42 @@ public class PrefsWindow extends JDialog {
     }
 
     private void targetADUfieldActionPerformed() {
-        // TODO targetADUfieldActionPerformed
-        System.out.println("targetADUfieldActionPerformed");
+        String proposedValue = this.targetADUfield.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 1, Integer.MAX_VALUE);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setTargetADUs(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.targetADUfield, valid);
+        this.enableCloseButton();
     }
 
     private void targetADUfieldFocusLost() {
         this.targetADUfieldActionPerformed();
     }
 
+    /**
+     * Validate and store the ADU Tolerance field.
+     * Note we display it as a percentage - a number between 0 and 100; but we store it
+     * as the equivalent fraction, between 0 and 1
+     */
     private void aduToleranceFieldActionPerformed() {
-        // TODO aduToleranceFieldActionPerformed
-        System.out.println("aduToleranceFieldActionPerformed");
+        String proposedValue = this.aduToleranceField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, 0, 100);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setAduTolerance(validation.right / 100.0);
+            }
+        }
+        this.recordTextFieldValidity(this.aduToleranceField, valid);
+        this.enableCloseButton();
     }
 
     private void aduToleranceFieldFocusLost() {
