@@ -3,521 +3,489 @@ JFDML JFormDesigner: "7.0.1.0.272" Java: "11.0.5" encoding: "UTF-8"
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
-		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class java.awt.GridLayout ) ) {
 			name: "this"
-			add( new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
-				name: "menuBar1"
-				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
-					name: "fileMenu"
-					"text": "File"
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem1"
-						"text": "New"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 78, 260, false )
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem2"
-						"text": "Open"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 79, 4356, false )
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator1"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem3"
-						"text": "Save As…"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 83, 4421, false )
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem4"
-						"text": "Save"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 83, 4356, false )
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator2"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "menuItem5"
-						"text": "Preferences…"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 59, 4356, false )
-					} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+				"$columnSpecs": "0, 0, 0"
+				"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0"
+				"$hGap": 5
+				"$vGap": 5
+				"$alignLeft": true
+				"$alignTop": true
+			} ) {
+				name: "contentPanel"
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "label21"
+					"text": "Flat Capture Now"
+					"font": new java.awt.Font( ".SF NS Text", 0, 24 )
+					"horizontalAlignment": 0
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridwidth": 3
 				} )
-			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "North"
-			} )
-			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
-				name: "dialogPane"
-				"border": new javax.swing.border.EmptyBorder( 12, 12, 12, 12 )
-				"minimumSize": new java.awt.Dimension( 880, 675 )
+				add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
+					name: "vSpacer1"
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridx": 1
+					"gridy": 1
+				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0, 0, 0"
+					"$columnSpecs": "0, 0:1.0"
+					"$rowSpecs": "0:1.0, 0:1.0, 0:1.0, 0:1.0, 0:1.0"
+					"$alignTop": true
+					"$alignLeft": true
+				} ) {
+					name: "serverPanel"
+					"border": &LineBorder0 new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label1"
+						"text": "TheSkyX Server"
+						"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridwidth": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label6"
+						"text": " Address"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "serverAddressField"
+						"columns": 32
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+						"gridx": 1
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label7"
+						"text": " Port"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "portNumberField"
+						"columns": 6
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+						"gridx": 1
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"weightx": 0.5
+					"gridheight": 2
+					"gridy": 2
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0:1.0, 0"
+					"$rowSpecs": "0, 0, 0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "aduPanel"
+					"border": #LineBorder0
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label2"
+						"text": "Flat Frame Exposure Level"
+						"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridwidth": 3
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label8"
+						"text": " Target:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "targetADUfield"
+						"columns": 8
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label10"
+						"text": "ADUs "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label9"
+						"text": " WIthin:"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "aduToleranceField"
+						"columns": 8
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label11"
+						"text": "%"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 2
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridx": 2
+					"weightx": 0.5
+					"gridy": 2
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0"
+					"$rowSpecs": "0, 0, 0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "optionsPanel"
+					"border": #LineBorder0
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label3"
+						"text": "Options"
+						"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "useFilterWheelCheckbox"
+						"text": "Use FIlter Wheel"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "warmWhenDoneCheckbox"
+						"text": "When done warm up CCD"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 4
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0, 0, 0, 0"
 					"$rowSpecs": "0, 0, 0, 0, 0, 0, 0"
 					"$hGap": 5
 					"$vGap": 5
 					"$alignLeft": true
 					"$alignTop": true
 				} ) {
-					name: "contentPanel"
-					add( new FormComponent( "com.jformdesigner.designer.wrapper.VSpacer" ) {
-						name: "vSpacer1"
+					name: "mountPanel"
+					"border": #LineBorder0
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label4"
+						"text": "Mount Control"
+						"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridwidth": 5
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "controlMountCheckbox"
+						"text": "Control Mount"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+						"gridwidth": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label12"
+						"text": "Light Source"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 1
+						"hAlign": 4
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "readScopePositionButton"
+						"text": "Read Scope"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 1
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "homeMountCheckbox"
+						"text": "Home Mount"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer1"
+						"minimumSize": new java.awt.Dimension( 32, 12 )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
+						"gridy": 2
+						"weightx": 0.1
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0, 0:1.0"
-						"$rowSpecs": "0:1.0, 0:1.0, 0:1.0, 0:1.0, 0:1.0"
-						"$alignTop": true
-						"$alignLeft": true
-					} ) {
-						name: "serverPanel"
-						"border": &LineBorder0 new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label1"
-							"text": "TheSkyX Server"
-							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label6"
-							"text": "Address"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "serverAddressField"
-							"columns": 32
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-							"gridx": 1
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label7"
-							"text": "Port"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "portNumberField"
-							"columns": 6
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-							"gridx": 1
-						} )
-					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-						"weightx": 0.5
-						"gridheight": 2
-						"ipady": 3
-						"gridy": 1
-					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0, 0:1.0, 0"
-						"$rowSpecs": "0, 0, 0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "aduPanel"
-						"border": #LineBorder0
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label2"
-							"text": "Flat Frame Exposure Level"
-							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridwidth": 3
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label8"
-							"text": "Target:"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "targetADUfield"
-							"columns": 8
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label10"
-							"text": "ADUs"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label9"
-							"text": "WIthin:"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "aduToleranceField"
-							"columns": 8
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label11"
-							"text": "%"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 2
-						} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label13"
+						"text": "Alt"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
-						"weightx": 0.5
-						"gridy": 1
+						"gridy": 2
+						"hAlign": 4
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0"
-						"$rowSpecs": "0, 0, 0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "optionsPanel"
-						"border": #LineBorder0
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label3"
-							"text": "Options"
-							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "useFilterWheelCheckbox"
-							"text": "Use FIlter Wheel"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "warmWhenDoneCheckbox"
-							"text": "When done warm up CCD"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-						} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "lightSourceAltField"
+						"columns": 8
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label15"
+						"text": "degrees "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "slewToLightCheckbox"
+						"text": "Slew to Light Source"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 3
+						"gridwidth": 2
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0, 0, 0, 0, 0"
-						"$rowSpecs": "0, 0, 0, 0, 0, 0, 0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "mountPanel"
-						"border": #LineBorder0
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label4"
-							"text": "Mount Control"
-							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridwidth": 5
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "controlMountCheckbox"
-							"text": "Control Mount"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label12"
-							"text": "Light Source"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 1
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "readScopePositionButton"
-							"text": "Read Scope"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 1
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "homeMountCheckbox"
-							"text": "Home Mount"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-						} )
-						add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-							name: "hSpacer1"
-							"minimumSize": new java.awt.Dimension( 32, 12 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 2
-							"weightx": 0.1
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label13"
-							"text": "Alt"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 2
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "lightSourceAltField"
-							"columns": 8
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label15"
-							"text": "degrees"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 4
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "slewToLightCheckbox"
-							"text": "Slew to Light Source"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 3
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label14"
-							"text": "Az"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 3
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "lightSourceAzField"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 3
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label16"
-							"text": "degrees"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 4
-							"gridy": 3
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "trackingOffCheckbox"
-							"text": "Tracking Off"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 4
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "slewScopeButton"
-							"text": "Slew"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 4
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "cancelSlewButton"
-							"text": "Cancel"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 4
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "parkWhenDoneCheckbox"
-							"text": "Park When Done"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 5
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label17"
-							"text": "Radius"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 5
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "ditherRadiusField"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 5
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label19"
-							"text": "arc sec"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 4
-							"gridy": 5
-						} )
-						add( new FormComponent( "javax.swing.JCheckBox" ) {
-							name: "ditherFlatsCheckbox"
-							"text": "Dither Flats"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 6
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label18"
-							"text": "Maximum"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 2
-							"gridy": 6
-							"hAlign": 4
-						} )
-						add( new FormComponent( "javax.swing.JTextField" ) {
-							name: "ditherMaximumField"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 3
-							"gridy": 6
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label20"
-							"text": "arc sec"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 4
-							"gridy": 6
-						} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label14"
+						"text": "Az"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
 						"gridy": 3
-						"gridheight": 2
-						"weightx": 1.0
+						"hAlign": 4
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0, 0"
-						"$rowSpecs": "0, 0, 0, 0, 0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "destinationPanel"
-						"border": #LineBorder0
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "label5"
-							"text": "Destination Folder"
-							"font": new java.awt.Font( "Lucida Grande", 1, 14 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "remoteOrLocalMessage"
-							"text": "TheSkyX is running on a remote machine."
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 1
-							"gridwidth": 2
-						} )
-						add( new FormComponent( "javax.swing.JRadioButton" ) {
-							name: "useAutosaveButton"
-							"text": "Use TheSkyX Autosave Folder"
-							"$buttonGroup": new FormReference( "buttonGroup1" )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "queryAutosaveButton"
-							"text": "Query"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 2
-						} )
-						add( new FormComponent( "javax.swing.JRadioButton" ) {
-							name: "useLocalFolderButton"
-							"text": "Use Specified Local Folder"
-							"$buttonGroup": new FormReference( "buttonGroup1" )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 3
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "setLocalFolderButton"
-							"text": "Set"
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridx": 1
-							"gridy": 3
-						} )
-						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "destinationPath"
-							"text": "Display of save-folder path name goes here"
-							"font": new java.awt.Font( "Lucida Grande", 0, 8 )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"gridy": 4
-							"gridwidth": 2
-						} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "lightSourceAzField"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label16"
+						"text": "degrees "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "trackingOffCheckbox"
+						"text": "Tracking Off"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 4
+						"gridwidth": 2
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-						"$columnSpecs": "0"
-						"$rowSpecs": "0"
-						"$hGap": 5
-						"$vGap": 5
-						"$alignLeft": true
-						"$alignTop": true
-					} ) {
-						name: "tablePanel"
-						"border": #LineBorder0
-						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-							name: "scrollPane1"
-							add( new FormComponent( "javax.swing.JTable" ) {
-								name: "framesTable"
-							} )
-						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
-							"weightx": 1.0
-							"weighty": 1.0
-						} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "slewScopeButton"
+						"text": "Slew"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 4
+						"hAlign": 4
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "cancelSlewButton"
+						"text": "Cancel"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 4
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "parkWhenDoneCheckbox"
+						"text": "Park When Done"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 5
-						"gridwidth": 3
-						"weighty": 1.0
+						"gridwidth": 2
 					} )
-					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
-						name: "buttonPanel"
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "allOnButton"
-							"text": "All On"
-							"maximumSize": new java.awt.Dimension( 50, 29 )
-							"minimumSize": new java.awt.Dimension( 50, 29 )
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "defaultsButton"
-							"text": "Defaults"
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "allOffButton"
-							"text": "All Off"
-						} )
-						add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
-							name: "hSpacer2"
-							"minimumSize": new java.awt.Dimension( 100, 12 )
-						} )
-						add( new FormComponent( "javax.swing.JButton" ) {
-							name: "proceedButton"
-							"text": "Proceed"
-						} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label17"
+						"text": "Radius"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 5
+						"hAlign": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "ditherRadiusField"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 5
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label19"
+						"text": "arc sec "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
+						"gridy": 5
+					} )
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "ditherFlatsCheckbox"
+						"text": "Dither Flats"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 6
-						"gridwidth": 3
+						"gridwidth": 2
 					} )
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "Center"
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label18"
+						"text": "Maximum"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 2
+						"gridy": 6
+						"hAlign": 4
+					} )
+					add( new FormComponent( "javax.swing.JTextField" ) {
+						name: "ditherMaximumField"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 3
+						"gridy": 6
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label20"
+						"text": "arc sec "
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
+						"gridy": 6
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridx": 2
+					"gridy": 4
+					"gridheight": 2
+					"weightx": 1.0
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
 				} )
-				add( new FormComponent( "javax.swing.JLabel" ) {
-					name: "label21"
-					"text": "Flat Capture Now"
-					"font": new java.awt.Font( ".SF NS Text", 0, 24 )
-					"horizontalAlignment": 0
-				}, new FormLayoutConstraints( class java.lang.String ) {
-					"value": "North"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0, 0"
+					"$rowSpecs": "0, 0, 0, 0, 0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "destinationPanel"
+					"border": #LineBorder0
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "label5"
+						"text": "Destination Folder"
+						"font": new java.awt.Font( "Lucida Grande", 1, 14 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridwidth": 2
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "remoteOrLocalMessage"
+						"text": " TheSkyX is running on a remote machine."
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 1
+						"gridwidth": 2
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "useAutosaveButton"
+						"text": "Use TheSkyX Autosave Folder"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "queryAutosaveButton"
+						"text": "Query"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 2
+					} )
+					add( new FormComponent( "javax.swing.JRadioButton" ) {
+						name: "useLocalFolderButton"
+						"text": "Use Specified Local Folder"
+						"$buttonGroup": new FormReference( "buttonGroup1" )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "setLocalFolderButton"
+						"text": "Set"
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
+						"gridy": 3
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "destinationPath"
+						"text": "Display of save-folder path name goes here"
+						"font": new java.awt.Font( "Lucida Grande", 0, 8 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridy": 4
+						"gridwidth": 2
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 5
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
 				} )
-			}, new FormLayoutConstraints( class java.lang.String ) {
-				"value": "Center"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+					"$columnSpecs": "0"
+					"$rowSpecs": "0"
+					"$hGap": 5
+					"$vGap": 5
+					"$alignLeft": true
+					"$alignTop": true
+				} ) {
+					name: "tablePanel"
+					"border": #LineBorder0
+					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+						name: "scrollPane1"
+						add( new FormComponent( "javax.swing.JTable" ) {
+							name: "framesTable"
+						} )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"weightx": 1.0
+						"weighty": 1.0
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 6
+					"gridwidth": 3
+					"weighty": 1.0
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
+					name: "buttonPanel"
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "allOnButton"
+						"text": "All On"
+						"maximumSize": new java.awt.Dimension( 50, 29 )
+						"minimumSize": new java.awt.Dimension( 50, 29 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "defaultsButton"
+						"text": "Defaults"
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "allOffButton"
+						"text": "All Off"
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer2"
+						"minimumSize": new java.awt.Dimension( 100, 12 )
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "proceedButton"
+						"text": "Proceed"
+					} )
+				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+					"gridy": 7
+					"gridwidth": 3
+					"insets": new java.awt.Insets( 4, 4, 4, 4 )
+				} )
 			} )
+			menuBar: new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar1"
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "menu1"
+					"text": "File"
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "menuItem1"
+						"text": "text"
+					} )
+				} )
+			}
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
 			"size": new java.awt.Dimension( 920, 675 )
