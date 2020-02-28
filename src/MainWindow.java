@@ -153,13 +153,35 @@ public class MainWindow extends JFrame {
     }
 
     private void lightSourceAltFieldActionPerformed() {
-        // TODO lightSourceAltFieldActionPerformed
-        System.out.println("lightSourceAltFieldActionPerformed");
+        String proposedValue = this.lightSourceAltField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, -90.0, +90.0);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setLightSourceAlt(validation.right );
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.lightSourceAltField, valid);
+        this.enableProceedButton();
     }
 
     private void lightSourceAzFieldActionPerformed() {
-        // TODO lightSourceAzFieldActionPerformed
-        System.out.println("lightSourceAzFieldActionPerformed");
+        String proposedValue = this.lightSourceAzField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, -360.0, +360.0);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setLightSourceAz(validation.right );
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.lightSourceAzField, valid);
+        this.enableProceedButton();
     }
 
     private void ditherRadiusFieldActionPerformed() {
