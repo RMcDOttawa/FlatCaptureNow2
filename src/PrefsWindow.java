@@ -645,8 +645,18 @@ public class PrefsWindow extends JDialog {
      * Validate and store the "Server port number" field
      */
     private void portNumberFieldActionPerformed() {
-        // TODO portNumberFieldActionPerformed
-        System.out.println("portNumberFieldActionPerformed");
+        String proposedValue = this.portNumberField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 0, 65535);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setPortNumber(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.portNumberField, valid);
+        this.enableCloseButton();
     }
 
     /**
