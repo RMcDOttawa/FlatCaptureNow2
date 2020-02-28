@@ -20,9 +20,12 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 public class MainWindow extends JFrame {
 
     private AppPreferences preferences = null;
+    private DataModel dataModel = null;
 
-    public MainWindow ( AppPreferences preferences) {
+    public MainWindow ( AppPreferences preferences,
+                        DataModel dataModel) {
         this.preferences = preferences;
+        this.dataModel = dataModel;
 
         //  Catch main Quit menu so we can check for unsaved data
 //        if (Desktop.isDesktopSupported()) {
@@ -31,6 +34,37 @@ public class MainWindow extends JFrame {
 //            desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemClicked());
 //        }
         initComponents();
+    }
+
+    public void setUiFromDataModel() {
+
+        this.serverAddressField.setText(this.dataModel.getServerAddress());
+        this.portNumberField.setText(String.valueOf(this.dataModel.getPortNumber()));
+
+        this.targetADUfield.setText(String.valueOf(this.dataModel.getTargetADUs()));
+        this.aduToleranceField.setText(String.valueOf(this.dataModel.getAduTolerance() * 100.0));
+
+        this.useFilterWheelCheckbox.setSelected(this.dataModel.getUseFilterWheel());
+        this.warmWhenDoneCheckbox.setSelected(this.dataModel.getWarmUpWhenDone());
+
+        if (this.dataModel.getUseTheSkyAutosave()) {
+            this.useAutosaveButton.setSelected(true);
+        } else {
+            this.useLocalFolderButton.setSelected(true);
+        }
+
+        this.controlMountCheckbox.setSelected(this.dataModel.getControlMount());
+        this.homeMountCheckbox.setSelected(this.dataModel.getHomeMount());
+        this.trackingOffCheckbox.setSelected(this.dataModel.getTrackingOff());
+        this.slewToLightCheckbox.setSelected(this.dataModel.getSlewToLight());
+        this.parkWhenDoneCheckbox.setSelected(this.dataModel.getParkWhenDone());
+
+        this.lightSourceAltField.setText(String.format("%.8f",this.dataModel.getLightSourceAlt()));
+        this.lightSourceAzField.setText(String.format("%.8f",this.dataModel.getLightSourceAz()));
+
+        this.ditherFlatsCheckbox.setSelected(this.dataModel.getDitherFlats());
+        this.ditherRadiusField.setText(String.valueOf(this.dataModel.getDitherRadius()));
+        this.ditherMaximumField.setText(String.valueOf(this.dataModel.getDitherMaximum()));
     }
 
     /**
@@ -43,7 +77,6 @@ public class MainWindow extends JFrame {
         prefsWindow.setUpUI(this.preferences);
         //  Show dialog
         prefsWindow.setVisible(true);
-        System.out.println("prefsMenuItemActionPerformed: Control returned from prefs window");
     }
 
 	private void initComponents() {

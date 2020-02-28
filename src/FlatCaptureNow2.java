@@ -16,8 +16,10 @@ public class FlatCaptureNow2 {
         //  Create and open the main window
         try {
             AppPreferences prefs = AppPreferences.createPreferences();
-            DataModel resultModel = DataModel.newInstance(prefs);
-            MainWindow mainWindow = new MainWindow(prefs);
+            DataModel dataModel = DataModel.newInstance(prefs);
+            MainWindow mainWindow = new MainWindow(prefs, dataModel);
+            mainWindow.setUiFromDataModel();
+
 //            mainWindow.loadDataModel(loadedDataModel, windowTitle);
 //            mainWindow.setFilePath(makeFilePath(windowTitle, args));
 //            mainWindow.makeNotDirty();
@@ -29,10 +31,8 @@ public class FlatCaptureNow2 {
     }
 }
 
-// todo Make data model from preferences
-// todo Display data model in main window
 // todo populate main window table headers
-// todo Populate main window data
+// todo Populate main window table data
 // todo Accept main window data table cell edits
 // todo Record main window changes in data model
 // todo Read and write files
