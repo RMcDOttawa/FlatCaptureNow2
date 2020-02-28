@@ -52,6 +52,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "serverAddressField"
 						"columns": 32
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "serverAddressFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "serverAddressFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 1
 						"gridx": 1
@@ -65,6 +67,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "portNumberField"
 						"columns": 6
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "portNumberFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "portNumberFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
 						"gridx": 1
@@ -101,6 +105,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "targetADUfield"
 						"columns": 8
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "targetADUfieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "targetADUfieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 1
@@ -121,6 +127,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "aduToleranceField"
 						"columns": 8
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "aduToleranceFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "aduToleranceFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 2
@@ -233,6 +241,8 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "lightSourceAltField"
 						"columns": 8
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "lightSourceAltFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "lightSourceAltFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 2
@@ -261,6 +271,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "lightSourceAzField"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "lightSourceAzFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "lightSourceAzFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 3
@@ -311,6 +323,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "ditherRadiusField"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherRadiusFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "ditherRadiusFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 5
@@ -339,6 +353,8 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JTextField" ) {
 						name: "ditherMaximumField"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherMaximumFieldActionPerformed", false ) )
+						addEvent( new FormEvent( "java.awt.event.FocusListener", "focusLost", "ditherMaximumFieldFocusLost", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 6

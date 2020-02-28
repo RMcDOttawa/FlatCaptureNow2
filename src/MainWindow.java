@@ -79,6 +79,81 @@ public class MainWindow extends JFrame {
         prefsWindow.setVisible(true);
     }
 
+    private void serverAddressFieldActionPerformed() {
+        // TODO serverAddressFieldActionPerformed
+        System.out.println("serverAddressFieldActionPerformed");
+    }
+
+    private void portNumberFieldActionPerformed() {
+        // TODO portNumberFieldActionPerformed
+        System.out.println("portNumberFieldActionPerformed");
+    }
+
+    private void targetADUfieldActionPerformed() {
+        // TODO targetADUfieldActionPerformed
+        System.out.println("targetADUfieldActionPerformed");
+    }
+
+    private void aduToleranceFieldActionPerformed() {
+        // TODO aduToleranceFieldActionPerformed
+        System.out.println("aduToleranceFieldActionPerformed");
+    }
+
+    private void lightSourceAltFieldActionPerformed() {
+        // TODO lightSourceAltFieldActionPerformed
+        System.out.println("lightSourceAltFieldActionPerformed");
+    }
+
+    private void lightSourceAzFieldActionPerformed() {
+        // TODO lightSourceAzFieldActionPerformed
+        System.out.println("lightSourceAzFieldActionPerformed");
+    }
+
+    private void ditherRadiusFieldActionPerformed() {
+        // TODO ditherRadiusFieldActionPerformed
+        System.out.println("ditherRadiusFieldActionPerformed");
+    }
+
+    private void ditherMaximumFieldActionPerformed() {
+        // TODO ditherMaximumFieldActionPerformed
+        System.out.println("ditherMaximumFieldActionPerformed");
+    }
+
+    /**
+     * Focus lost on a text field is the same as its Action event
+     */
+    private void serverAddressFieldFocusLost() {
+        this.serverAddressFieldActionPerformed();
+    }
+
+    private void portNumberFieldFocusLost() {
+        this.portNumberFieldActionPerformed();
+    }
+
+    private void targetADUfieldFocusLost() {
+        this.targetADUfieldActionPerformed();
+    }
+
+    private void aduToleranceFieldFocusLost() {
+        this.aduToleranceFieldActionPerformed();
+    }
+
+    private void lightSourceAltFieldFocusLost() {
+        this.lightSourceAltFieldActionPerformed();
+    }
+
+    private void lightSourceAzFieldFocusLost() {
+        this.lightSourceAzFieldActionPerformed();
+    }
+
+    private void ditherRadiusFieldFocusLost() {
+        this.ditherRadiusFieldActionPerformed();
+    }
+
+    private void ditherMaximumFieldFocusLost() {
+        this.ditherMaximumFieldActionPerformed();
+    }
+
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -213,6 +288,13 @@ public class MainWindow extends JFrame {
 
                 //---- serverAddressField ----
                 serverAddressField.setColumns(32);
+                serverAddressField.addActionListener(e -> serverAddressFieldActionPerformed());
+                serverAddressField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        serverAddressFieldFocusLost();
+                    }
+                });
                 serverPanel.add(serverAddressField, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -225,6 +307,13 @@ public class MainWindow extends JFrame {
 
                 //---- portNumberField ----
                 portNumberField.setColumns(6);
+                portNumberField.addActionListener(e -> portNumberFieldActionPerformed());
+                portNumberField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        portNumberFieldFocusLost();
+                    }
+                });
                 serverPanel.add(portNumberField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -257,6 +346,13 @@ public class MainWindow extends JFrame {
 
                 //---- targetADUfield ----
                 targetADUfield.setColumns(8);
+                targetADUfield.addActionListener(e -> targetADUfieldActionPerformed());
+                targetADUfield.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        targetADUfieldFocusLost();
+                    }
+                });
                 aduPanel.add(targetADUfield, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -275,6 +371,13 @@ public class MainWindow extends JFrame {
 
                 //---- aduToleranceField ----
                 aduToleranceField.setColumns(8);
+                aduToleranceField.addActionListener(e -> aduToleranceFieldActionPerformed());
+                aduToleranceField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        aduToleranceFieldFocusLost();
+                    }
+                });
                 aduPanel.add(aduToleranceField, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -375,6 +478,13 @@ public class MainWindow extends JFrame {
 
                 //---- lightSourceAltField ----
                 lightSourceAltField.setColumns(8);
+                lightSourceAltField.addActionListener(e -> lightSourceAltFieldActionPerformed());
+                lightSourceAltField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        lightSourceAltFieldFocusLost();
+                    }
+                });
                 mountPanel.add(lightSourceAltField, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -396,6 +506,15 @@ public class MainWindow extends JFrame {
                 mountPanel.add(label14, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 5, 5), 0, 0));
+
+                //---- lightSourceAzField ----
+                lightSourceAzField.addActionListener(e -> lightSourceAzFieldActionPerformed());
+                lightSourceAzField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        lightSourceAzFieldFocusLost();
+                    }
+                });
                 mountPanel.add(lightSourceAzField, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -435,6 +554,15 @@ public class MainWindow extends JFrame {
                 mountPanel.add(label17, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 5, 5), 0, 0));
+
+                //---- ditherRadiusField ----
+                ditherRadiusField.addActionListener(e -> ditherRadiusFieldActionPerformed());
+                ditherRadiusField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        ditherRadiusFieldFocusLost();
+                    }
+                });
                 mountPanel.add(ditherRadiusField, new GridBagConstraints(3, 5, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -456,6 +584,15 @@ public class MainWindow extends JFrame {
                 mountPanel.add(label18, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- ditherMaximumField ----
+                ditherMaximumField.addActionListener(e -> ditherMaximumFieldActionPerformed());
+                ditherMaximumField.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        ditherMaximumFieldFocusLost();
+                    }
+                });
                 mountPanel.add(ditherMaximumField, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -706,3 +843,11 @@ public class MainWindow extends JFrame {
     private BindingGroup bindingGroup;
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
+
+//  todo Set up responders for main window basic parameters
+//  todo Set up structure for field validation in main window
+//  todo Validate and store main window basic parameters
+//  todo Set up main window table data model
+//  todo Provide main window table row and column titles
+//  todo Provide main window table cell data
+//  todo Catch edits to main window table cells
