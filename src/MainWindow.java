@@ -3,8 +3,11 @@ import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 import java.awt.desktop.QuitStrategy;
 import java.awt.event.*;
+import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jdesktop.beansbinding.*;
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 /*
@@ -22,6 +25,11 @@ public class MainWindow extends JFrame {
     private AppPreferences preferences = null;
     private DataModel dataModel = null;
 
+    //  Map to record valid/invalid state of validated fields in the UI
+    //  Fields not in the map are considered valid.  Fields in the map are valid or not
+    //  depending on the boolean stored.
+    private HashMap<JTextField, Boolean> fieldValidity = null;
+
     public MainWindow ( AppPreferences preferences,
                         DataModel dataModel) {
         this.preferences = preferences;
@@ -37,6 +45,7 @@ public class MainWindow extends JFrame {
     }
 
     public void setUiFromDataModel() {
+        this.fieldValidity = new HashMap<JTextField, Boolean>();
 
         this.serverAddressField.setText(this.dataModel.getServerAddress());
         this.portNumberField.setText(String.valueOf(this.dataModel.getPortNumber()));
@@ -80,23 +89,67 @@ public class MainWindow extends JFrame {
     }
 
     private void serverAddressFieldActionPerformed() {
-        // TODO serverAddressFieldActionPerformed
-        System.out.println("serverAddressFieldActionPerformed");
+        String proposedServerAddress = this.serverAddressField.getText().trim();
+        boolean valid = false;
+        if (RmNetUtils.validateIpAddress(proposedServerAddress)) {
+            valid = true;
+        } else if (RmNetUtils.validateHostName(proposedServerAddress)) {
+            valid = true;
+        }
+        if (valid) {
+            this.dataModel.setServerAddress(proposedServerAddress);
+            this.makeDirty();
+        }
+        this.recordTextFieldValidity(this.serverAddressField, valid);
+        this.enableProceedButton();
     }
 
     private void portNumberFieldActionPerformed() {
-        // TODO portNumberFieldActionPerformed
-        System.out.println("portNumberFieldActionPerformed");
+        String proposedValue = this.portNumberField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 0, 65535);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setPortNumber(validation.right);
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.portNumberField, valid);
+        this.enableProceedButton();
     }
 
     private void targetADUfieldActionPerformed() {
-        // TODO targetADUfieldActionPerformed
-        System.out.println("targetADUfieldActionPerformed");
+        String proposedValue = this.targetADUfield.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 0, 65535);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setPortNumber(validation.right);
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.targetADUfield, valid);
+        this.enableProceedButton();
     }
 
     private void aduToleranceFieldActionPerformed() {
-        // TODO aduToleranceFieldActionPerformed
-        System.out.println("aduToleranceFieldActionPerformed");
+        String proposedValue = this.aduToleranceField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, 0.0, 100.0);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setAduTolerance(validation.right / 100.0);
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.aduToleranceField, valid);
+        this.enableProceedButton();
     }
 
     private void lightSourceAltFieldActionPerformed() {
@@ -154,7 +207,39 @@ public class MainWindow extends JFrame {
         this.ditherMaximumFieldActionPerformed();
     }
 
-	private void initComponents() {
+
+    /**
+     * Record the validity of the given text field.
+     * In a dict indexed by the text field, record the validity state so we can, later, quickly check
+     * if all the fields are valid.  Also colour the field red if it is not valid.
+     * @param theField      The Swift JTextField being validated
+     * @param isValid       Whether that field contains valid data
+     */
+    private void recordTextFieldValidity(JTextField theField, boolean isValid) {
+        //  Record validity in map
+        if (this.fieldValidity.containsKey(theField)) {
+            this.fieldValidity.replace(theField, isValid);
+        } else {
+            this.fieldValidity.put(theField, isValid);
+        }
+
+        //  Set background colour
+        Color backgroundColor = Color.RED;
+        if (isValid) {
+            backgroundColor = Color.WHITE;
+        }
+        theField.setBackground(backgroundColor);
+    }
+
+    private void enableProceedButton() {
+        //  todo Enable Proceed button field validity
+    }
+
+    private void makeDirty() {
+        // todo makeDirty
+    }
+
+    private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         menuBar1 = new JMenuBar();
@@ -844,10 +929,10 @@ public class MainWindow extends JFrame {
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
 
-//  todo Set up responders for main window basic parameters
-//  todo Set up structure for field validation in main window
 //  todo Validate and store main window basic parameters
+//  todo Store main window button data
 //  todo Set up main window table data model
 //  todo Provide main window table row and column titles
 //  todo Provide main window table cell data
 //  todo Catch edits to main window table cells
+//  todo Implement All, None, and Default buttons
