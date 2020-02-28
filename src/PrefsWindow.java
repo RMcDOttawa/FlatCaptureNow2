@@ -670,96 +670,84 @@ public class PrefsWindow extends JDialog {
      * One of the radio buttons setting which binnings are used
       */
     private void bin1DefaultButtonActionPerformed() {
-        // TODO bin1DefaultButtonActionPerformed
-        System.out.println("bin1DefaultButtonActionPerformed");
+        this.preferences.setBinningAvailability(1, BinningAvailability.DEFAULT);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin1AvailableButtonActionPerformed() {
-        // TODO bin1AvailableButtonActionPerformed
-        System.out.println("bin1AvailableButtonActionPerformed");
+        this.preferences.setBinningAvailability(1, BinningAvailability.AVAILABLE);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin1OffButtonActionPerformed() {
-        // TODO bin1OffButtonActionPerformed
-        System.out.println("bin1OffButtonActionPerformed");
+        this.preferences.setBinningAvailability(1, BinningAvailability.OFF);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin2DefaultButtonActionPerformed() {
-        // TODO bin2DefaultButtonActionPerformed
-        System.out.println("bin2DefaultButtonActionPerformed");
+        this.preferences.setBinningAvailability(2, BinningAvailability.DEFAULT);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin2AvailableButtonActionPerformed() {
-        // TODO bin2AvailableButtonActionPerformed
-        System.out.println("bin2AvailableButtonActionPerformed");
+        this.preferences.setBinningAvailability(2, BinningAvailability.AVAILABLE);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin2OffButtonActionPerformed() {
-        // TODO bin2OffButtonActionPerformed
-        System.out.println("bin2OffButtonActionPerformed");
+        this.preferences.setBinningAvailability(2, BinningAvailability.OFF);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin3DefaultButtonActionPerformed() {
-        // TODO bin3DefaultButtonActionPerformed
-        System.out.println("bin3DefaultButtonActionPerformed");
+        this.preferences.setBinningAvailability(3, BinningAvailability.DEFAULT);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin3AvailableButtonActionPerformed() {
-        // TODO bin3AvailableButtonActionPerformed
-        System.out.println("bin3AvailableButtonActionPerformed");
+        this.preferences.setBinningAvailability(3, BinningAvailability.AVAILABLE);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin3OffButtonActionPerformed() {
-        // TODO bin3OffButtonActionPerformed
-        System.out.println("bin3OffButtonActionPerformed");
+        this.preferences.setBinningAvailability(3, BinningAvailability.OFF);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin4DefaultButtonActionPerformed() {
-        // TODO bin4DefaultButtonActionPerformed
-        System.out.println("bin4DefaultButtonActionPerformed");
+        this.preferences.setBinningAvailability(4, BinningAvailability.DEFAULT);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin4AvailableButtonActionPerformed() {
-        // TODO bin4AvailableButtonActionPerformed
-        System.out.println("bin4AvailableButtonActionPerformed");
+        this.preferences.setBinningAvailability(4, BinningAvailability.AVAILABLE);
     }
 
     /**
      * One of the radio buttons setting which binnings are used
      */
     private void bin4OffButtonActionPerformed() {
-        // TODO bin4OffButtonActionPerformed
-        System.out.println("bin4OffButtonActionPerformed");
+        this.preferences.setBinningAvailability(4, BinningAvailability.OFF);
     }
 
     /**
