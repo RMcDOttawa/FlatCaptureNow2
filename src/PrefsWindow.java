@@ -42,6 +42,11 @@ public class PrefsWindow extends JDialog {
 		super(owner);
 		initComponents();
 	}
+
+    /**
+     * Set up the fields in the user interface from the given Preferences object
+     * @param preferences       App preferences to be displayed and edited
+     */
     public void setUpUI(AppPreferences preferences) {
 
         this.preferences = preferences;
@@ -149,6 +154,9 @@ public class PrefsWindow extends JDialog {
         }
     }
 
+    /**
+     * Validate and store the field giving the default number of flat frames for each filter combination
+     */
     private void numFlatsFieldActionPerformed() {
         String proposedValue = this.numFlatsField.getText().trim();
         boolean valid = false;
@@ -329,6 +337,10 @@ public class PrefsWindow extends JDialog {
         this.filter1NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 2
+     * Validate it and store it
+     */
     private void filter2NameFieldActionPerformed() {
         String proposedFilterName = this.filter2NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -349,6 +361,10 @@ public class PrefsWindow extends JDialog {
         this.filter2NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 3
+     * Validate it and store it
+     */
     private void filter3NameFieldActionPerformed() {
         String proposedFilterName = this.filter3NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -369,6 +385,10 @@ public class PrefsWindow extends JDialog {
         this.filter3NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 4
+     * Validate it and store it
+     */
     private void filter4NameFieldActionPerformed() {
         String proposedFilterName = this.filter4NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -389,6 +409,10 @@ public class PrefsWindow extends JDialog {
         this.filter4NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 5
+     * Validate it and store it
+     */
     private void filter5NameFieldActionPerformed() {
         String proposedFilterName = this.filter5NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -409,6 +433,10 @@ public class PrefsWindow extends JDialog {
         this.filter5NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 6
+     * Validate it and store it
+     */
     private void filter6NameFieldActionPerformed() {
         String proposedFilterName = this.filter6NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -429,6 +457,10 @@ public class PrefsWindow extends JDialog {
         this.filter6NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 7
+     * Validate it and store it
+     */
     private void filter7NameFieldActionPerformed() {
         String proposedFilterName = this.filter7NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -449,6 +481,10 @@ public class PrefsWindow extends JDialog {
         this.filter7NameFieldActionPerformed();
     }
 
+    /**
+     * user has changed the name field for the filter in slot 8
+     * Validate it and store it
+     */
     private void filter8NameFieldActionPerformed() {
         String proposedFilterName = this.filter8NameField.getText().trim();
         boolean valid = this.validateFilterName(proposedFilterName);
@@ -469,6 +505,9 @@ public class PrefsWindow extends JDialog {
         this.filter8NameFieldActionPerformed();
     }
 
+    /**
+     * Validate and store Altitude of flat light source
+      */
     private void lightLocationAltFieldActionPerformed() {
         String proposedValue = this.lightLocationAltField.getText().trim();
         boolean valid = false;
@@ -484,10 +523,16 @@ public class PrefsWindow extends JDialog {
         this.enableCloseButton();
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void lightLocationAltFieldFocusLost() {
         this.lightLocationAltFieldActionPerformed();
     }
 
+    /**
+     * Validate and store Azimuth of flat light source
+     */
     private void lightLocationAzFieldActionPerformed() {
         String proposedValue = this.lightLocationAzField.getText().trim();
         boolean valid = false;
@@ -503,15 +548,25 @@ public class PrefsWindow extends JDialog {
         this.enableCloseButton();
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void lightLocationAzFieldFocusLost() {
         this.lightLocationAzFieldActionPerformed();
     }
 
+    /**
+     * User clicked the "Read Scope" button.  Read the current mount pointing location
+     * and remember it as the Alt/Az of the flat light source.
+      */
     private void readScopeButtonActionPerformed() {
         // TODO readScopeButtonActionPerformed
         System.out.println("readScopeButtonActionPerformed");
     }
 
+    /**
+     * Validate and store the "Target ADUs" field
+     */
     private void targetADUfieldActionPerformed() {
         String proposedValue = this.targetADUfield.getText().trim();
         boolean valid = false;
@@ -527,6 +582,9 @@ public class PrefsWindow extends JDialog {
         this.enableCloseButton();
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void targetADUfieldFocusLost() {
         this.targetADUfieldActionPerformed();
     }
@@ -551,121 +609,209 @@ public class PrefsWindow extends JDialog {
         this.enableCloseButton();
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void aduToleranceFieldFocusLost() {
         this.aduToleranceFieldActionPerformed();
     }
 
+    /**
+     * Validate and store the "Server Address" field
+     */
     private void serverAddressFieldActionPerformed() {
-        // TODO serverAddressFieldActionPerformed
-        System.out.println("serverAddressFieldActionPerformed");
+        String proposedServerAddress = this.serverAddressField.getText().trim();
+        boolean valid = false;
+        if (RmNetUtils.validateIpAddress(proposedServerAddress)) {
+            valid = true;
+        } else if (RmNetUtils.validateHostName(proposedServerAddress)) {
+            valid = true;
+        }
+        if (valid) {
+            this.preferences.setServerAddress(proposedServerAddress);
+        }
+        this.recordTextFieldValidity(this.serverAddressField, valid);
+        this.enableCloseButton();
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void serverAddressFieldFocusLost() {
         this.serverAddressFieldActionPerformed();
     }
 
+    /**
+     * Validate and store the "Server port number" field
+     */
     private void portNumberFieldActionPerformed() {
         // TODO portNumberFieldActionPerformed
         System.out.println("portNumberFieldActionPerformed");
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void portNumberFieldFocusLost() {
         this.portNumberFieldActionPerformed();
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+      */
     private void bin1DefaultButtonActionPerformed() {
         // TODO bin1DefaultButtonActionPerformed
         System.out.println("bin1DefaultButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin1AvailableButtonActionPerformed() {
         // TODO bin1AvailableButtonActionPerformed
         System.out.println("bin1AvailableButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin1OffButtonActionPerformed() {
         // TODO bin1OffButtonActionPerformed
         System.out.println("bin1OffButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin2DefaultButtonActionPerformed() {
         // TODO bin2DefaultButtonActionPerformed
         System.out.println("bin2DefaultButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin2AvailableButtonActionPerformed() {
         // TODO bin2AvailableButtonActionPerformed
         System.out.println("bin2AvailableButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin2OffButtonActionPerformed() {
         // TODO bin2OffButtonActionPerformed
         System.out.println("bin2OffButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin3DefaultButtonActionPerformed() {
         // TODO bin3DefaultButtonActionPerformed
         System.out.println("bin3DefaultButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin3AvailableButtonActionPerformed() {
         // TODO bin3AvailableButtonActionPerformed
         System.out.println("bin3AvailableButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin3OffButtonActionPerformed() {
         // TODO bin3OffButtonActionPerformed
         System.out.println("bin3OffButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin4DefaultButtonActionPerformed() {
         // TODO bin4DefaultButtonActionPerformed
         System.out.println("bin4DefaultButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin4AvailableButtonActionPerformed() {
         // TODO bin4AvailableButtonActionPerformed
         System.out.println("bin4AvailableButtonActionPerformed");
     }
 
+    /**
+     * One of the radio buttons setting which binnings are used
+     */
     private void bin4OffButtonActionPerformed() {
         // TODO bin4OffButtonActionPerformed
         System.out.println("bin4OffButtonActionPerformed");
     }
 
+    /**
+     * "Dither Flats" checkbox clicked.  Store the on/off setting.
+     */
     private void ditherFlatsCheckboxActionPerformed() {
         // TODO ditherFlatsCheckboxActionPerformed
         System.out.println("ditherFlatsCheckboxActionPerformed");
     }
 
+    /**
+     * Validate and store the "Dither Radius" field
+     */
     private void ditherRadiusFieldActionPerformed() {
         // TODO ditherRadiusFieldActionPerformed
         System.out.println("ditherRadiusFieldActionPerformed");
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void ditherRadiusFieldFocusLost() {
         this.ditherRadiusFieldActionPerformed();
     }
 
+    /**
+     * Validate and store the "Maximum dither radius" field
+      */
     private void ditherMaximumFieldActionPerformed() {
         // TODO ditherMaximumFieldActionPerformed
         System.out.println("ditherMaximumFieldActionPerformed");
     }
 
+    /**
+     * Losing focus on field triggers its action
+     */
     private void ditherMaximumFieldFocusLost() {
         this.ditherMaximumFieldActionPerformed();
     }
 
+    /**
+     * Reset Times button clicked.
+     * We issue a "are you sure" dialog, then reset all the initial exposure time estimates
+     * to a default of 10 seconds.  They'll be recalculated and refined the next time they're used.
+      */
     private void resetTimesButtonActionPerformed() {
         // TODO resetTimesButtonActionPerformed
         System.out.println("resetTimesButtonActionPerformed");
     }
 
+    /**
+     * Close button has been clicked, so we close this dialog.
+     * Preferences changes have been made in real time, so no need to save anything.
+     */
     private void closeButtonActionPerformed() {
         // TODO closeButtonActionPerformed
         System.out.println("closeButtonActionPerformed");
     }
 
+    /**
+     * Component initializer geneated by JFormDesigner
+     */
 
 	private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -1778,4 +1924,3 @@ public class PrefsWindow extends JDialog {
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
 
-//todo disable Close button if there are any invalid fields
