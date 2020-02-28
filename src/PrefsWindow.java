@@ -754,16 +754,25 @@ public class PrefsWindow extends JDialog {
      * "Dither Flats" checkbox clicked.  Store the on/off setting.
      */
     private void ditherFlatsCheckboxActionPerformed() {
-        // TODO ditherFlatsCheckboxActionPerformed
-        System.out.println("ditherFlatsCheckboxActionPerformed");
+        this.preferences.setDitherFlats(this.ditherFlatsCheckbox.isSelected());
     }
 
     /**
      * Validate and store the "Dither Radius" field
      */
     private void ditherRadiusFieldActionPerformed() {
-        // TODO ditherRadiusFieldActionPerformed
-        System.out.println("ditherRadiusFieldActionPerformed");
+        String proposedValue = this.ditherRadiusField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, .001, 360.0*60*60);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setDitherRadius(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.ditherRadiusField, valid);
+        this.enableCloseButton();
     }
 
     /**
@@ -777,8 +786,18 @@ public class PrefsWindow extends JDialog {
      * Validate and store the "Maximum dither radius" field
       */
     private void ditherMaximumFieldActionPerformed() {
-        // TODO ditherMaximumFieldActionPerformed
-        System.out.println("ditherMaximumFieldActionPerformed");
+        String proposedValue = this.ditherMaximumField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, .001, 360.0*60*60);
+            valid = validation.left;
+            if (valid) {
+                this.preferences.setMaximumDither(validation.right);
+            }
+        }
+        this.recordTextFieldValidity(this.ditherMaximumField, valid);
+        this.enableCloseButton();
     }
 
     /**
