@@ -813,8 +813,15 @@ public class PrefsWindow extends JDialog {
      * to a default of 10 seconds.  They'll be recalculated and refined the next time they're used.
       */
     private void resetTimesButtonActionPerformed() {
-        // TODO resetTimesButtonActionPerformed
-        System.out.println("resetTimesButtonActionPerformed");
+        int response = JOptionPane.showConfirmDialog(this,
+                "This will reset ALL the remembered exposure time estimates.\n"
+                + "The next runs will need to recalculate exposure times from scratch.\n"
+                + "Are you sure you want to do this?",
+                "Confirm Reset",
+                JOptionPane.YES_NO_OPTION);
+        if (response == 0) {
+            this.preferences.resetInitialExposures();
+        }
     }
 
     /**

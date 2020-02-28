@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 public class AppPreferences {
     private Preferences preferences;
 
+    private static final Double INITIAL_EXPOSURE_ESTIMATE = 10.0;
+
     private static final String USE_FILTER_WHEEL = "use_filter_wheel";
     private static final String FLAT_FRAME_DEFAULT_COUNT_SETTING = "flat_frame_default_count";
     private static final String FILTER_SLOT_NUMBERS = "filter_slot_numbers";
@@ -216,7 +218,7 @@ public class AppPreferences {
 
     public double getInitialExposure(int filterSlot, int binningLevel) {
         String key = EXPOSURE_ESTIMATE + ":" + filterSlot + ":" + binningLevel;
-        return this.preferences.getDouble(key, 10.0);
+        return this.preferences.getDouble(key, INITIAL_EXPOSURE_ESTIMATE);
     }
 
     public void setInitialExposure(int filterSlot, int binningLevel, double exposure) {
@@ -224,4 +226,16 @@ public class AppPreferences {
         this.preferences.putDouble(key, exposure);
     }
 
+    /**
+     * Reset every initial exposure estimate (every combination of filter and binning) back to default
+     */
+    public void resetInitialExposures() {
+        List<Integer> filterSlotNumbers = this.getFilterSlotNumbers();
+        List<Integer> binningValues = this.getBinningNumbers();
+        for (int filterSlot : filterSlotNumbers) {
+            for (int binning : binningValues) {
+                this.setInitialExposure(filterSlot, binning, INITIAL_EXPOSURE_ESTIMATE);
+            }
+        }
+    }
 }
