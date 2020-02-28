@@ -822,8 +822,7 @@ public class PrefsWindow extends JDialog {
      * Preferences changes have been made in real time, so no need to save anything.
      */
     private void closeButtonActionPerformed() {
-        // TODO closeButtonActionPerformed
-        System.out.println("closeButtonActionPerformed");
+        this.setVisible(false);
     }
 
     /**
