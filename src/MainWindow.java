@@ -185,13 +185,35 @@ public class MainWindow extends JFrame {
     }
 
     private void ditherRadiusFieldActionPerformed() {
-        // TODO ditherRadiusFieldActionPerformed
-        System.out.println("ditherRadiusFieldActionPerformed");
+        String proposedValue = this.ditherRadiusField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, .001, 360.0*60*60);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setDitherRadius(validation.right );
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.ditherRadiusField, valid);
+        this.enableProceedButton();
     }
 
     private void ditherMaximumFieldActionPerformed() {
-        // TODO ditherMaximumFieldActionPerformed
-        System.out.println("ditherMaximumFieldActionPerformed");
+        String proposedValue = this.ditherMaximumField.getText().trim();
+        boolean valid = false;
+        if (proposedValue.length() > 0) {
+            // Validate field value
+            ImmutablePair<Boolean, Double> validation = Validators.validFloatInRange(proposedValue, .001, 360.0*60*60);
+            valid = validation.left;
+            if (valid) {
+                this.dataModel.setDitherMaximum(validation.right );
+                this.makeDirty();
+            }
+        }
+        this.recordTextFieldValidity(this.ditherMaximumField, valid);
+        this.enableProceedButton();
     }
 
     /**
