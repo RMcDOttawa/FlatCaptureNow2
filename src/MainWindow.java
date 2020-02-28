@@ -275,14 +275,34 @@ public class MainWindow extends JFrame {
         theField.setBackground(backgroundColor);
     }
 
+    /**
+     * Enable the "Proceed" button only if there are no outstanding invalid fields
+     */
     private void enableProceedButton() {
-        //  todo Enable Proceed button field validity
+        this.proceedButton.setEnabled(this.allTextFieldsValid());
+    }
+
+    /**
+     * Check all the fields recorded in the field validity map and report if they are all valid
+     * @return (boolean)       Indication that all fields are valid
+     */
+    private boolean allTextFieldsValid() {
+        for (HashMap.Entry<JTextField,Boolean> entry : this.fieldValidity.entrySet()) {
+            boolean isValid = entry.getValue();
+            if (!isValid) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void makeDirty() {
         // todo makeDirty
     }
 
+    /**
+     * Record that some data in the model have changed, requiring a file save to avoid data loss
+     */
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -973,7 +993,6 @@ public class MainWindow extends JFrame {
 	// JFormDesigner - End of variables declaration  //GEN-END:variables
 }
 
-//  todo Validate and store main window basic parameters
 //  todo Store main window button data
 //  todo Set up main window table data model
 //  todo Provide main window table row and column titles
