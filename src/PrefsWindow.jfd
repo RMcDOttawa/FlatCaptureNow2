@@ -367,8 +367,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp label26::l:p::p, seq l {par t {seq t {comp label28:::p::p, space :::p, comp lightLocationAzField:::p:110:p}, seq l {comp label27:::p::p, space :::p, comp lightLocationAltField:::p:108:p}}, space :::p, comp readScopeButton:::p::p}}, space :::x}}"
-						"$verticalGroup": "par l {seq {space :::p, comp label26:::p::p, space u:::p, par b {comp label27::b:p::p, comp lightLocationAltField::b:p::p, comp readScopeButton::b:p::p}, space :p:9:p, par b {comp label28::b:p::p, comp lightLocationAzField::b:p::p}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp label26::l:p::p, seq l {par t {seq t {comp label28:::p::p, space :::p, comp lightLocationAzField:::p:110:p}, seq l {comp label27:::p::p, space :::p, comp lightLocationAltField:::p:108:p}}, space :::p, par l {seq {space :6:6:p, comp readScopeMessage::::160:x}, seq {comp readScopeButton:::p::p, space :0:0:x}}}}, space :::p}}"
+						"$verticalGroup": "par l {seq {space :::p, comp label26:::p::p, space u:::p, par b {comp label27::b:p::p, comp lightLocationAltField::b:p::p, comp readScopeButton::b:p::p}, space :p:9:p, par b {comp label28::b:p::p, comp lightLocationAzField::b:p::p, comp readScopeMessage::b:p::p}, space :::p}}"
 					} ) {
 						name: "lightSourcePanel"
 						"border": new javax.swing.border.LineBorder( sfield java.awt.Color black, 1, false )
@@ -399,6 +399,10 @@ new FormModel {
 							name: "readScopeButton"
 							"text": "Read Scope"
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "readScopeButtonActionPerformed", false ) )
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "readScopeMessage"
+							"text": " "
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {

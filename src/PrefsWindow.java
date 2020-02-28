@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
@@ -560,8 +561,27 @@ public class PrefsWindow extends JDialog {
      * and remember it as the Alt/Az of the flat light source.
       */
     private void readScopeButtonActionPerformed() {
-        // TODO readScopeButtonActionPerformed
-        System.out.println("readScopeButtonActionPerformed");
+        TheSkyXServer server = null;
+        try {
+            server = new TheSkyXServer(this.preferences.getServerAddress(),
+                    this.preferences.getPortNumber());
+            ImmutablePair<Double,Double> serverResponse = server.getScopeAltAz();
+            double altitude = serverResponse.left;
+            double azimuth = serverResponse.right;
+
+            this.preferences.setLightSourceAlt(altitude);
+            this.preferences.setLightSourceAz(azimuth);
+
+            this.lightLocationAltField.setText(String.format("%.8f", altitude));
+            this.lightLocationAzField.setText(String.format("%.8f",azimuth));
+
+            this.readScopeMessage.setText("Read scope OK");
+        } catch (IOException e) {
+            this.readScopeMessage.setText("I/O Error");
+        } catch (NumberFormatException e) {
+            this.readScopeMessage.setText("Bad Server Response");
+        }
+
     }
 
     /**
@@ -910,6 +930,7 @@ public class PrefsWindow extends JDialog {
         lightLocationAltField = new JTextField();
         lightLocationAzField = new JTextField();
         readScopeButton = new JButton();
+        readScopeMessage = new JLabel();
         panel4 = new JPanel();
         ditherFlatsCheckbox = new JCheckBox();
         label29 = new JLabel();
@@ -1577,6 +1598,9 @@ public class PrefsWindow extends JDialog {
                     readScopeButton.setText("Read Scope");
                     readScopeButton.addActionListener(e -> readScopeButtonActionPerformed());
 
+                    //---- readScopeMessage ----
+                    readScopeMessage.setText(" ");
+
                     GroupLayout lightSourcePanelLayout = new GroupLayout(lightSourcePanel);
                     lightSourcePanel.setLayout(lightSourcePanelLayout);
                     lightSourcePanelLayout.setHorizontalGroup(
@@ -1596,8 +1620,14 @@ public class PrefsWindow extends JDialog {
                                                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(lightLocationAltField, GroupLayout.PREFERRED_SIZE, 108, GroupLayout.PREFERRED_SIZE)))
                                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(readScopeButton)))
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addGroup(lightSourcePanelLayout.createParallelGroup()
+                                            .addGroup(lightSourcePanelLayout.createSequentialGroup()
+                                                .addGap(6, 6, 6)
+                                                .addComponent(readScopeMessage, GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
+                                            .addGroup(lightSourcePanelLayout.createSequentialGroup()
+                                                .addComponent(readScopeButton)
+                                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addContainerGap())
                     );
                     lightSourcePanelLayout.setVerticalGroup(
                         lightSourcePanelLayout.createParallelGroup()
@@ -1612,7 +1642,8 @@ public class PrefsWindow extends JDialog {
                                 .addGap(9, 9, 9)
                                 .addGroup(lightSourcePanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(label28)
-                                    .addComponent(lightLocationAzField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lightLocationAzField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(readScopeMessage))
                                 .addContainerGap())
                     );
                 }
@@ -1932,6 +1963,7 @@ public class PrefsWindow extends JDialog {
     private JTextField lightLocationAltField;
     private JTextField lightLocationAzField;
     private JButton readScopeButton;
+    private JLabel readScopeMessage;
     private JPanel panel4;
     private JCheckBox ditherFlatsCheckbox;
     private JLabel label29;
