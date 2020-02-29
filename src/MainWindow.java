@@ -296,13 +296,166 @@ public class MainWindow extends JFrame {
         return true;
     }
 
+    /**
+     * Mark the file as having unsaved data so we'll prompt to save
+     */
     private void makeDirty() {
         // todo makeDirty
     }
 
     /**
-     * Record that some data in the model have changed, requiring a file save to avoid data loss
+     * Store the "Use Filter Wheel" setting from the checkbox to the data model
      */
+    private void useFilterWheelCheckboxActionPerformed() {
+        this.dataModel.setUseFilterWheel(this.useFilterWheelCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Warm Up When Done" setting from the checkbox to the data model
+     */
+    private void warmWhenDoneCheckboxActionPerformed() {
+        this.dataModel.setWarmUpWhenDone(this.warmWhenDoneCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Use TheSkyX Autosave Folder" setting from the checkbox to the data model
+     */
+    private void useAutosaveButtonActionPerformed() {
+        this.dataModel.setUseTheSkyAutosave(this.useAutosaveButton.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Use Local Folder" setting from the checkbox to the data model.
+     * There is no separate setting for this - it is the inverse of the Use TheSkyX Autosave setting
+     */
+    private void useLocalFolderButtonActionPerformed() {
+        this.dataModel.setUseTheSkyAutosave(!this.useLocalFolderButton.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Respond to button that asks us to query the TheSkyX server for the Autosave path
+     */
+    private void queryAutosaveButtonActionPerformed() {
+        // TODO queryAutosaveButtonActionPerformed
+        System.out.println("queryAutosaveButtonActionPerformed");
+    }
+
+    /**
+     * Respond to button that asks us to select a file folder local to this computer
+     */
+    private void setLocalFolderButtonActionPerformed() {
+        // TODO setLocalFolderButtonActionPerformed
+        System.out.println("setLocalFolderButtonActionPerformed");
+    }
+
+    /**
+     * Store the "Control Mount" setting from the window to the data model
+     */
+    private void controlMountCheckboxActionPerformed() {
+        this.dataModel.setControlMount(this.controlMountCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Home Mount" setting from the window to the data model
+     */
+    private void homeMountCheckboxActionPerformed() {
+        this.dataModel.setHomeMount(this.homeMountCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Slew to Light Source" setting from the window to the data model
+     */
+    private void slewToLightCheckboxActionPerformed() {
+        this.dataModel.setSlewToLight(this.slewToLightCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Tracking Off" setting from the window to the data model
+     */
+    private void trackingOffCheckboxActionPerformed() {
+        this.dataModel.setTrackingOff(this.trackingOffCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Park When Done" setting from the window to the data model
+     */
+    private void parkWhenDoneCheckboxActionPerformed() {
+        this.dataModel.setParkWhenDone(this.parkWhenDoneCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Store the "Dither Flats" setting from the window to the data model
+     */
+    private void ditherFlatsCheckboxActionPerformed() {
+        this.dataModel.setDitherFlats(this.ditherFlatsCheckbox.isSelected());
+        this.makeDirty();
+    }
+
+    /**
+     * Respond to button asking us to read the current pointing location from the mount
+     */
+    private void readScopePositionButtonActionPerformed() {
+        // TODO readScopePositionButtonActionPerformed
+        System.out.println("readScopePositionButtonActionPerformed");
+    }
+
+    /**
+     * Slew the mount to the given light source location
+     */
+    private void slewScopeButtonActionPerformed() {
+        // TODO slewScopeButtonActionPerformed
+        System.out.println("slewScopeButtonActionPerformed");
+    }
+
+    /**
+     * Respond to button asking us to cancel the slew that is in progress
+     */
+    private void cancelSlewButtonActionPerformed() {
+        // TODO cancelSlewButtonActionPerformed
+        System.out.println("cancelSlewButtonActionPerformed");
+    }
+
+    /**
+     * Respond to button to turn on all filter/binning combinations in the table
+     */
+    private void allOnButtonActionPerformed() {
+        // TODO allOnButtonActionPerformed
+        System.out.println("allOnButtonActionPerformed");
+    }
+
+    /**
+     * Respond to button asking to set table to default filter/binning combinations
+     */
+    private void defaultsButtonActionPerformed() {
+        // TODO defaultsButtonActionPerformed
+        System.out.println("defaultsButtonActionPerformed");
+    }
+
+    /**
+     * Respond to button asking to turn off all filter/binning combinations in the table
+     */
+    private void allOffButtonActionPerformed() {
+        // TODO allOffButtonActionPerformed
+        System.out.println("allOffButtonActionPerformed");
+    }
+
+    /**
+     * Respond to Proceed button to start the acquisition session
+     */
+    private void proceedButtonActionPerformed() {
+        // TODO proceedButtonActionPerformed
+        System.out.println("proceedButtonActionPerformed");
+    }
+
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -559,12 +712,14 @@ public class MainWindow extends JFrame {
 
                 //---- useFilterWheelCheckbox ----
                 useFilterWheelCheckbox.setText("Use FIlter Wheel");
+                useFilterWheelCheckbox.addActionListener(e -> useFilterWheelCheckboxActionPerformed());
                 optionsPanel.add(useFilterWheelCheckbox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- warmWhenDoneCheckbox ----
                 warmWhenDoneCheckbox.setText("When done warm up CCD");
+                warmWhenDoneCheckbox.addActionListener(e -> warmWhenDoneCheckboxActionPerformed());
                 optionsPanel.add(warmWhenDoneCheckbox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 0), 0, 0));
@@ -591,6 +746,7 @@ public class MainWindow extends JFrame {
 
                 //---- controlMountCheckbox ----
                 controlMountCheckbox.setText("Control Mount");
+                controlMountCheckbox.addActionListener(e -> controlMountCheckboxActionPerformed());
                 mountPanel.add(controlMountCheckbox, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -603,12 +759,14 @@ public class MainWindow extends JFrame {
 
                 //---- readScopePositionButton ----
                 readScopePositionButton.setText("Read Scope");
+                readScopePositionButton.addActionListener(e -> readScopePositionButtonActionPerformed());
                 mountPanel.add(readScopePositionButton, new GridBagConstraints(3, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- homeMountCheckbox ----
                 homeMountCheckbox.setText("Home Mount");
+                homeMountCheckbox.addActionListener(e -> homeMountCheckboxActionPerformed());
                 mountPanel.add(homeMountCheckbox, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -646,6 +804,7 @@ public class MainWindow extends JFrame {
 
                 //---- slewToLightCheckbox ----
                 slewToLightCheckbox.setText("Slew to Light Source");
+                slewToLightCheckbox.addActionListener(e -> slewToLightCheckboxActionPerformed());
                 mountPanel.add(slewToLightCheckbox, new GridBagConstraints(0, 3, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -676,24 +835,28 @@ public class MainWindow extends JFrame {
 
                 //---- trackingOffCheckbox ----
                 trackingOffCheckbox.setText("Tracking Off");
+                trackingOffCheckbox.addActionListener(e -> trackingOffCheckboxActionPerformed());
                 mountPanel.add(trackingOffCheckbox, new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- slewScopeButton ----
                 slewScopeButton.setText("Slew");
+                slewScopeButton.addActionListener(e -> slewScopeButtonActionPerformed());
                 mountPanel.add(slewScopeButton, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- cancelSlewButton ----
                 cancelSlewButton.setText("Cancel");
+                cancelSlewButton.addActionListener(e -> cancelSlewButtonActionPerformed());
                 mountPanel.add(cancelSlewButton, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- parkWhenDoneCheckbox ----
                 parkWhenDoneCheckbox.setText("Park When Done");
+                parkWhenDoneCheckbox.addActionListener(e -> parkWhenDoneCheckboxActionPerformed());
                 mountPanel.add(parkWhenDoneCheckbox, new GridBagConstraints(0, 5, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
@@ -724,6 +887,7 @@ public class MainWindow extends JFrame {
 
                 //---- ditherFlatsCheckbox ----
                 ditherFlatsCheckbox.setText("Dither Flats");
+                ditherFlatsCheckbox.addActionListener(e -> ditherFlatsCheckboxActionPerformed());
                 mountPanel.add(ditherFlatsCheckbox, new GridBagConstraints(0, 6, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -780,24 +944,28 @@ public class MainWindow extends JFrame {
 
                 //---- useAutosaveButton ----
                 useAutosaveButton.setText("Use TheSkyX Autosave Folder");
+                useAutosaveButton.addActionListener(e -> useAutosaveButtonActionPerformed());
                 destinationPanel.add(useAutosaveButton, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- queryAutosaveButton ----
                 queryAutosaveButton.setText("Query");
+                queryAutosaveButton.addActionListener(e -> queryAutosaveButtonActionPerformed());
                 destinationPanel.add(queryAutosaveButton, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- useLocalFolderButton ----
                 useLocalFolderButton.setText("Use Specified Local Folder");
+                useLocalFolderButton.addActionListener(e -> useLocalFolderButtonActionPerformed());
                 destinationPanel.add(useLocalFolderButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- setLocalFolderButton ----
                 setLocalFolderButton.setText("Set");
+                setLocalFolderButton.addActionListener(e -> setLocalFolderButtonActionPerformed());
                 destinationPanel.add(setLocalFolderButton, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0));
@@ -842,14 +1010,17 @@ public class MainWindow extends JFrame {
                 allOnButton.setText("All On");
                 allOnButton.setMaximumSize(new Dimension(50, 29));
                 allOnButton.setMinimumSize(new Dimension(50, 29));
+                allOnButton.addActionListener(e -> allOnButtonActionPerformed());
                 buttonPanel.add(allOnButton);
 
                 //---- defaultsButton ----
                 defaultsButton.setText("Defaults");
+                defaultsButton.addActionListener(e -> defaultsButtonActionPerformed());
                 buttonPanel.add(defaultsButton);
 
                 //---- allOffButton ----
                 allOffButton.setText("All Off");
+                allOffButton.addActionListener(e -> allOffButtonActionPerformed());
                 buttonPanel.add(allOffButton);
 
                 //---- hSpacer2 ----
@@ -858,6 +1029,7 @@ public class MainWindow extends JFrame {
 
                 //---- proceedButton ----
                 proceedButton.setText("Proceed");
+                proceedButton.addActionListener(e -> proceedButtonActionPerformed());
                 buttonPanel.add(proceedButton);
             }
             contentPanel.add(buttonPanel, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0,
@@ -999,3 +1171,4 @@ public class MainWindow extends JFrame {
 //  todo Provide main window table cell data
 //  todo Catch edits to main window table cells
 //  todo Implement All, None, and Default buttons
+//  todo Enable slew button only when valid coordinates present

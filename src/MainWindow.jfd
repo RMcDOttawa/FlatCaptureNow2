@@ -164,12 +164,14 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "useFilterWheelCheckbox"
 						"text": "Use FIlter Wheel"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useFilterWheelCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 1
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "warmWhenDoneCheckbox"
 						"text": "When done warm up CCD"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "warmWhenDoneCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
 					} )
@@ -197,6 +199,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "controlMountCheckbox"
 						"text": "Control Mount"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "controlMountCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 1
 						"gridwidth": 2
@@ -212,6 +215,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "readScopePositionButton"
 						"text": "Read Scope"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "readScopePositionButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 1
@@ -219,6 +223,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "homeMountCheckbox"
 						"text": "Home Mount"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "homeMountCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
 					} )
@@ -257,6 +262,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "slewToLightCheckbox"
 						"text": "Slew to Light Source"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "slewToLightCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 3
 						"gridwidth": 2
@@ -287,6 +293,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "trackingOffCheckbox"
 						"text": "Tracking Off"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "trackingOffCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 4
 						"gridwidth": 2
@@ -294,6 +301,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "slewScopeButton"
 						"text": "Slew"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "slewScopeButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 2
 						"gridy": 4
@@ -302,6 +310,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "cancelSlewButton"
 						"text": "Cancel"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancelSlewButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
 						"gridy": 4
@@ -309,6 +318,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "parkWhenDoneCheckbox"
 						"text": "Park When Done"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "parkWhenDoneCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 5
 						"gridwidth": 2
@@ -339,6 +349,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "ditherFlatsCheckbox"
 						"text": "Dither Flats"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "ditherFlatsCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 6
 						"gridwidth": 2
@@ -401,12 +412,14 @@ new FormModel {
 						name: "useAutosaveButton"
 						"text": "Use TheSkyX Autosave Folder"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useAutosaveButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "queryAutosaveButton"
 						"text": "Query"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "queryAutosaveButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 2
@@ -415,12 +428,14 @@ new FormModel {
 						name: "useLocalFolderButton"
 						"text": "Use Specified Local Folder"
 						"$buttonGroup": new FormReference( "buttonGroup1" )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useLocalFolderButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 3
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "setLocalFolderButton"
 						"text": "Set"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "setLocalFolderButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 1
 						"gridy": 3
@@ -468,14 +483,17 @@ new FormModel {
 						"text": "All On"
 						"maximumSize": new java.awt.Dimension( 50, 29 )
 						"minimumSize": new java.awt.Dimension( 50, 29 )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "allOnButtonActionPerformed", false ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "defaultsButton"
 						"text": "Defaults"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "defaultsButtonActionPerformed", false ) )
 					} )
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "allOffButton"
 						"text": "All Off"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "allOffButtonActionPerformed", false ) )
 					} )
 					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
 						name: "hSpacer2"
@@ -484,6 +502,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "proceedButton"
 						"text": "Proceed"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "proceedButtonActionPerformed", false ) )
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridy": 7
