@@ -209,4 +209,60 @@ public class TheSkyXServer {
 
         return ImmutablePair.of(altitude, azimuth);
     }
+
+    /**
+     * Start scope slewing to given alt-az coordinates.  Alt-ax, not RA-Dec, because
+     * the original use of this method was to slew to a flat frame light panel, which is
+     * at a fixed location in the observatory and doesn't move with the sky
+     * Slewing is asynchronous. This just starts the slew - must poll for completion
+     * Doing a slew turns tracking on.  We'll restore it to previous state in case it was off
+     * @param targetAltitude        Altitude to slew to
+     * @param targetAzimuth         Azimuth to slew to
+     * @param asynchronous          Attempt to do it asynchronously?  (May not have any effect)
+     */
+    public void slewToAltAz(double targetAltitude, double targetAzimuth, boolean asynchronous) throws IOException {
+        String commandNoReturn = "sky6RASCOMTele.Connect();"
+                + "sky6RASCOMTele.Asynchronous=" + boolToJS(asynchronous) + ";"
+                + "Out=sky6RASCOMTele.SlewToAzAlt("
+                    + String.valueOf(targetAzimuth) + ","
+                    + String.valueOf(targetAltitude) + ",'');"
+                + "Out+=\"\\n\";";
+        this.sendCommandNoReturn(commandNoReturn);
+    }
+
+    /**
+     * Get and return whether the scope's tracking is on
+     * @return
+     */
+    public boolean getScopeTracking() throws IOException {
+        String commandWithReturn = "sky6RASCOMTele.Connect();"
+                                    + "var Out=sky6RASCOMTele.IsTracking;"
+                                    + "Out+=\"\\n\";";
+        String returnString = this.sendCommandWithReturn(commandWithReturn);
+        return returnString.trim().equals("1");
+    }
+
+    /**
+     * Set scope tracking to given on/off state
+     * @param oldTrackingState      true or false for tracking
+     */
+    public void setScopeTracking(boolean oldTrackingState) throws IOException {
+        String commandNoReturn = "sky6RASCOMTele.Connect();"
+                + "sky6RASCOMTele.IsTracking=" + boolToJS(oldTrackingState) + ";";
+        this.sendCommandNoReturn(commandNoReturn);
+    }
+
+    public boolean scopeSlewComplete() throws IOException {
+        String commandWithReturn = "sky6RASCOMTele.Connect();"
+                + "Out=sky6RASCOMTele.IsSlewComplete;"
+                + "Out+=\"\\n\";";
+        String returnString = this.sendCommandWithReturn(commandWithReturn);
+        return returnString.trim().equals("1");
+    }
+
+    public void abortSlew() throws IOException {
+        String commandNoReturn = "Out=sky6RASCOMTele.Abort();"
+                + "Out+=\"\\n\";";
+        this.sendCommandNoReturn(commandNoReturn);
+    }
 }

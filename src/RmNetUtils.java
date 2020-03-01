@@ -275,5 +275,81 @@ public class RmNetUtils {
         return ImmutablePair.of(success, message);
     }
 
+    /**
+     * Make an educated guess if the given server address is the same computer
+     * as the one we're running on.  We'll use the following approach:
+     *       If address is "localhost", just say Yes
+     *       If address is hard-coded IP "127.0.0.1", say Yes
+     *       Otherwise, try to resolve the IP address and compare it to our IP address
+     *       If all else fails, say "no"
+     * @param serverAddress     Address (IP or host name) to check for locality
+     * @return (boolean)        True if local, false if remote.  It's a guess.
+     */
+    public static boolean addressIsLocal(String serverAddress) {
+        String cleanAddress = serverAddress.strip().toUpperCase();
+        if (cleanAddress.equals("LOCALHOST")) {
+            return true;
+        } else if (cleanAddress.equals("127.0.0.1")) {
+            return true;
+        } else {
+            // At this point we're going to be doing actual network queries.
+            // Start by having our own IP address on hand.
+            String ourIpAddress = "unknown";
+            try {
+                ourIpAddress = getOurIpAddress();
+            } catch (UnknownHostException e) {
+                // Leave our IP as "unknown"
+            }
+            if (validateIpAddress(cleanAddress)) {
+                // We've been provided an IP address.  Is it the same as ours?
+                return cleanAddress.equals(ourIpAddress);
+            } else if (validateHostName(cleanAddress)) {
+                // We've been given what might be a host name.  Look up its IP address
+                String serverIpAddress = getIpOfHostAsString(cleanAddress);
+                if (serverIpAddress != null) {
+                    return serverIpAddress.equals(ourIpAddress);
+                } else {
+                    // Couldn't get the IP of that host name.  If it didn't end in ".local", try again with that
+                    if (cleanAddress.endsWith(".LOCAL")) {
+                        // It did.  Give up.
+                        return false;
+                    } else {
+                        serverIpAddress = getIpOfHostAsString(cleanAddress + ".LOCAL");
+                        if (serverIpAddress != null) {
+                            return serverIpAddress.equals(ourIpAddress);
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                return false;
+            }
+        }
+    }
 
+    /**
+     * Get IP address, as a string, of the computer running this code
+     * @return (String)     IP address in form 192.168.1.123
+     */
+    private static String getOurIpAddress() throws UnknownHostException {
+        InetAddress thisAddress = InetAddress.getLocalHost();
+        String addressAsString = thisAddress.getHostAddress();
+        return addressAsString;
+    }
+
+    /**
+     * Get IP address, as a string, of the computer with the given host name
+     * @param hostName     Address (IP or host name) to check for locality
+     * @return (String)     IP address in form 192.168.1.123
+     */
+    private static String getIpOfHostAsString(String hostName) {
+        InetAddress hostAddress = null;
+        try {
+            hostAddress = InetAddress.getByName(hostName);
+        } catch (UnknownHostException e) {
+            return null;
+        }
+        return hostAddress.getHostAddress();
+    }
 }

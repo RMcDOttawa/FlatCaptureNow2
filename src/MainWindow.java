@@ -1,8 +1,10 @@
 import java.awt.*;
+import java.util.Timer;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 import java.awt.desktop.QuitStrategy;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -29,6 +31,14 @@ public class MainWindow extends JFrame {
     //  Fields not in the map are considered valid.  Fields in the map are valid or not
     //  depending on the boolean stored.
     private HashMap<JTextField, Boolean> fieldValidity = null;
+    private SlewScopeThread slewScopeRunnable;
+    private Thread slewScopeThread;
+    private boolean rememberProceedEnabled;  // Remember proceed state during a slew
+
+    private SlewingFeedbackTask slewingFeedbackTask = null;
+    private Timer slewingFeedbackTimer = null;
+    private boolean slewMessageIsPulsed;
+    private FrameTableModel frameTableModel;
 
     public MainWindow ( AppPreferences preferences,
                         DataModel dataModel) {
@@ -74,6 +84,14 @@ public class MainWindow extends JFrame {
         this.ditherFlatsCheckbox.setSelected(this.dataModel.getDitherFlats());
         this.ditherRadiusField.setText(String.valueOf(this.dataModel.getDitherRadius()));
         this.ditherMaximumField.setText(String.valueOf(this.dataModel.getDitherMaximum()));
+        
+        //  Set up table model for the frames table
+        this.frameTableModel = new FrameTableModel(this.dataModel);
+        this.framesTable.setModel(frameTableModel);
+        
+        this.setLocalOrRemoteMessage();
+        this.enableSlewControls();
+        this.enableProceedButton();
     }
 
     /**
@@ -98,6 +116,7 @@ public class MainWindow extends JFrame {
         }
         if (valid) {
             this.dataModel.setServerAddress(proposedServerAddress);
+            this.setLocalOrRemoteMessage();
             this.makeDirty();
         }
         this.recordTextFieldValidity(this.serverAddressField, valid);
@@ -166,6 +185,7 @@ public class MainWindow extends JFrame {
         }
         this.recordTextFieldValidity(this.lightSourceAltField, valid);
         this.enableProceedButton();
+        this.enableSlewControls();
     }
 
     private void lightSourceAzFieldActionPerformed() {
@@ -182,6 +202,7 @@ public class MainWindow extends JFrame {
         }
         this.recordTextFieldValidity(this.lightSourceAzField, valid);
         this.enableProceedButton();
+        this.enableSlewControls();
     }
 
     private void ditherRadiusFieldActionPerformed() {
@@ -276,6 +297,20 @@ public class MainWindow extends JFrame {
     }
 
     /**
+     * Determine if a given field is recorded as valid.
+     * It's valid if it is not in the table at all (since it's only put there on first invalidation)
+     * or if it's in the table with a true validity
+     */
+
+    private boolean fieldIsValid(JTextField fieldToCheck) {
+        if (this.fieldValidity.containsKey(fieldToCheck)) {
+            return this.fieldValidity.get(fieldToCheck);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Enable the "Proceed" button only if there are no outstanding invalid fields
      */
     private void enableProceedButton() {
@@ -358,6 +393,7 @@ public class MainWindow extends JFrame {
     private void controlMountCheckboxActionPerformed() {
         this.dataModel.setControlMount(this.controlMountCheckbox.isSelected());
         this.makeDirty();
+        this.enableSlewControls();
     }
 
     /**
@@ -404,24 +440,147 @@ public class MainWindow extends JFrame {
      * Respond to button asking us to read the current pointing location from the mount
      */
     private void readScopePositionButtonActionPerformed() {
-        // TODO readScopePositionButtonActionPerformed
-        System.out.println("readScopePositionButtonActionPerformed");
+        try {
+            TheSkyXServer server = new TheSkyXServer(this.preferences.getServerAddress(),
+                    this.preferences.getPortNumber());
+            ImmutablePair<Double,Double> serverResponse = server.getScopeAltAz();
+            double altitude = serverResponse.left;
+            double azimuth = serverResponse.right;
+
+            this.dataModel.setLightSourceAlt(altitude);
+            this.dataModel.setLightSourceAz(azimuth);
+
+            this.lightSourceAltField.setText(String.format("%.8f", altitude));
+            this.lightSourceAzField.setText(String.format("%.8f",azimuth));
+
+            this.readScopeMessage.setText("Read OK");
+        } catch (IOException e) {
+            this.readScopeMessage.setText("I/O Error");
+        } catch (NumberFormatException e) {
+            this.readScopeMessage.setText("Server Error");
+        }
     }
 
     /**
-     * Slew the mount to the given light source location
+     * Manually-manage the enablement of the slewing controls - the cancel and slew buttons and the alt/az fields
+     * We do this manually so we can manually suspend them during slew.  Doing them with bindings, as most of the
+     * other controls are handled, prevents manual adjustement.
+     */
+    private void enableSlewControls() {
+
+        //  The Slew button is enabled only if "Control" scope is on and both Alt and Az fields are valid
+        boolean slewEnabled = this.controlMountCheckbox.isSelected()
+                && this.fieldIsValid(this.lightSourceAltField)
+                && this.fieldIsValid(this.lightSourceAzField);
+        this.slewScopeButton.setEnabled(slewEnabled);
+
+        //  The Alt and Az fields are enabled if Control is selected
+        this.lightSourceAltField.setEnabled(this.controlMountCheckbox.isSelected());
+        this.lightSourceAzField.setEnabled(this.controlMountCheckbox.isSelected());
+    }
+
+    /**
+     * Slew the mount to the given light source location.
+     * Slew is asynchronous, and we need to wait for it.  While it is slewing we'd like the Cancel
+     * button to be available, but not the Slew button or the coordinates - if those are changed or
+     * clicked during the slew, it's difficult to think what might happen.
+     *    Disable buttons that would cause problems
+     *    Do the slew, as a sub-thread so the UI remains responsive
+     *    Wait for the slew to finish or be cancelled
+     *    Set everything's enablement back to what it was before the slew
+     * Later: While the slew is running, we'll also display "Slewing" in the status message area and, with
+     * a timer, we'll pulse it red to black.
      */
     private void slewScopeButtonActionPerformed() {
-        // TODO slewScopeButtonActionPerformed
-        System.out.println("slewScopeButtonActionPerformed");
+
+        //  Things we'd like enabled and disabled during slew
+        this.rememberProceedEnabled = this.proceedButton.isEnabled();
+        this.proceedButton.setEnabled(false);
+        this.slewScopeButton.setEnabled(false);
+        this.cancelSlewButton.setEnabled(true);
+        this.lightSourceAltField.setEnabled(false);
+        this.lightSourceAzField.setEnabled(false);
+
+        //  Do the slew, wait for it to end or be cancelled
+        try {
+            this.slewScopeToLightSource();
+        } catch (InterruptedException e) {
+            // Slew was interrupted - nothing we need to do
+        }
+
+    }
+
+    /**
+     * Spawn a sub-thread to slew the scope
+     * @throws InterruptedException
+     */
+    private void slewScopeToLightSource() throws InterruptedException {
+
+        //  Start the slew thread
+        this.slewScopeRunnable = new SlewScopeThread(this, this.dataModel.getServerAddress(),
+                this.dataModel.getPortNumber(), this.dataModel.getLightSourceAlt(),
+                this.dataModel.getLightSourceAz());
+        this.slewScopeThread = new Thread(slewScopeRunnable);
+        this.slewScopeThread.start();
+
+        //  Start the slew timer to pulse the "slewing" message
+        this.slewMessage.setText("Slewing");
+        this.slewMessageIsPulsed = false;
+        this.slewingFeedbackTask = new SlewingFeedbackTask(this);
+        this.slewingFeedbackTimer = new Timer();
+        this.slewingFeedbackTimer.scheduleAtFixedRate(this.slewingFeedbackTask,
+                (long) Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS,
+                (long) Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS);
+
+    }
+
+    public void fireSlewFeedbackTimer() {
+        Color messageColour = this.slewMessageIsPulsed ? Color.RED : Color.BLACK;
+        this.slewMessageIsPulsed = !this.slewMessageIsPulsed;
+        this.slewMessage.setForeground(messageColour);
+    }
+
+    /**
+     * The Thread slewing the scope will tell us when it is done by messaging this method
+      * @param finishedMessage      Null if normal completion, otherwise an error message
+     */
+    public void slewThreadFinished(String finishedMessage) {
+        this.slewScopeButton.setEnabled(true);
+        this.cancelSlewButton.setEnabled(false);
+        this.lightSourceAltField.setEnabled(true);
+        this.lightSourceAzField.setEnabled(true);
+        this.proceedButton.setEnabled(this.rememberProceedEnabled);
+
+        this.slewScopeThread = null;
+        this.slewScopeRunnable = null;
+
+        //  Cancel the feedback timer
+        if (this.slewingFeedbackTimer != null) {
+            this.slewingFeedbackTimer.cancel();
+            this.slewingFeedbackTimer = null;
+        }
+        if (this.slewingFeedbackTask != null) {
+            this.slewingFeedbackTask.cancel();
+            this.slewingFeedbackTask = null;
+        }
+
+        this.slewMessage.setForeground(Color.BLACK);
+        if (finishedMessage == null) {
+            this.slewMessage.setText(" ");
+        } else {
+            this.slewMessage.setText(finishedMessage);
+        }
+
     }
 
     /**
      * Respond to button asking us to cancel the slew that is in progress
      */
     private void cancelSlewButtonActionPerformed() {
-        // TODO cancelSlewButtonActionPerformed
-        System.out.println("cancelSlewButtonActionPerformed");
+        //  Find and cancel the task handling the slew
+        if (this.slewScopeThread != null) {
+            this.slewScopeThread.interrupt();
+        }
     }
 
     /**
@@ -446,6 +605,26 @@ public class MainWindow extends JFrame {
     private void allOffButtonActionPerformed() {
         // TODO allOffButtonActionPerformed
         System.out.println("allOffButtonActionPerformed");
+    }
+
+    /**
+     * Set message field to indicate whether the defined TheSkyX server is running on this or
+     * a remote computer (by analysing whether the server address is known to be local).
+     * Enable the "Local" buttons only if running locally.
+     */
+    private void setLocalOrRemoteMessage() {
+        String localityMessage;
+        boolean localButtonsEnabled = false;
+        if (RmNetUtils.addressIsLocal(this.dataModel.getServerAddress())) {
+            localityMessage = "TheSkyX runs on this computer.";
+            localButtonsEnabled = true;
+        } else {
+            localityMessage = "TheSkyX runs remotely.";
+            this.useAutosaveButton.setSelected(true);
+        }
+        this.remoteOrLocalMessage.setText(localityMessage);
+        this.useLocalFolderButton.setEnabled(localButtonsEnabled);
+        this.setLocalFolderButton.setEnabled(localButtonsEnabled);
     }
 
     /**
@@ -488,6 +667,7 @@ public class MainWindow extends JFrame {
         controlMountCheckbox = new JCheckBox();
         label12 = new JLabel();
         readScopePositionButton = new JButton();
+        readScopeMessage = new JLabel();
         homeMountCheckbox = new JCheckBox();
         hSpacer1 = new JPanel(null);
         label13 = new JLabel();
@@ -500,6 +680,7 @@ public class MainWindow extends JFrame {
         trackingOffCheckbox = new JCheckBox();
         slewScopeButton = new JButton();
         cancelSlewButton = new JButton();
+        slewMessage = new JLabel();
         parkWhenDoneCheckbox = new JCheckBox();
         label17 = new JLabel();
         ditherRadiusField = new JTextField();
@@ -510,11 +691,13 @@ public class MainWindow extends JFrame {
         label20 = new JLabel();
         destinationPanel = new JPanel();
         label5 = new JLabel();
+        panel1 = new JPanel();
         remoteOrLocalMessage = new JLabel();
         useAutosaveButton = new JRadioButton();
         queryAutosaveButton = new JButton();
         useLocalFolderButton = new JRadioButton();
         setLocalFolderButton = new JButton();
+        panel2 = new JPanel();
         destinationPath = new JLabel();
         tablePanel = new JPanel();
         scrollPane1 = new JScrollPane();
@@ -764,6 +947,15 @@ public class MainWindow extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
+                //---- readScopeMessage ----
+                readScopeMessage.setText(" ");
+                readScopeMessage.setMaximumSize(new Dimension(4, 32));
+                readScopeMessage.setMinimumSize(new Dimension(4, 32));
+                readScopeMessage.setPreferredSize(new Dimension(4, 32));
+                mountPanel.add(readScopeMessage, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
+
                 //---- homeMountCheckbox ----
                 homeMountCheckbox.setText("Home Mount");
                 homeMountCheckbox.addActionListener(e -> homeMountCheckboxActionPerformed());
@@ -849,10 +1041,18 @@ public class MainWindow extends JFrame {
 
                 //---- cancelSlewButton ----
                 cancelSlewButton.setText("Cancel");
+                cancelSlewButton.setEnabled(false);
                 cancelSlewButton.addActionListener(e -> cancelSlewButtonActionPerformed());
                 mountPanel.add(cancelSlewButton, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
+
+                //---- slewMessage ----
+                slewMessage.setText("text");
+                slewMessage.setFont(slewMessage.getFont().deriveFont(11f));
+                mountPanel.add(slewMessage, new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- parkWhenDoneCheckbox ----
                 parkWhenDoneCheckbox.setText("Park When Done");
@@ -936,11 +1136,25 @@ public class MainWindow extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0));
 
-                //---- remoteOrLocalMessage ----
-                remoteOrLocalMessage.setText(" TheSkyX is running on a remote machine.");
-                destinationPanel.add(remoteOrLocalMessage, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
+                //======== panel1 ========
+                {
+                    panel1.setLayout(new GridBagLayout());
+                    ((GridBagLayout)panel1.getLayout()).columnWidths = new int[] {0, 0, 0};
+                    ((GridBagLayout)panel1.getLayout()).rowHeights = new int[] {0, 0};
+                    ((GridBagLayout)panel1.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
+                    ((GridBagLayout)panel1.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+
+                    //---- remoteOrLocalMessage ----
+                    remoteOrLocalMessage.setText("<html><i>TheSkyX is running on a remote machine.</i></html>");
+                    remoteOrLocalMessage.setFocusable(false);
+                    remoteOrLocalMessage.setHorizontalTextPosition(SwingConstants.CENTER);
+                    panel1.add(remoteOrLocalMessage, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                destinationPanel.add(panel1, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 0), 0, 0));
+                    new Insets(0, 4, 5, 0), 0, 0));
 
                 //---- useAutosaveButton ----
                 useAutosaveButton.setText("Use TheSkyX Autosave Folder");
@@ -970,12 +1184,24 @@ public class MainWindow extends JFrame {
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 0), 0, 0));
 
-                //---- destinationPath ----
-                destinationPath.setText("Display of save-folder path name goes here");
-                destinationPath.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
-                destinationPanel.add(destinationPath, new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
+                //======== panel2 ========
+                {
+                    panel2.setLayout(new GridBagLayout());
+                    ((GridBagLayout)panel2.getLayout()).columnWidths = new int[] {0, 0, 0};
+                    ((GridBagLayout)panel2.getLayout()).rowHeights = new int[] {0, 0};
+                    ((GridBagLayout)panel2.getLayout()).columnWeights = new double[] {0.0, 0.0, 1.0E-4};
+                    ((GridBagLayout)panel2.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
+
+                    //---- destinationPath ----
+                    destinationPath.setText("Display of save-folder path name goes here");
+                    destinationPath.setFont(new Font("Lucida Grande", Font.PLAIN, 8));
+                    panel2.add(destinationPath, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
+                        GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                        new Insets(0, 0, 0, 0), 0, 0));
+                }
+                destinationPanel.add(panel2, new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                    new Insets(0, 4, 0, 0), 0, 0));
             }
             contentPanel.add(destinationPanel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -1066,18 +1292,6 @@ public class MainWindow extends JFrame {
             controlMountCheckbox, BeanProperty.create("selected"),
             readScopePositionButton, BeanProperty.create("enabled")));
         bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            controlMountCheckbox, BeanProperty.create("selected"),
-            lightSourceAltField, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            controlMountCheckbox, BeanProperty.create("selected"),
-            lightSourceAzField, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            controlMountCheckbox, BeanProperty.create("selected"),
-            slewScopeButton, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            controlMountCheckbox, BeanProperty.create("selected"),
-            cancelSlewButton, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
             ditherFlatsCheckbox, BeanProperty.create("selected"),
             ditherRadiusField, BeanProperty.create("enabled")));
         bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
@@ -1124,6 +1338,7 @@ public class MainWindow extends JFrame {
     private JCheckBox controlMountCheckbox;
     private JLabel label12;
     private JButton readScopePositionButton;
+    private JLabel readScopeMessage;
     private JCheckBox homeMountCheckbox;
     private JPanel hSpacer1;
     private JLabel label13;
@@ -1136,6 +1351,7 @@ public class MainWindow extends JFrame {
     private JCheckBox trackingOffCheckbox;
     private JButton slewScopeButton;
     private JButton cancelSlewButton;
+    private JLabel slewMessage;
     private JCheckBox parkWhenDoneCheckbox;
     private JLabel label17;
     private JTextField ditherRadiusField;
@@ -1146,11 +1362,13 @@ public class MainWindow extends JFrame {
     private JLabel label20;
     private JPanel destinationPanel;
     private JLabel label5;
+    private JPanel panel1;
     private JLabel remoteOrLocalMessage;
     private JRadioButton useAutosaveButton;
     private JButton queryAutosaveButton;
     private JRadioButton useLocalFolderButton;
     private JButton setLocalFolderButton;
+    private JPanel panel2;
     private JLabel destinationPath;
     private JPanel tablePanel;
     private JScrollPane scrollPane1;
@@ -1162,13 +1380,9 @@ public class MainWindow extends JFrame {
     private JPanel hSpacer2;
     private JButton proceedButton;
     private BindingGroup bindingGroup;
-	// JFormDesigner - End of variables declaration  //GEN-END:variables
+    // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
 
-//  todo Store main window button data
-//  todo Set up main window table data model
 //  todo Provide main window table row and column titles
 //  todo Provide main window table cell data
 //  todo Catch edits to main window table cells
-//  todo Implement All, None, and Default buttons
-//  todo Enable slew button only when valid coordinates present

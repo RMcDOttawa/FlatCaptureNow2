@@ -220,6 +220,16 @@ new FormModel {
 						"gridx": 3
 						"gridy": 1
 					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "readScopeMessage"
+						"text": " "
+						"maximumSize": new java.awt.Dimension( 4, 32 )
+						"minimumSize": new java.awt.Dimension( 4, 32 )
+						"preferredSize": new java.awt.Dimension( 4, 32 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
+						"gridy": 1
+					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "homeMountCheckbox"
 						"text": "Home Mount"
@@ -310,9 +320,18 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JButton" ) {
 						name: "cancelSlewButton"
 						"text": "Cancel"
+						"enabled": false
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "cancelSlewButtonActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridx": 3
+						"gridy": 4
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "slewMessage"
+						"text": "text"
+						"font": new com.jformdesigner.model.SwingDerivedFont( null, 0, 11, true )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 4
 						"gridy": 4
 					} )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
@@ -401,12 +420,27 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridwidth": 2
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "remoteOrLocalMessage"
-						"text": " TheSkyX is running on a remote machine."
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+						"$columnSpecs": "0, 0"
+						"$rowSpecs": "0"
+						"$hGap": 5
+						"$vGap": 5
+						"$alignTop": true
+						"$alignLeft": true
+					} ) {
+						name: "panel1"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "remoteOrLocalMessage"
+							"text": "<html><i>TheSkyX is running on a remote machine.</i></html>"
+							"focusable": false
+							"horizontalTextPosition": 0
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridwidth": 2
+						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 1
 						"gridwidth": 2
+						"insets": new java.awt.Insets( 0, 4, 0, 0 )
 					} )
 					add( new FormComponent( "javax.swing.JRadioButton" ) {
 						name: "useAutosaveButton"
@@ -440,13 +474,26 @@ new FormModel {
 						"gridx": 1
 						"gridy": 3
 					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "destinationPath"
-						"text": "Display of save-folder path name goes here"
-						"font": new java.awt.Font( "Lucida Grande", 0, 8 )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
+						"$columnSpecs": "0, 0"
+						"$rowSpecs": "0"
+						"$hGap": 5
+						"$vGap": 5
+						"$alignTop": true
+						"$alignLeft": true
+					} ) {
+						name: "panel2"
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "destinationPath"
+							"text": "Display of save-folder path name goes here"
+							"font": new java.awt.Font( "Lucida Grande", 0, 8 )
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+							"gridwidth": 2
+						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 4
 						"gridwidth": 2
+						"insets": new java.awt.Insets( 0, 4, 0, 0 )
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridy": 5
@@ -540,10 +587,6 @@ new FormModel {
 			addBinding( new FormBinding( "controlMountCheckbox", "selected", "parkWhenDoneCheckbox", "enabled" ) )
 			addBinding( new FormBinding( "controlMountCheckbox", "selected", "ditherFlatsCheckbox", "enabled" ) )
 			addBinding( new FormBinding( "controlMountCheckbox", "selected", "readScopePositionButton", "enabled" ) )
-			addBinding( new FormBinding( "controlMountCheckbox", "selected", "lightSourceAltField", "enabled" ) )
-			addBinding( new FormBinding( "controlMountCheckbox", "selected", "lightSourceAzField", "enabled" ) )
-			addBinding( new FormBinding( "controlMountCheckbox", "selected", "slewScopeButton", "enabled" ) )
-			addBinding( new FormBinding( "controlMountCheckbox", "selected", "cancelSlewButton", "enabled" ) )
 			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherRadiusField", "enabled" ) )
 			addBinding( new FormBinding( "useAutosaveButton", "selected", "queryAutosaveButton", "enabled" ) )
 			addBinding( new FormBinding( "useLocalFolderButton", "selected", "setLocalFolderButton", "enabled" ) )
