@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.table.TableCellEditor;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jdesktop.beansbinding.*;
@@ -84,14 +85,45 @@ public class MainWindow extends JFrame {
         this.ditherFlatsCheckbox.setSelected(this.dataModel.getDitherFlats());
         this.ditherRadiusField.setText(String.valueOf(this.dataModel.getDitherRadius()));
         this.ditherMaximumField.setText(String.valueOf(this.dataModel.getDitherMaximum()));
-        
+
         //  Set up table model for the frames table
         this.frameTableModel = new FrameTableModel(this.dataModel);
         this.framesTable.setModel(frameTableModel);
-        
+
+        //  Set some appearance attributes for the frames table that can't be set in the JFormDesigner
+        this.framesTable.setRowHeight(this.calcGoodFramesTableRowHeight());
+
+        //  Set up table to accept edits on single clicks not double
+        this.setUpFramesTableEditing();
+
         this.setLocalOrRemoteMessage();
         this.enableSlewControls();
         this.enableProceedButton();
+    }
+
+    /**
+     * Set up table to accept edits on single clicks not double
+     */
+    private void setUpFramesTableEditing() {
+        for (int columnIndex = 0; columnIndex < this.dataModel.countUsedBinning(); columnIndex++) {
+            int adjustedColumn = columnIndex + 1;  // Move over to allow for row headings
+            System.out.println("Set editor for column " + adjustedColumn);
+            Class <?> columnClass = this.framesTable.getColumnClass(adjustedColumn);
+            DefaultCellEditor singleClickEditor = new DefaultCellEditor(new JTextField());
+            singleClickEditor.setClickCountToStart(1);
+            this.framesTable.setDefaultEditor(columnClass, singleClickEditor);
+        }
+    }
+
+    /**
+     * Determine a good row height for the frames table.
+     * We'll pull one of the cells, get its font size, and use a multiple of that.
+     * @return  row height
+     */
+    private int calcGoodFramesTableRowHeight() {
+        Font tableFont = this.framesTable.getFont();
+        int fontSize = tableFont.getSize();
+        return 3 * fontSize;
     }
 
     /**
@@ -1218,6 +1250,16 @@ public class MainWindow extends JFrame {
 
                 //======== scrollPane1 ========
                 {
+
+                    //---- framesTable ----
+                    framesTable.setRowSelectionAllowed(false);
+                    framesTable.setToolTipText("Number of flat frames to be acquired for each filter/binning combination. Click one to change it.");
+                    framesTable.setGridColor(new Color(100, 100, 100));
+                    framesTable.setIntercellSpacing(new Dimension(1, 10));
+                    framesTable.setCellSelectionEnabled(true);
+                    framesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    framesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                    framesTable.setRowHeight(24);
                     scrollPane1.setViewportView(framesTable);
                 }
                 tablePanel.add(scrollPane1, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
@@ -1383,6 +1425,6 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
 
-//  todo Provide main window table row and column titles
-//  todo Provide main window table cell data
 //  todo Catch edits to main window table cells
+//  todo Allow edit on simple focus-enter to a cell
+//  todo Bug: cmd-A selcting bottom-right cell in table

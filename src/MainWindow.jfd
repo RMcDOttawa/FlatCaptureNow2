@@ -501,11 +501,11 @@ new FormModel {
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
 					"$columnSpecs": "0"
-					"$rowSpecs": "0"
 					"$hGap": 5
 					"$vGap": 5
 					"$alignLeft": true
 					"$alignTop": true
+					"$rowSpecs": "0"
 				} ) {
 					name: "tablePanel"
 					"border": #LineBorder0
@@ -513,6 +513,14 @@ new FormModel {
 						name: "scrollPane1"
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "framesTable"
+							"rowSelectionAllowed": false
+							"toolTipText": "Number of flat frames to be acquired for each filter/binning combination. Click one to change it."
+							"gridColor": new java.awt.Color( 100, 100, 100, 255 )
+							"intercellSpacing": new java.awt.Dimension( 1, 10 )
+							"cellSelectionEnabled": true
+							"selectionMode": 0
+							"autoResizeMode": 4
+							"rowHeight": 24
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"weightx": 1.0
