@@ -117,5 +117,6 @@ public class FrameTableModel extends DefaultTableModel {
         // Having changed a table cell, we may have changed whether acquisition can proceed
         // Tell the main window to check that.
         this.mainWindow.enableProceedButton();
+        this.mainWindow.makeDirty();
     }}
 

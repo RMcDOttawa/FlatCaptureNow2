@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.io.File;
 import java.util.Timer;
 import java.awt.event.*;
 import java.io.IOException;
@@ -96,6 +97,7 @@ public class MainWindow extends JFrame {
         this.setLocalOrRemoteMessage();
         this.enableSlewControls();
         this.enableProceedButton();
+        this.makeNotDirty();
     }
 
     /**
@@ -344,8 +346,6 @@ public class MainWindow extends JFrame {
     public void enableProceedButton() {
         this.proceedButton.setEnabled(this.allTextFieldsValid()
         && this.dataModel.atLeastOneFrameSetWanted());
-
-        // todo Proceed button requires at least one non-zero frame plan cell
     }
 
     /**
@@ -365,8 +365,12 @@ public class MainWindow extends JFrame {
     /**
      * Mark the file as having unsaved data so we'll prompt to save
      */
-    private void makeDirty() {
+    public void makeDirty() {
         // todo makeDirty
+    }
+
+    private void makeNotDirty() {
+        // todo makeNotDirty
     }
 
     /**
@@ -406,16 +410,33 @@ public class MainWindow extends JFrame {
      * Respond to button that asks us to query the TheSkyX server for the Autosave path
      */
     private void queryAutosaveButtonActionPerformed() {
-        // TODO queryAutosaveButtonActionPerformed
-        System.out.println("queryAutosaveButtonActionPerformed");
+        String message;
+        try {
+            TheSkyXServer server = new TheSkyXServer(this.dataModel.getServerAddress(), this.dataModel.getPortNumber());
+            String path = server.getCameraAutosavePath();
+            message = path;
+        } catch (IOException e) {
+            message = "I/O Error";
+        }
+        this.destinationPath.setText(message);
     }
 
     /**
      * Respond to button that asks us to select a file folder local to this computer
      */
     private void setLocalFolderButtonActionPerformed() {
-        // TODO setLocalFolderButtonActionPerformed
-        System.out.println("setLocalFolderButtonActionPerformed");
+        //  Use a file dialog to get the folder to receive files.  Unfortunately we have to use JFileChooser
+        //  since the AWT FileDialog can't do just directories.  I say Unfortunately because JFileChooser looks
+        //  nothing like the standard system dialogs, while FDialog does.
+        JFileChooser directoryChooser = new JFileChooser();
+        directoryChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = directoryChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = directoryChooser.getSelectedFile();
+            this.destinationPath.setText(file.getAbsolutePath());
+            this.dataModel.setLocalPath(file.getAbsolutePath());
+            this.makeDirty();
+        }
     }
 
     /**
@@ -483,6 +504,8 @@ public class MainWindow extends JFrame {
 
             this.lightSourceAltField.setText(String.format("%.8f", altitude));
             this.lightSourceAzField.setText(String.format("%.8f",azimuth));
+
+            this.makeDirty();
 
             this.readScopeMessage.setText("Read OK");
         } catch (IOException e) {
@@ -627,6 +650,7 @@ public class MainWindow extends JFrame {
                 this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
             }
         }
+        this.makeDirty();
     }
 
     /**
@@ -649,6 +673,7 @@ public class MainWindow extends JFrame {
                 }
             }
         }
+        this.makeDirty();
     }
 
     /**
@@ -663,6 +688,7 @@ public class MainWindow extends JFrame {
                 this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
             }
         }
+        this.makeDirty();
     }
 
     /**
@@ -1451,4 +1477,4 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
-//  todo Bug: cmd-A selcting bottom-right cell in table
+// todo Bug: cmd-A selcting bottom-right cell in table

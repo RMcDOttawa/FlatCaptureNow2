@@ -27,6 +27,7 @@ public class DataModel  implements Serializable {
     //  Instance variables with simple default, not from preferences
     private Boolean     warmUpWhenDone = false;
     private Boolean     useTheSkyAutosave = true;
+    private String     localPath = null;
     private Boolean     controlMount = false;
     private Boolean     homeMount = false;
     private Boolean     trackingOff = false;
@@ -125,6 +126,9 @@ public class DataModel  implements Serializable {
 
     public Boolean getParkWhenDone() { return parkWhenDone; }
     public void setParkWhenDone(Boolean parkWhenDone) { this.parkWhenDone = parkWhenDone; }
+
+    public String getLocalPath() { return localPath; }
+    public void setLocalPath(String localPath) { this.localPath = localPath; }
 
     /**
      * Static constructor for data model.  Create a new data model with default values.
