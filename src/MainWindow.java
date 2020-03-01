@@ -83,7 +83,7 @@ public class MainWindow extends JFrame {
         this.ditherMaximumField.setText(String.valueOf(this.dataModel.getDitherMaximum()));
 
         //  Set up table model for the frames table
-        this.frameTableModel = new FrameTableModel(this.dataModel);
+        this.frameTableModel = new FrameTableModel(this, this.dataModel);
         this.framesTable.setModel(frameTableModel);
 
         //  Set some appearance attributes for the frames table that can't be set in the JFormDesigner
@@ -341,8 +341,11 @@ public class MainWindow extends JFrame {
     /**
      * Enable the "Proceed" button only if there are no outstanding invalid fields
      */
-    private void enableProceedButton() {
-        this.proceedButton.setEnabled(this.allTextFieldsValid());
+    public void enableProceedButton() {
+        this.proceedButton.setEnabled(this.allTextFieldsValid()
+        && this.dataModel.atLeastOneFrameSetWanted());
+
+        // todo Proceed button requires at least one non-zero frame plan cell
     }
 
     /**
@@ -612,27 +615,54 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * Respond to button to turn on all filter/binning combinations in the table
+     * Respond to button to turn on all filter/binning combinations in the table.
+     * All values in the table are set to the default frame count.
      */
     private void allOnButtonActionPerformed() {
-        // TODO allOnButtonActionPerformed
-        System.out.println("allOnButtonActionPerformed");
+        //  Set all the table cells to the default value
+        // Skip column 1, the pseudo-header column
+        Integer cellValue = Integer.valueOf(this.dataModel.getDefaultFrameCount());
+        for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
+            for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
+                this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
+            }
+        }
     }
 
     /**
      * Respond to button asking to set table to default filter/binning combinations
      */
     private void defaultsButtonActionPerformed() {
-        // TODO defaultsButtonActionPerformed
-        System.out.println("defaultsButtonActionPerformed");
+        //  Set all the table cells to the default value or zero depending on the binning availability
+        // Skip column 0, the pseudo-header column
+        Integer defaultValue = Integer.valueOf(this.dataModel.getDefaultFrameCount());
+        Integer zeroValue = Integer.valueOf(0);
+        for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
+            for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
+                BinningSpec binningSpec = this.dataModel.getBinningInUse(columnIndex - 1);
+                if (binningSpec.getAvailability() == BinningAvailability.DEFAULT) {
+                    this.frameTableModel.setValueAt(defaultValue, rowIndex, columnIndex);
+                } else {
+                    //  Has to be available. Can't be OFF or it wouldn't be in the table.
+                    assert binningSpec.getAvailability() == BinningAvailability.AVAILABLE;
+                    this.frameTableModel.setValueAt(zeroValue, rowIndex, columnIndex);
+                }
+            }
+        }
     }
 
     /**
      * Respond to button asking to turn off all filter/binning combinations in the table
      */
     private void allOffButtonActionPerformed() {
-        // TODO allOffButtonActionPerformed
-        System.out.println("allOffButtonActionPerformed");
+        //  Set all the table cells to zero
+        // Skip column 1, the pseudo-header column
+        Integer cellValue = Integer.valueOf(0);
+        for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
+            for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
+                this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
+            }
+        }
     }
 
     /**
@@ -1421,5 +1451,4 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
-
 //  todo Bug: cmd-A selcting bottom-right cell in table

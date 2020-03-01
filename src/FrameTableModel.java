@@ -21,15 +21,16 @@ import javax.swing.table.DefaultTableModel;
  */
 
 public class FrameTableModel extends DefaultTableModel {
-
-    private final DataModel dataModel;
+    private  MainWindow mainWindow;
+    private  DataModel dataModel;
 
     /**
      * Construct table data model, given a reference to the program's data model object
      * @param dataModel     Program's data model (containing the frame plan data)
      */
-    public FrameTableModel(DataModel dataModel) {
+    public FrameTableModel(MainWindow mainWindow, DataModel dataModel) {
         super();
+        this.mainWindow = mainWindow;
         this.dataModel = dataModel;
     }
 
@@ -113,5 +114,8 @@ public class FrameTableModel extends DefaultTableModel {
         //   Adjust column index to skip over the "pseudo column" of row headers
         this.dataModel.setFrameCountAt(rowIndex, columnIndex - 1, newValue);
         fireTableCellUpdated(rowIndex, columnIndex);
+        // Having changed a table cell, we may have changed whether acquisition can proceed
+        // Tell the main window to check that.
+        this.mainWindow.enableProceedButton();
     }}
 

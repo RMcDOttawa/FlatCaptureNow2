@@ -58,6 +58,8 @@ public class DataModel  implements Serializable {
         return this.filtersInUse.get(filterIndex);
     }
 
+    public BinningSpec getBinningInUse(int binningIndex) { return this.binningsInUse.get(binningIndex);}
+
     public Integer getFrameCountAt(int rowIndex, int columnIndex) {
         ArrayList<Integer> entireRow = this.frameTableData.get(rowIndex);
         return entireRow.get(columnIndex);
@@ -225,5 +227,20 @@ public class DataModel  implements Serializable {
      */
     public int getBinning(int index) {
         return this.binningsInUse.get(index).getBinningValue();
+    }
+
+    /**
+     * Determine if there are any non-zero frame counts in the frame plan
+     * @return
+     */
+    public boolean atLeastOneFrameSetWanted() {
+        for (ArrayList<Integer> thisRow : this.frameTableData) {
+            for (Integer oneValue : thisRow) {
+                if (oneValue > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
