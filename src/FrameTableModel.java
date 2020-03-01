@@ -109,14 +109,9 @@ public class FrameTableModel extends DefaultTableModel {
      */
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        //todo setValueAt
-        System.out.println(String.format("setValueAt(%d,%d): %s", rowIndex, columnIndex, value));
-        String newValueString = (String) value;
-        int newValue = Integer.valueOf(newValueString);
+        int newValue = (Integer) value;
         //   Adjust column index to skip over the "pseudo column" of row headers
         this.dataModel.setFrameCountAt(rowIndex, columnIndex - 1, newValue);
         fireTableCellUpdated(rowIndex, columnIndex);
     }}
 
-// todo Enforce positive integers in table cells
-// todo when editing on a cell begins, select entire contents

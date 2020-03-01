@@ -1,14 +1,10 @@
 import java.awt.*;
 import java.util.Timer;
-import java.awt.desktop.QuitEvent;
-import java.awt.desktop.QuitResponse;
-import java.awt.desktop.QuitStrategy;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.table.TableCellEditor;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.jdesktop.beansbinding.*;
@@ -94,6 +90,7 @@ public class MainWindow extends JFrame {
         this.framesTable.setRowHeight(this.calcGoodFramesTableRowHeight());
 
         //  Set up table to accept edits on single clicks not double
+
         this.setUpFramesTableEditing();
 
         this.setLocalOrRemoteMessage();
@@ -107,9 +104,8 @@ public class MainWindow extends JFrame {
     private void setUpFramesTableEditing() {
         for (int columnIndex = 0; columnIndex < this.dataModel.countUsedBinning(); columnIndex++) {
             int adjustedColumn = columnIndex + 1;  // Move over to allow for row headings
-            System.out.println("Set editor for column " + adjustedColumn);
             Class <?> columnClass = this.framesTable.getColumnClass(adjustedColumn);
-            DefaultCellEditor singleClickEditor = new DefaultCellEditor(new JTextField());
+            IntegerEditor singleClickEditor = new IntegerEditor(0, 32767);
             singleClickEditor.setClickCountToStart(1);
             this.framesTable.setDefaultEditor(columnClass, singleClickEditor);
         }
@@ -1423,8 +1419,7 @@ public class MainWindow extends JFrame {
     private JButton proceedButton;
     private BindingGroup bindingGroup;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
+
 }
 
-//  todo Catch edits to main window table cells
-//  todo Allow edit on simple focus-enter to a cell
 //  todo Bug: cmd-A selcting bottom-right cell in table
