@@ -7,9 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.awt.event.*;
 import java.util.HashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
 import javax.swing.border.*;
 
@@ -46,6 +48,7 @@ public class MainWindow extends JFrame {
     private FrameTableModel frameTableModel;
 
     private String filePath = "";
+
 
     public MainWindow ( AppPreferences preferences) {
         this.preferences = preferences;
@@ -729,22 +732,18 @@ public class MainWindow extends JFrame {
      * Respond to Proceed button to start the acquisition session.  Open the dialog window
      * that is used for the session console, then spawn the thread that does the acquisition.
      */
-    private void proceedButtonActionPerformed() {
+    public void proceedButtonActionPerformed() {
         // TODO proceedButtonActionPerformed
         System.out.println("proceedButtonActionPerformed");
 
         //  Session console window
         Session sessionWindow = new Session(this);
-        sessionWindow.setUpUI(this.dataModel);
+        ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire();
+        sessionWindow.setUpUI(this.dataModel, flatsToAcquire);
         sessionWindow.setVisible(true);
 
         //  Start the acquisition thread
-        this.spawnAcquisitionTask(sessionWindow);
-    }
-
-    private void spawnAcquisitionTask(Session sessionWindow) {
-        // todo spawnAcquisitionTask
-        System.out.println("spawnAcquisitionTask");
+        sessionWindow.spawnAcquisitionTask(sessionWindow, flatsToAcquire);
     }
 
     private void saveAsMenuItemActionPerformed() {

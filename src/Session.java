@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
@@ -14,6 +15,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Session extends JDialog {
     DefaultTableModel sessionTableModel = null;
+    DefaultListModel<String> sessionConsoleModel = null;
+    DataModel dataModel;
+
+    // Lock used to serialize UI updates coming from the sub-thread.
+    // Includes console messages, progress bar updates, highlighting and updating the session plan table.
+    // All those events are locked with the same lock, so the UI updates happen atomically and in sequence
+
+    private ReentrantLock consoleLock = null;
+    private SessionThread sessionRunnable;
+    private Thread sessionThread;
+
+
     ArrayList<FlatSet> flatSetList;
 	public Session(Window owner) {
 		super(owner);
@@ -23,16 +36,23 @@ public class Session extends JDialog {
 	/**
 	 * Set up the user interface to be ready for acting as session monitor.
 	 * 		- Set up a default table model for the frames table, that we'll use to show where we are
-	 * @param dataModel
+     * @param flatSetList     Array of the flat sets to be acquired
 	 */
-	public void setUpUI(DataModel dataModel) {
-		//	todo setUpUI
-		System.out.println("setUpUI");
+	public void setUpUI(DataModel dataModel,
+                        ArrayList<FlatSet> flatSetList) {
+        this.flatSetList = flatSetList;
+        this.dataModel = dataModel;
 
 		//  Set up table data model, using default model where we just manually add rows.
-        this.setUpSessionTable(dataModel);
+        this.setUpSessionTable(flatSetList);
 
         //  Set up data model for the JList that is used for the console log
+        this.setUpSessionConsole();
+
+        //  Don't allow window to be closed while task is running
+        //  Do allow Cancel
+        this.closeButton.setEnabled(false);
+        this.cancelButton.setEnabled(true);
 	}
 
     /**
@@ -42,19 +62,14 @@ public class Session extends JDialog {
      *     Filter
      *     Binning
      *     Number done
-     * @param dataModel     Data model containing the matrix of flats (filter x binning)
+     * @param flatSetList     Array of the flat sets to be acquired
      */
-    private void setUpSessionTable(DataModel dataModel) {
-        // todo setUpSessionTable
-        System.out.println("setUpSessionTable");
-
-        //  Get the list of all the flat sets to be acquired
-        this.flatSetList = dataModel.getFlatSetsToAcquire();
+    private void setUpSessionTable(ArrayList<FlatSet> flatSetList) {
 
         //  Set up a table model with this many rows and appropriate columns
         String columnNames[] = {"Number", "Filter", "Binning", "Done"};
         this.sessionTableModel = new DefaultTableModel(columnNames, 0);
-        for (FlatSet thisSet : this.flatSetList) {
+        for (FlatSet thisSet : flatSetList) {
             String[] rowValues = {String.valueOf(thisSet.getNumberOfFrames()),
             thisSet.getFilterSpec().getName(),
             String.valueOf(thisSet.getBinning()),
@@ -63,6 +78,51 @@ public class Session extends JDialog {
         }
 
         this.sessionTable.setModel(this.sessionTableModel);
+    }
+
+    /**
+     * Using a default list model, set up the session console list
+     */
+    private void setUpSessionConsole() {
+        this.sessionConsoleModel = new DefaultListModel<>();
+        this.sessionConsole.setModel(this.sessionConsoleModel);
+
+        //  Stub some console lines until real content is implemented
+        this.sessionConsoleModel.addElement("First line");
+        this.sessionConsoleModel.addElement("Second line");
+        this.sessionConsoleModel.addElement("Last line");
+    }
+
+    private void showADUsCheckboxActionPerformed() {
+        // TODO showADUsCheckboxActionPerformed
+        System.out.println("showADUsCheckboxActionPerformed");
+    }
+
+    private void closeButtonActionPerformed() {
+        // TODO closeButtonActionPerformed
+        System.out.println("closeButtonActionPerformed");
+    }
+
+    private void cancelButtonActionPerformed() {
+        // TODO cancelButtonActionPerformed
+        System.out.println("cancelButtonActionPerformed");
+    }
+
+    public void spawnAcquisitionTask(Session sessionWindow, ArrayList<FlatSet> flatsToAcquire) {
+        // todo spawnAcquisitionTask
+        System.out.println("spawnAcquisitionTask");
+        this.consoleLock = new ReentrantLock();
+//        console(timeBlock.toString(), 1);
+        this.sessionRunnable = new SessionThread(sessionWindow, this.dataModel, flatsToAcquire);
+        this.sessionThread = new Thread(sessionRunnable);
+        this.sessionThread.start();
+    }
+
+    public void acquisitionThreadEnded() {
+        // todo acquisitionThreadEnded
+        System.out.println("acquisitionThreadEnded");
+        this.closeButton.setEnabled(true);
+        this.cancelButton.setEnabled(false);
     }
 
     private void initComponents() {
@@ -135,18 +195,21 @@ public class Session extends JDialog {
 
                 //---- showADUsCheckbox ----
                 showADUsCheckbox.setText("Show ADU values in log");
+                showADUsCheckbox.addActionListener(e -> showADUsCheckboxActionPerformed());
                 contentPanel.add(showADUsCheckbox, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- closeButton ----
                 closeButton.setText("Close");
+                closeButton.addActionListener(e -> closeButtonActionPerformed());
                 contentPanel.add(closeButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
                 //---- cancelButton ----
                 cancelButton.setText("Cancel");
+                cancelButton.addActionListener(e -> cancelButtonActionPerformed());
                 contentPanel.add(cancelButton, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 5, 0), 0, 0));
@@ -172,5 +235,6 @@ public class Session extends JDialog {
     private JCheckBox showADUsCheckbox;
     private JButton closeButton;
     private JButton cancelButton;
+
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
