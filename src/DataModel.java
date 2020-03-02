@@ -311,17 +311,24 @@ public class DataModel  implements Serializable {
         return resultString;
     }
 
+    /**
+     * Get list of all the flat sets to be acquired: every combination of filter and binning where the
+     * number of frames at that intersection is > 0.
+     * @return (array)
+     */
     public ArrayList<FlatSet> getFlatSetsToAcquire() {
-        // todo getFlatSetsToAcquire
-        System.out.println("getFlatSetsToAcquire");
-        // As a stub, manually create a list of 3 sets
-        FlatSet set1 = new FlatSet(11, new FilterSpec(1, "Red"), 1);
-        FlatSet set2 = new FlatSet(12, new FilterSpec(1, "Green"), 2);
-        FlatSet set3 = new FlatSet(13, new FilterSpec(1, "Blue"), 3);
-        ArrayList<FlatSet> result = new ArrayList<FlatSet>(3);
-        result.add(set1);
-        result.add(set2);
-        result.add(set3);
+        ArrayList<FlatSet> result = new ArrayList<>(this.filtersInUse.size() * this.binningsInUse.size());
+        for (int rowIndex = 0; rowIndex < this.filtersInUse.size(); rowIndex++) {
+            FilterSpec thisFilter = this.filtersInUse.get(rowIndex);
+            ArrayList<Integer> thisRow = this.frameTableData.get(rowIndex);
+            for (int columnIndex = 0; columnIndex < this.binningsInUse.size(); columnIndex++) {
+                int thisCount = thisRow.get(columnIndex);
+                if (thisCount > 0) {
+                    FlatSet thisSet = new FlatSet(thisCount, thisFilter, this.binningsInUse.get(columnIndex).getBinningValue());
+                    result.add(thisSet);
+                }
+            }
+        }
         return result;
     }
 }
