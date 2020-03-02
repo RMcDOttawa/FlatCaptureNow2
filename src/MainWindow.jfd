@@ -518,10 +518,10 @@ new FormModel {
 							"toolTipText": "Number of flat frames to be acquired for each filter/binning combination. Click one to change it."
 							"gridColor": new java.awt.Color( 100, 100, 100, 255 )
 							"intercellSpacing": new java.awt.Dimension( 1, 10 )
-							"cellSelectionEnabled": true
 							"selectionMode": 0
 							"autoResizeMode": 4
 							"rowHeight": 24
+							"focusable": false
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"weightx": 1.0

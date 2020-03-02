@@ -726,11 +726,25 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * Respond to Proceed button to start the acquisition session
+     * Respond to Proceed button to start the acquisition session.  Open the dialog window
+     * that is used for the session console, then spawn the thread that does the acquisition.
      */
     private void proceedButtonActionPerformed() {
         // TODO proceedButtonActionPerformed
         System.out.println("proceedButtonActionPerformed");
+
+        //  Session console window
+        Session sessionWindow = new Session(this);
+        sessionWindow.setUpUI(this.dataModel);
+        sessionWindow.setVisible(true);
+
+        //  Start the acquisition thread
+        this.spawnAcquisitionTask(sessionWindow);
+    }
+
+    private void spawnAcquisitionTask(Session sessionWindow) {
+        // todo spawnAcquisitionTask
+        System.out.println("spawnAcquisitionTask");
     }
 
     private void saveAsMenuItemActionPerformed() {
@@ -942,9 +956,6 @@ public class MainWindow extends JFrame {
             System.exit(0);
         }
     }
-
-    //  todo Get row headers out of the way with tab order?
-    //  todo prevent selecting table cell of row headers?
 
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
@@ -1579,10 +1590,10 @@ public class MainWindow extends JFrame {
                     framesTable.setToolTipText("Number of flat frames to be acquired for each filter/binning combination. Click one to change it.");
                     framesTable.setGridColor(new Color(100, 100, 100));
                     framesTable.setIntercellSpacing(new Dimension(1, 10));
-                    framesTable.setCellSelectionEnabled(true);
                     framesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     framesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
                     framesTable.setRowHeight(24);
+                    framesTable.setFocusable(false);
                     scrollPane1.setViewportView(framesTable);
                 }
                 tablePanel.add(scrollPane1, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
@@ -1753,4 +1764,3 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
-// todo Bug: cmd-A selcting bottom-right cell in table
