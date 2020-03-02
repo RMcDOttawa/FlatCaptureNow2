@@ -1,8 +1,8 @@
+import org.xml.sax.InputSource;
+
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -164,6 +164,31 @@ public class DataModel  implements Serializable {
         newModel.setDitherMaximum(preferences.getMaximumDither());
 
 
+        return newModel;
+    }
+
+    /**
+     * De-serializer
+     *
+     * Create a new instance of data model by decoding the provided xml string
+     * * @param serialized      String containing xml-encoded data model
+     * @return
+     */
+    public static DataModel newFromXml(String serialized) {
+        DataModel newModel = null;
+        Object decodedObject = null;
+        InputSource inputSource = new InputSource(new StringReader(serialized));
+        XMLDecoder decoder;
+        try {
+            decoder = new XMLDecoder(inputSource);
+            decodedObject = decoder.readObject();
+        } catch (Exception e) {
+            // An exception means the input string was corrupted.
+            // Just drop out and leave the model as null
+        }
+        if (decodedObject instanceof DataModel) {
+            newModel = (DataModel) decodedObject;
+        }
         return newModel;
     }
 

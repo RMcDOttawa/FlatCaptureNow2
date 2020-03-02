@@ -18,8 +18,8 @@ public class FlatCaptureNow2 {
             AppPreferences prefs = AppPreferences.createPreferences();
             DataModel dataModel = DataModel.newInstance(prefs);
             dataModel.generateDataTables(prefs);
-            MainWindow mainWindow = new MainWindow(prefs, dataModel);
-            mainWindow.setUiFromDataModel();
+            MainWindow mainWindow = new MainWindow(prefs);
+            mainWindow.setUiFromDataModel(dataModel, Common.UNSAVED_FILE_TITLE);
 
 //            mainWindow.loadDataModel(loadedDataModel, windowTitle);
 //            mainWindow.setFilePath(makeFilePath(windowTitle, args));

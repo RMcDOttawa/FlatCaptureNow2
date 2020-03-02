@@ -13,4 +13,5 @@ public class Common {
     public static final long SLEWING_FEEDBACK_INTERVAL_MILLISECONDS = 500;
 
     public static final String DATA_FILE_SUFFIX = "fcn2";
+    public static final String UNSAVED_FILE_TITLE = "(Unsaved File)";
 }

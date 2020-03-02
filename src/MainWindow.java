@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Timer;
@@ -33,16 +35,16 @@ public class MainWindow extends JFrame {
     private SlewScopeThread slewScopeRunnable;
     private Thread slewScopeThread;
     private boolean rememberProceedEnabled;  // Remember proceed state during a slew
+    private boolean documentIsDirty = false;
 
     private SlewingFeedbackTask slewingFeedbackTask = null;
     private Timer slewingFeedbackTimer = null;
     private boolean slewMessageIsPulsed;
     private FrameTableModel frameTableModel;
 
-    private String filePath = null;
+    private String filePath = "";
 
-    public MainWindow ( AppPreferences preferences,
-                        DataModel dataModel) {
+    public MainWindow ( AppPreferences preferences) {
         this.preferences = preferences;
         this.dataModel = dataModel;
 
@@ -55,39 +57,41 @@ public class MainWindow extends JFrame {
         initComponents();
     }
 
-    public void setUiFromDataModel() {
+    public void setUiFromDataModel(DataModel dataModel, String windowTitle) {
+        this.setTitle(windowTitle);
+        this.dataModel = dataModel;
         this.fieldValidity = new HashMap<JTextField, Boolean>();
 
-        this.serverAddressField.setText(this.dataModel.getServerAddress());
-        this.portNumberField.setText(String.valueOf(this.dataModel.getPortNumber()));
+        this.serverAddressField.setText(dataModel.getServerAddress());
+        this.portNumberField.setText(String.valueOf(dataModel.getPortNumber()));
 
-        this.targetADUfield.setText(String.valueOf(this.dataModel.getTargetADUs()));
-        this.aduToleranceField.setText(String.valueOf(this.dataModel.getAduTolerance() * 100.0));
+        this.targetADUfield.setText(String.valueOf(dataModel.getTargetADUs()));
+        this.aduToleranceField.setText(String.valueOf(dataModel.getAduTolerance() * 100.0));
 
-        this.useFilterWheelCheckbox.setSelected(this.dataModel.getUseFilterWheel());
-        this.warmWhenDoneCheckbox.setSelected(this.dataModel.getWarmUpWhenDone());
+        this.useFilterWheelCheckbox.setSelected(dataModel.getUseFilterWheel());
+        this.warmWhenDoneCheckbox.setSelected(dataModel.getWarmUpWhenDone());
 
-        if (this.dataModel.getUseTheSkyAutosave()) {
+        if (dataModel.getUseTheSkyAutosave()) {
             this.useAutosaveButton.setSelected(true);
         } else {
             this.useLocalFolderButton.setSelected(true);
         }
 
-        this.controlMountCheckbox.setSelected(this.dataModel.getControlMount());
-        this.homeMountCheckbox.setSelected(this.dataModel.getHomeMount());
-        this.trackingOffCheckbox.setSelected(this.dataModel.getTrackingOff());
-        this.slewToLightCheckbox.setSelected(this.dataModel.getSlewToLight());
-        this.parkWhenDoneCheckbox.setSelected(this.dataModel.getParkWhenDone());
+        this.controlMountCheckbox.setSelected(dataModel.getControlMount());
+        this.homeMountCheckbox.setSelected(dataModel.getHomeMount());
+        this.trackingOffCheckbox.setSelected(dataModel.getTrackingOff());
+        this.slewToLightCheckbox.setSelected(dataModel.getSlewToLight());
+        this.parkWhenDoneCheckbox.setSelected(dataModel.getParkWhenDone());
 
-        this.lightSourceAltField.setText(String.format("%.8f",this.dataModel.getLightSourceAlt()));
-        this.lightSourceAzField.setText(String.format("%.8f",this.dataModel.getLightSourceAz()));
+        this.lightSourceAltField.setText(String.format("%.8f",dataModel.getLightSourceAlt()));
+        this.lightSourceAzField.setText(String.format("%.8f",dataModel.getLightSourceAz()));
 
-        this.ditherFlatsCheckbox.setSelected(this.dataModel.getDitherFlats());
-        this.ditherRadiusField.setText(String.valueOf(this.dataModel.getDitherRadius()));
-        this.ditherMaximumField.setText(String.valueOf(this.dataModel.getDitherMaximum()));
+        this.ditherFlatsCheckbox.setSelected(dataModel.getDitherFlats());
+        this.ditherRadiusField.setText(String.valueOf(dataModel.getDitherRadius()));
+        this.ditherMaximumField.setText(String.valueOf(dataModel.getDitherMaximum()));
 
         //  Set up table model for the frames table
-        this.frameTableModel = new FrameTableModel(this, this.dataModel);
+        this.frameTableModel = new FrameTableModel(this, dataModel);
         this.framesTable.setModel(frameTableModel);
 
         //  Set some appearance attributes for the frames table that can't be set in the JFormDesigner
@@ -369,11 +373,15 @@ public class MainWindow extends JFrame {
      * Mark the file as having unsaved data so we'll prompt to save
      */
     public void makeDirty() {
-        // todo makeDirty
+        this.documentIsDirty = true;
     }
 
     private void makeNotDirty() {
-        // todo makeNotDirty
+        this.documentIsDirty = false;
+    }
+
+    private boolean isDirty() {
+        return this.documentIsDirty;
     }
 
     /**
@@ -804,18 +812,114 @@ public class MainWindow extends JFrame {
         return fileNameString;
     }
 
-    //  TODO Save menu
+    /**
+     * User selected the Open menu.
+     * Discard the current data model (checking for a needed save) and prompt the user
+     * for a file to load.
+     */
+    private void openMenuItemActionPerformed() {
+        if (protectedSaveProceed()) {
+            FileDialog fileDialog = new FileDialog(this, "Plan File", FileDialog.LOAD);
+            fileDialog.setMultipleMode(false);
+            fileDialog.setFilenameFilter((File dir, String name) -> name.endsWith("." + Common.DATA_FILE_SUFFIX));
+            fileDialog.setVisible(true);
+            String selectedFile = fileDialog.getFile();
+            String selectedDirectory = fileDialog.getDirectory();
+            String fullPath = selectedDirectory + selectedFile;
+            if (selectedFile != null) {
+                this.readFromFile(fullPath);
+            }
+        }
+    }
+
+    /**
+     * Given full path name of an existing file, read it, decode it, and change over to that data model
+     * @param fullPath      Full absolute path name of the file to read
+     */
+    private void readFromFile(String fullPath) {
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(fullPath));
+            String encodedData = new String(encoded, StandardCharsets.US_ASCII);
+            DataModel newDataModel = DataModel.newFromXml(encodedData);
+            if (newDataModel != null) {
+                this.dataModel = null;
+                this.setUiFromDataModel(newDataModel, this.simpleFileNameFromPath(fullPath));
+                this.filePath = fullPath;
+                this.makeNotDirty();
+            }
+        } catch (IOException e) {
+            System.out.println("Unable to read file.");
+            JOptionPane.showMessageDialog(null, "IO error, unable to read file");
+        }
+    }
+
+    /**
+     * We're about to do something that will erase the current frame set plan.  If it is "dirty", i.e.
+     * contains changes not yet saved to disk, ask the user if they want to do a save.  If they do, do the
+     * save.  There are 3 possible outcomes on a dirty document
+     * 1. Do a save
+     * 2. Don't do a save, losing the unsaved changes
+     * 3. Cancel, don't do the operation that caused this
+     * @return (boolean)       OK to proceed (i.e. user didn't click "Cancel")
+     */
+    private boolean protectedSaveProceed() {
+        boolean proceed = true;
+        if (this.isDirty()) {
+            Object[] options = { "Cancel", "Discard", "Save"};
+            int result = JOptionPane.showOptionDialog(null,
+                    "Your flat frame plan has unsaved changes. "
+                            + "Save these or discard them?", "Warning",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+                    null, options, options[2]);
+
+            switch (result) {
+                case 0:
+                    // Cancel was selected
+                    proceed = false;
+                    break;
+                case 1:
+                    // Discard selected - no need to save
+                    break;
+                case 2:
+                    // Save selected - do a save then proceed
+                    this.saveMenuItemActionPerformed();
+            }
+        }
+        return proceed;
+    }
+
+    /**
+     * SAVE menu invoked.  If we already have a file defined, just re-save it.
+     * Otherwise, treat this like a Save-As so the file gets prompted.
+     */
+    private void saveMenuItemActionPerformed() {
+        if (this.filePath.equals("")) {
+            this.saveAsMenuItemActionPerformed();
+        } else {
+            this.writeToFile(new File(this.filePath));
+        }
+    }
+
+    private void newMenuItemActionPerformed() {
+        // TODO newMenuItemActionPerformed
+        System.out.println("newMenuItemActionPerformed");
+    }
+
+
     //  todo Catch Close and do protected save
     //  todo Catch Quit and do protected save
-    //  todo Open menu
-    //  todo New menu
+    //  todo Get row headers out of the way with tab order?
+    //  todo prevent selecting table cell of row headers?
 
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         menuBar1 = new JMenuBar();
         fileMenu = new JMenu();
+        newMenuItem = new JMenuItem();
+        openMenuItem = new JMenuItem();
         saveAsMenuItem = new JMenuItem();
+        saveMenuItem = new JMenuItem();
         prefsMenuItem = new JMenuItem();
         contentPanel = new JPanel();
         label21 = new JLabel();
@@ -896,11 +1000,30 @@ public class MainWindow extends JFrame {
             {
                 fileMenu.setText("File");
 
+                //---- newMenuItem ----
+                newMenuItem.setText("New");
+                newMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                newMenuItem.addActionListener(e -> newMenuItemActionPerformed());
+                fileMenu.add(newMenuItem);
+
+                //---- openMenuItem ----
+                openMenuItem.setText("Open");
+                openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                openMenuItem.addActionListener(e -> openMenuItemActionPerformed());
+                fileMenu.add(openMenuItem);
+                fileMenu.addSeparator();
+
                 //---- saveAsMenuItem ----
                 saveAsMenuItem.setText("Save As...");
                 saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()|KeyEvent.SHIFT_MASK));
                 saveAsMenuItem.addActionListener(e -> saveAsMenuItemActionPerformed());
                 fileMenu.add(saveAsMenuItem);
+
+                //---- saveMenuItem ----
+                saveMenuItem.setText("Save");
+                saveMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                saveMenuItem.addActionListener(e -> saveMenuItemActionPerformed());
+                fileMenu.add(saveMenuItem);
                 fileMenu.addSeparator();
 
                 //---- prefsMenuItem ----
@@ -1504,7 +1627,10 @@ public class MainWindow extends JFrame {
     // Generated using JFormDesigner non-commercial license
     private JMenuBar menuBar1;
     private JMenu fileMenu;
+    private JMenuItem newMenuItem;
+    private JMenuItem openMenuItem;
     private JMenuItem saveAsMenuItem;
+    private JMenuItem saveMenuItem;
     private JMenuItem prefsMenuItem;
     private JPanel contentPanel;
     private JLabel label21;
