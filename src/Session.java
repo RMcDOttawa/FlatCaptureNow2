@@ -1,4 +1,9 @@
+import org.apache.commons.lang3.StringUtils;
+
 import java.awt.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.*;
@@ -109,10 +114,8 @@ public class Session extends JDialog {
     }
 
     public void spawnAcquisitionTask(Session sessionWindow, ArrayList<FlatSet> flatsToAcquire) {
-        // todo spawnAcquisitionTask
-        System.out.println("spawnAcquisitionTask");
         this.consoleLock = new ReentrantLock();
-//        console(timeBlock.toString(), 1);
+        console("Started acquisition session.", 1);
         this.sessionRunnable = new SessionThread(sessionWindow, this.dataModel, flatsToAcquire);
         this.sessionThread = new Thread(sessionRunnable);
         this.sessionThread.start();
@@ -123,6 +126,31 @@ public class Session extends JDialog {
         System.out.println("acquisitionThreadEnded");
         this.closeButton.setEnabled(true);
         this.cancelButton.setEnabled(false);
+    }
+
+    private static final String INDENTATION_BLANKS = "    ";
+
+    /**
+     * Add a line to the console pane in the session pane, and scroll to keep it visible
+     * We'll do a thread-lock on this code since requests will be coming from the sub-thread and
+     * we want to ensure we don't try to run the code more than once in parallel.
+     * @param message               Text message to be added to console log
+     * @param messageLevel          Indentation level of message (1 = base level)
+     */
+    public void console(String message, int messageLevel) {
+        this.consoleLock.lock();
+        try {
+            assert (messageLevel > 0);
+            String time = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm:ss"));
+            String indentation = (messageLevel == 1) ? "" : StringUtils.repeat(INDENTATION_BLANKS, messageLevel - 1);
+            this.sessionConsoleModel.addElement(time + ": " + indentation + message);
+            //  Ensure the line we just added is visible, scrolling if necessary
+            this.sessionConsole.ensureIndexIsVisible(this.sessionConsoleModel.getSize() - 1);
+        }
+        finally {
+            //  Use try-finally to ensure unlock happens even if some kind of exception occurs
+            this.consoleLock.unlock();
+        }
     }
 
     private void initComponents() {
