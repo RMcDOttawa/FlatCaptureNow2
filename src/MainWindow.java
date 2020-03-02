@@ -900,11 +900,19 @@ public class MainWindow extends JFrame {
         }
     }
 
+    /**
+     * NEW menu invoked. Create a new default data model and load it.
+     */
     private void newMenuItemActionPerformed() {
-        // TODO newMenuItemActionPerformed
-        System.out.println("newMenuItemActionPerformed");
+        if (protectedSaveProceed()) {
+            DataModel newDataModel = DataModel.newInstance(this.preferences);
+            newDataModel.generateDataTables(this.preferences);
+            this.dataModel = null;
+            this.setUiFromDataModel(newDataModel, Common.UNSAVED_FILE_TITLE);
+            this.filePath = "";
+            this.makeNotDirty();
+        }
     }
-
 
     //  todo Catch Close and do protected save
     //  todo Catch Quit and do protected save
