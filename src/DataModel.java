@@ -1,3 +1,7 @@
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,27 +11,27 @@ import java.util.List;
  * Data Model for a flats capture plan.
  */
 public class DataModel  implements Serializable {
-    @SuppressWarnings("unused")
+
     private Integer     modelVersion = 1;
 
     //  Instance variables that are initialized from Preferences
-    private Boolean     useFilterWheel;
-    private Integer     defaultFrameCount;
-    private Integer     targetADUs;
-    private Double      aduTolerance;
-    private String      serverAddress;
-    private Integer     portNumber;
-    private Double      lightSourceAlt;
-    private Double      lightSourceAz;
-    private Boolean     ditherFlats;
-    private Double      ditherRadius;
-    private Double      ditherMaximum;
+    private Boolean     useFilterWheel = true;
+    private Integer     defaultFrameCount = 0;
+    private Integer     targetADUs = 0;
+    private Double      aduTolerance = 0.0;
+    private String      serverAddress = "";
+    private Integer     portNumber = 0;
+    private Double      lightSourceAlt = 0.0;
+    private Double      lightSourceAz = 0.0;
+    private Boolean     ditherFlats = false;
+    private Double      ditherRadius = 00.0;
+    private Double      ditherMaximum = 00.0;
 
 
     //  Instance variables with simple default, not from preferences
     private Boolean     warmUpWhenDone = false;
     private Boolean     useTheSkyAutosave = true;
-    private String     localPath = null;
+    private String      localPath = null;
     private Boolean     controlMount = false;
     private Boolean     homeMount = false;
     private Boolean     trackingOff = false;
@@ -130,6 +134,18 @@ public class DataModel  implements Serializable {
     public String getLocalPath() { return localPath; }
     public void setLocalPath(String localPath) { this.localPath = localPath; }
 
+    public Integer getModelVersion() { return modelVersion; }
+    public void setModelVersion(Integer modelVersion) { this.modelVersion = modelVersion; }
+
+    public ArrayList<FilterSpec> getFiltersInUse() { return filtersInUse; }
+    public void setFiltersInUse(ArrayList<FilterSpec> filtersInUse) { this.filtersInUse = filtersInUse; }
+
+    public ArrayList<BinningSpec> getBinningsInUse() { return binningsInUse; }
+    public void setBinningsInUse(ArrayList<BinningSpec> binningsInUse) { this.binningsInUse = binningsInUse; }
+
+    public ArrayList<ArrayList<Integer>> getFrameTableData() { return frameTableData; }
+    public void setFrameTableData(ArrayList<ArrayList<Integer>> frameTableData) { this.frameTableData = frameTableData; }
+
     /**
      * Static constructor for data model.  Create a new data model with default values.
      */
@@ -147,54 +163,57 @@ public class DataModel  implements Serializable {
         newModel.setDitherRadius(preferences.getDitherRadius());
         newModel.setDitherMaximum(preferences.getMaximumDither());
 
+
+        return newModel;
+    }
+
+    //  Generate the tables of filters, binning, and main table.  Do this outside the initialization
+    //  method so it shows up as a difference from a just-initialized table for serialization
+
+    public void generateDataTables(AppPreferences preferences) {
         //  Get and store the filters in us
         //  These will be used for the left-margin "row headers" in the main table
-        newModel.filtersInUse = new ArrayList<FilterSpec>();
+        this.filtersInUse = new ArrayList<FilterSpec>();
         List<Integer> filterSlotNumbers = preferences.getFilterSlotNumbers();
         for (int slotNumber : filterSlotNumbers) {
             if (preferences.getFilterUse(slotNumber)) {
                 String name = preferences.getFilterName(slotNumber);
                 FilterSpec newFilter = new FilterSpec(slotNumber, name);
-                newModel.filtersInUse.add(newFilter);
+                this.filtersInUse.add(newFilter);
             }
         }
 
         //  Get and store a list of binning values that are set to "default" or "available"
         //  These will become the column headings of the main table
-        newModel.binningsInUse = new ArrayList<BinningSpec>();
+        this.binningsInUse = new ArrayList<BinningSpec>();
         List<Integer> binningNumbers = preferences.getBinningNumbers();
         for (int binning : binningNumbers) {
             BinningAvailability binningAvailability = preferences.getBinningAvailability(binning);
             if (binningAvailability != BinningAvailability.OFF) {
-                newModel.binningsInUse.add(new BinningSpec(binning, binningAvailability));
+                this.binningsInUse.add(new BinningSpec(binning, binningAvailability));
             }
         }
 
         //  Create 2-dimensional table of filters-in-use vs binnings-in-use
-        int numTableRows = newModel.filtersInUse.size();
-        int numTableColumns = newModel.binningsInUse.size();
-        newModel.frameTableData = new ArrayList<>(numTableRows);
+        int numTableRows = this.filtersInUse.size();
+        int numTableColumns = this.binningsInUse.size();
+        this.frameTableData = new ArrayList<>(numTableRows);
         for (int rowIndex = 0; rowIndex < numTableRows; rowIndex++) {
             // Create a set of columns for this row
             ArrayList<Integer> thisRowOfColumns = new ArrayList<Integer>(Collections.nCopies(numTableColumns,Integer.valueOf(0)));
-            newModel.frameTableData.add(thisRowOfColumns);
+            this.frameTableData.add(thisRowOfColumns);
         }
 
         //  Set the frames table to the default values
-        setDefaultFrameCounts(newModel.frameTableData, newModel.binningsInUse, newModel.defaultFrameCount);
+        setDefaultFrameCounts();
 
-        return newModel;
     }
-
     /**
      * Set the cells in the given frame data table to the default values.  I.e. set them to the
      * given default frame count where ever the cell's binning availability is "Default".  We treat
      * all the rows in the given table since it already has been set up with only filters (rows) needed
-     * @param frameTableData        The frame table to be updated
-     * @param binningsInUse         The binning descriptions for the columns
-     * @param defaultFrameCount     The default frame count
-     */
-    private static void setDefaultFrameCounts(ArrayList<ArrayList<Integer>> frameTableData, ArrayList<BinningSpec> binningsInUse, Integer defaultFrameCount) {
+      */
+    private  void setDefaultFrameCounts() {
         for (int rowIndex = 0; rowIndex < frameTableData.size(); rowIndex++) {
             ArrayList<Integer> thisRow = frameTableData.get(rowIndex);
             for (int columnIndex = 0; columnIndex < binningsInUse.size(); columnIndex++) {
@@ -246,5 +265,24 @@ public class DataModel  implements Serializable {
             }
         }
         return false;
+    }
+
+    public String serialize() {
+
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        BufferedOutputStream outputStream = new BufferedOutputStream(byteStream);
+        XMLEncoder encoder = new XMLEncoder(outputStream);
+        encoder.writeObject(this);
+        encoder.close();
+        try {
+            outputStream.close();
+            byteStream.close();
+        } catch (IOException e) {
+            System.out.println("Exception serializing data model: " + e.getMessage());
+            e.printStackTrace();
+        }
+        String resultString = byteStream.toString();
+
+        return resultString;
     }
 }

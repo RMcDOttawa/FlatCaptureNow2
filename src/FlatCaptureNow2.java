@@ -17,6 +17,7 @@ public class FlatCaptureNow2 {
         try {
             AppPreferences prefs = AppPreferences.createPreferences();
             DataModel dataModel = DataModel.newInstance(prefs);
+            dataModel.generateDataTables(prefs);
             MainWindow mainWindow = new MainWindow(prefs, dataModel);
             mainWindow.setUiFromDataModel();
 

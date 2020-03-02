@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="beansbinding" level="project" />
     <orderEntry type="library" name="commons-lang3-3.9" level="project" />
+    <orderEntry type="library" name="src" level="project" />
   </component>
 </module>

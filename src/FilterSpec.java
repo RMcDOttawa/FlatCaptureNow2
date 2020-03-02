@@ -1,9 +1,14 @@
+import java.io.Serializable;
+
 /**
  * Information about a filter in use and to be used for flat-acquisition
  */
-public class FilterSpec {
+public class FilterSpec implements Serializable {
+
     private Integer slotNumber;
     private String name;
+
+    public FilterSpec() {}
 
     public FilterSpec(Integer slotNumber, String name) {
         this.slotNumber = slotNumber;
@@ -15,4 +20,5 @@ public class FilterSpec {
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
 }

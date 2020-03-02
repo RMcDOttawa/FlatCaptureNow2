@@ -149,6 +149,8 @@ public class IntegerEditor extends DefaultCellEditor {
             } catch (ParseException exc) {
                 System.err.println("getCellEditorValue: can't parse o: " + o);
                 return null;
+            } catch (NullPointerException exc) {
+                return Integer.valueOf(0);
             }
         }
     }

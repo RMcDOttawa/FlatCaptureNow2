@@ -1,4 +1,6 @@
-public enum BinningAvailability {
+import java.io.Serializable;
+
+public enum BinningAvailability implements Serializable {
     OFF,
     AVAILABLE,
     DEFAULT;

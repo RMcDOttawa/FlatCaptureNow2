@@ -1,10 +1,14 @@
+import java.io.Serializable;
+
 /**
  * Information about a given binning setting.  The binning value, and how or if it is available
  */
-public class BinningSpec {
+public class BinningSpec implements Serializable {
     private Integer binningValue;
 
     private BinningAvailability availability;
+
+    public BinningSpec() { }
 
     public BinningSpec(int binningValue, BinningAvailability availability) {
         this.binningValue = binningValue;

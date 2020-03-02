@@ -1,8 +1,9 @@
 import java.awt.*;
-import java.io.File;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Timer;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.HashMap;
 import javax.swing.*;
 import javax.swing.border.*;
@@ -37,6 +38,8 @@ public class MainWindow extends JFrame {
     private Timer slewingFeedbackTimer = null;
     private boolean slewMessageIsPulsed;
     private FrameTableModel frameTableModel;
+
+    private String filePath = null;
 
     public MainWindow ( AppPreferences preferences,
                         DataModel dataModel) {
@@ -719,11 +722,100 @@ public class MainWindow extends JFrame {
         System.out.println("proceedButtonActionPerformed");
     }
 
+    private void saveAsMenuItemActionPerformed() {
+
+         //  Get file to save to
+        FileDialog fileDialog = new FileDialog(this, "Save Plan File", FileDialog.SAVE);
+        fileDialog.setMultipleMode(false);
+        fileDialog.setVisible(true);
+        String selectedFile = fileDialog.getFile();
+
+        //  If not cancelled, serialize the data model and write to file
+        if (selectedFile != null) {
+            String selectedDirectory = fileDialog.getDirectory();
+            String fullPath = selectedDirectory + selectedFile;
+            if (!fullPath.endsWith(("." + Common.DATA_FILE_SUFFIX))) {
+                fullPath += "." + Common.DATA_FILE_SUFFIX;
+            }
+            File newFile = new File(fullPath);
+            this.writeToFile(newFile);
+        }
+    }
+
+    /**
+     * Write the current data model, serialized to XML, to the given file
+     * Go through a temporary file so there is no data loss in the event of a crash
+     * @param fileToSave        File object of file to be saved
+     */
+    private void writeToFile(File fileToSave) {
+        // Write serialized data model to file
+        String serialized = this.dataModel.serialize();
+
+        // Write to temporary file then delete and rename old copy
+        // This way, if system crashes, either old or new file will still exist - no data loss
+        String fileNameWithExtension = fileToSave.getName();
+        assert(fileNameWithExtension.endsWith("." + Common.DATA_FILE_SUFFIX));
+        String justFileName = simpleFileNameFromPath(fileToSave.getAbsolutePath());
+        String directory = fileToSave.getParent();
+        try {
+            File tempFile = File.createTempFile(justFileName, Common.DATA_FILE_SUFFIX, new File(directory));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile.getAbsolutePath()));
+            writer.write(serialized);
+            writer.close();
+
+            //  Content is now in temporary file.   Delete original file name and rename temporary.
+            boolean deleteResult = fileToSave.delete();
+            if (!tempFile.renameTo(fileToSave)) {
+                JOptionPane.showMessageDialog(null,
+                        "Unable to rename temporary file after writing.");
+            }
+
+            // Set title of main window
+            this.setTitle(justFileName);
+            //  un-dirty the document
+            this.makeNotDirty();
+            //  Remember the file path for future saves
+            this.filePath = fileToSave.getAbsolutePath();
+        } catch (FileNotFoundException e) {
+            System.out.println("FileNotFound Exception. Not sure how this can happen, probably can't.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            System.out.println("Unable to write to file.");
+            JOptionPane.showMessageDialog(null, "IO error, unable to save file");
+        }
+
+    }
+
+    /**
+     * Given a full path, get just the file name, without the extension.
+     * Funny, I thought there was a built-in function with exactly this function somewhere
+     * in a Java library, but I couldn't find it after looking for as long as i cared to.
+     * @param fullPath
+     * @return
+     */
+    public static String simpleFileNameFromPath(String fullPath) {
+        Path path = Paths.get(fullPath);
+        Path fileNamePath = path.getFileName();
+        String fileNameString = fileNamePath.toString();
+        if (fileNameString.endsWith("." + Common.DATA_FILE_SUFFIX)) {
+            fileNameString = fileNameString.substring(0,
+                    fileNameString.length() - (1 + Common.DATA_FILE_SUFFIX.length()));
+        }
+        return fileNameString;
+    }
+
+    //  TODO Save menu
+    //  todo Catch Close and do protected save
+    //  todo Catch Quit and do protected save
+    //  todo Open menu
+    //  todo New menu
+
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         menuBar1 = new JMenuBar();
-        menu1 = new JMenu();
+        fileMenu = new JMenu();
+        saveAsMenuItem = new JMenuItem();
         prefsMenuItem = new JMenuItem();
         contentPanel = new JPanel();
         label21 = new JLabel();
@@ -800,17 +892,24 @@ public class MainWindow extends JFrame {
         //======== menuBar1 ========
         {
 
-            //======== menu1 ========
+            //======== fileMenu ========
             {
-                menu1.setText("File");
+                fileMenu.setText("File");
+
+                //---- saveAsMenuItem ----
+                saveAsMenuItem.setText("Save As...");
+                saveAsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()|KeyEvent.SHIFT_MASK));
+                saveAsMenuItem.addActionListener(e -> saveAsMenuItemActionPerformed());
+                fileMenu.add(saveAsMenuItem);
+                fileMenu.addSeparator();
 
                 //---- prefsMenuItem ----
                 prefsMenuItem.setText("Preferences");
                 prefsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SEMICOLON, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
                 prefsMenuItem.addActionListener(e -> prefsMenuItemActionPerformed());
-                menu1.add(prefsMenuItem);
+                fileMenu.add(prefsMenuItem);
             }
-            menuBar1.add(menu1);
+            menuBar1.add(fileMenu);
         }
         setJMenuBar(menuBar1);
 
@@ -1404,7 +1503,8 @@ public class MainWindow extends JFrame {
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
     // Generated using JFormDesigner non-commercial license
     private JMenuBar menuBar1;
-    private JMenu menu1;
+    private JMenu fileMenu;
+    private JMenuItem saveAsMenuItem;
     private JMenuItem prefsMenuItem;
     private JPanel contentPanel;
     private JLabel label21;
