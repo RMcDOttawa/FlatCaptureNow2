@@ -1,4 +1,7 @@
 import java.awt.*;
+import java.awt.desktop.QuitEvent;
+import java.awt.desktop.QuitResponse;
+import java.awt.desktop.QuitStrategy;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -49,11 +52,11 @@ public class MainWindow extends JFrame {
         this.dataModel = dataModel;
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //  Catch main Quit menu so we can check for unsaved data
-//        if (Desktop.isDesktopSupported()) {
-//            Desktop desktop = Desktop.getDesktop();
-//            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
-//            desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemClicked());
-//        }
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+            desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemActionPerformed());
+        }
         initComponents();
     }
 
@@ -932,7 +935,14 @@ public class MainWindow extends JFrame {
         }
     }
 
-    //  todo Catch Quit and do protected save
+    private void quitMenuItemActionPerformed() {
+        if (this.protectedSaveProceed(false)) {
+            //  If the acquisition subtask is running, stop it
+            // todo Quitting; check for and stop acquisition subtask
+            System.exit(0);
+        }
+    }
+
     //  todo Get row headers out of the way with tab order?
     //  todo prevent selecting table cell of row headers?
 
@@ -946,6 +956,7 @@ public class MainWindow extends JFrame {
         saveAsMenuItem = new JMenuItem();
         saveMenuItem = new JMenuItem();
         prefsMenuItem = new JMenuItem();
+        quitMenuItem = new JMenuItem();
         contentPanel = new JPanel();
         label21 = new JLabel();
         vSpacer1 = new JPanel(null);
@@ -1062,6 +1073,13 @@ public class MainWindow extends JFrame {
                 prefsMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SEMICOLON, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
                 prefsMenuItem.addActionListener(e -> prefsMenuItemActionPerformed());
                 fileMenu.add(prefsMenuItem);
+                fileMenu.addSeparator();
+
+                //---- quitMenuItem ----
+                quitMenuItem.setText("Quit");
+                quitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                quitMenuItem.addActionListener(e -> quitMenuItemActionPerformed());
+                fileMenu.add(quitMenuItem);
             }
             menuBar1.add(fileMenu);
         }
@@ -1663,6 +1681,7 @@ public class MainWindow extends JFrame {
     private JMenuItem saveAsMenuItem;
     private JMenuItem saveMenuItem;
     private JMenuItem prefsMenuItem;
+    private JMenuItem quitMenuItem;
     private JPanel contentPanel;
     private JLabel label21;
     private JPanel vSpacer1;

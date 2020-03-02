@@ -607,6 +607,15 @@ new FormModel {
 						"accelerator": static javax.swing.KeyStroke getKeyStroke( 59, 4356, false )
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "prefsMenuItemActionPerformed", false ) )
 					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator3"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "quitMenuItem"
+						"text": "Quit"
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 81, 4356, false )
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "quitMenuItemActionPerformed", false ) )
+					} )
 				} )
 			}
 		}, new FormLayoutConstraints( null ) {
