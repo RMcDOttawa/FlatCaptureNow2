@@ -47,7 +47,7 @@ public class MainWindow extends JFrame {
     public MainWindow ( AppPreferences preferences) {
         this.preferences = preferences;
         this.dataModel = dataModel;
-
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //  Catch main Quit menu so we can check for unsaved data
 //        if (Desktop.isDesktopSupported()) {
 //            Desktop desktop = Desktop.getDesktop();
@@ -818,7 +818,7 @@ public class MainWindow extends JFrame {
      * for a file to load.
      */
     private void openMenuItemActionPerformed() {
-        if (protectedSaveProceed()) {
+        if (protectedSaveProceed(true)) {
             FileDialog fileDialog = new FileDialog(this, "Plan File", FileDialog.LOAD);
             fileDialog.setMultipleMode(false);
             fileDialog.setFilenameFilter((File dir, String name) -> name.endsWith("." + Common.DATA_FILE_SUFFIX));
@@ -860,29 +860,36 @@ public class MainWindow extends JFrame {
      * 1. Do a save
      * 2. Don't do a save, losing the unsaved changes
      * 3. Cancel, don't do the operation that caused this
+     * @param offerCancel      Should Cancel button be one of the offered options?
      * @return (boolean)       OK to proceed (i.e. user didn't click "Cancel")
      */
-    private boolean protectedSaveProceed() {
+    private boolean protectedSaveProceed(boolean offerCancel) {
         boolean proceed = true;
         if (this.isDirty()) {
-            Object[] options = { "Cancel", "Discard", "Save"};
+            Object[] options;
+            if (offerCancel) {
+                options = new Object[] { "Discard", "Save", "Cancel"};
+            } else {
+                options = new Object[] {"Discard", "Save"};
+            }
             int result = JOptionPane.showOptionDialog(null,
                     "Your flat frame plan has unsaved changes. "
                             + "Save these or discard them?", "Warning",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
-                    null, options, options[2]);
+                    null, options, options[1]);
 
             switch (result) {
                 case 0:
+                    // Discard selected - no need to save
+                    break;
+                case 1:
+                    // Save selected - do a save then proceed
+                    this.saveMenuItemActionPerformed();
+                    break;
+                case 2:
                     // Cancel was selected
                     proceed = false;
                     break;
-                case 1:
-                    // Discard selected - no need to save
-                    break;
-                case 2:
-                    // Save selected - do a save then proceed
-                    this.saveMenuItemActionPerformed();
             }
         }
         return proceed;
@@ -904,7 +911,7 @@ public class MainWindow extends JFrame {
      * NEW menu invoked. Create a new default data model and load it.
      */
     private void newMenuItemActionPerformed() {
-        if (protectedSaveProceed()) {
+        if (protectedSaveProceed(true)) {
             DataModel newDataModel = DataModel.newInstance(this.preferences);
             newDataModel.generateDataTables(this.preferences);
             this.dataModel = null;
@@ -914,7 +921,17 @@ public class MainWindow extends JFrame {
         }
     }
 
-    //  todo Catch Close and do protected save
+    /**
+     * User has clicked the system close button on the window.
+     * Do an "unsaved data protection" then exit the program
+     */
+    private void thisWindowClosing() {
+        if (protectedSaveProceed(false)) {
+            this.setVisible(false);
+            System.exit(0);
+        }
+    }
+
     //  todo Catch Quit and do protected save
     //  todo Get row headers out of the way with tab order?
     //  todo prevent selecting table cell of row headers?
@@ -998,6 +1015,12 @@ public class MainWindow extends JFrame {
         proceedButton = new JButton();
 
         //======== this ========
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                thisWindowClosing();
+            }
+        });
         var contentPane = getContentPane();
         contentPane.setLayout(new GridLayout());
 
