@@ -101,8 +101,8 @@ public class Session extends JDialog {
      * whether to display the additional detail line reporting the ADUs of a just-acquired flat frame
      */
     private void showADUsCheckboxActionPerformed() {
-        // TODO showADUsCheckboxActionPerformed
-        System.out.println("showADUsCheckboxActionPerformed");
+        //  We don't actually need to do anything.  We don't need to save this setting, just check
+        //  it during a session, and we'll do that by querying the button itself.
     }
 
     /**

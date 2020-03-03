@@ -46,8 +46,12 @@ public class SessionThread implements Runnable {
      * Chores done here:
      */
     private void cleanUpFromCancel() {
-        // todo cleanUpFromCancel
-        System.out.println("cleanUpFromCancel");
+        try {
+            this.server.abortSlew();
+            this.server.abortImageInProgress();
+        } catch (IOException e) {
+            // Ignore any errors, we're quitting anyway
+        }
     }
 
     /**
