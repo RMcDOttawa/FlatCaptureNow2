@@ -275,4 +275,11 @@ public class TheSkyXServer {
         this.sendCommandNoReturn(commandNoReturn);
     }
 
+    /**
+     * Send command to TheSkyX to connect to and home the mount. No response.
+     */
+    public void homeMount() {
+        // todo homeMount
+        System.out.println("homeMount");
+    }
 }

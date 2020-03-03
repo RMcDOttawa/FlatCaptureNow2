@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class SessionThread implements Runnable {
@@ -5,6 +6,7 @@ public class SessionThread implements Runnable {
     private final Session parent;
     private final DataModel dataModel;
     private final ArrayList<FlatSet> flatsToAcquire;
+    private TheSkyXServer server;
 
     public SessionThread(Session parent, DataModel dataModel, ArrayList<FlatSet> flatsToAcquire) {
         this.parent = parent;
@@ -20,6 +22,7 @@ public class SessionThread implements Runnable {
     @Override
     public void run() {
         try {
+            this.server = new TheSkyXServer(this.dataModel.getServerAddress(), this.dataModel.getPortNumber());
             this.console("Session Started", 1);
             this.preSessionMountControl();
             this.measureDownloadTimes();
@@ -27,7 +30,9 @@ public class SessionThread implements Runnable {
             this.processWorkList();
             this.postSessionWarmUp();
             this.postSessionMountControl();
-        } catch ( InterruptedException e) {
+        } catch (IOException e) {
+            this.console("I/O Error: " + e.getMessage(), 1);
+        } catch (InterruptedException e) {
             //  We come here if the thread was interrupted by the user clicking "Cancel"
             this.console("Session Cancelled", 1);
             this.cleanUpFromCancel();
@@ -63,9 +68,18 @@ public class SessionThread implements Runnable {
      * - Slew to the location of a fixed light source
      * - Turn tracking off
      */
-    private void preSessionMountControl() {
-        // todo preSessionMountControl
-        System.out.println("preSessionMountControl");
+    private void preSessionMountControl() throws IOException {
+        if (this.dataModel.getControlMount()) {
+            if (this.dataModel.getHomeMount()) {
+                this.server.homeMount();
+            }
+            if (this.dataModel.getSlewToLight()) {
+                this.server.slewToAltAz(this.dataModel.getLightSourceAlt(), this.dataModel.getLightSourceAz(), false);
+            }
+            if (this.dataModel.getTrackingOff()) {
+                this.server.setScopeTracking(false);
+            }
+        }
     }
 
     /**

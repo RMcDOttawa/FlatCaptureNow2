@@ -94,11 +94,6 @@ public class Session extends JDialog {
     private void setUpSessionConsole() {
         this.sessionConsoleModel = new DefaultListModel<>();
         this.sessionConsole.setModel(this.sessionConsoleModel);
-
-        //  Stub some console lines until real content is implemented
-        this.sessionConsoleModel.addElement("First line");
-        this.sessionConsoleModel.addElement("Second line");
-        this.sessionConsoleModel.addElement("Last line");
     }
 
     /**
