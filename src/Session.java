@@ -114,16 +114,18 @@ public class Session extends JDialog {
      * User clicked "close" - close the dialog.  Disabled while the acquisition thread is running.
      */
     private void closeButtonActionPerformed() {
-        // TODO closeButtonActionPerformed
-        System.out.println("closeButtonActionPerformed");
+        this.setVisible(false);
     }
 
     /**
      * user clicked "Cancel".  Cancel the running acquisition thread.
      */
-    private void cancelButtonActionPerformed() {
-        // TODO cancelButtonActionPerformed
-        System.out.println("cancelButtonActionPerformed");
+    public void cancelButtonActionPerformed() {
+        if (this.sessionThread != null) {
+            this.sessionThread.interrupt();
+        }
+        this.sessionThread = null;
+        this.sessionRunnable = null;
     }
 
     /**
@@ -133,7 +135,6 @@ public class Session extends JDialog {
      */
     public void spawnAcquisitionTask(Session sessionWindow, ArrayList<FlatSet> flatsToAcquire) {
         this.consoleLock = new ReentrantLock();
-        console("Started acquisition session.", 1);
         this.sessionRunnable = new SessionThread(sessionWindow, this.dataModel, flatsToAcquire);
         this.sessionThread = new Thread(sessionRunnable);
         this.sessionThread.start();
@@ -143,8 +144,6 @@ public class Session extends JDialog {
      * Receive a message from the acquisition thread that it is finished, so we can clean up
      */
     public void acquisitionThreadEnded() {
-        // todo acquisitionThreadEnded
-        System.out.println("acquisitionThreadEnded");
         this.closeButton.setEnabled(true);
         this.cancelButton.setEnabled(false);
     }

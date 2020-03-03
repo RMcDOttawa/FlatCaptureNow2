@@ -48,6 +48,7 @@ public class MainWindow extends JFrame {
     private FrameTableModel frameTableModel;
 
     private String filePath = "";
+    private Session sessionWindow;
 
     /**
      * Main constructor for this class.  Provide it with a copy of the application
@@ -770,11 +771,9 @@ public class MainWindow extends JFrame {
      * that is used for the session console, then spawn the thread that does the acquisition.
      */
     public void proceedButtonActionPerformed() {
-        // TODO proceedButtonActionPerformed
-        System.out.println("proceedButtonActionPerformed");
 
         //  Session console window
-        Session sessionWindow = new Session(this);
+        this.sessionWindow = new Session(this);
         ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire();
         sessionWindow.setUpUI(this.dataModel, flatsToAcquire);
         sessionWindow.setVisible(true);
@@ -995,7 +994,14 @@ public class MainWindow extends JFrame {
     private void quitMenuItemActionPerformed() {
         if (this.protectedSaveProceed(false)) {
             //  If the acquisition subtask is running, stop it
-            // todo Quitting; check for and stop acquisition subtask
+            if (this.sessionWindow != null) {
+                this.sessionWindow.cancelButtonActionPerformed();
+                try {
+                    // Give the cancel a moment to take effect
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                }
+            }
             System.exit(0);
         }
     }

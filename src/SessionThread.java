@@ -19,8 +19,6 @@ public class SessionThread implements Runnable {
      */
     @Override
     public void run() {
-        System.out.println("SessionThread/run entered");
-        // todo SessionThread/run
         try {
             this.console("Session Started", 1);
             this.preSessionMountControl();
@@ -31,16 +29,16 @@ public class SessionThread implements Runnable {
             this.postSessionMountControl();
         } catch ( InterruptedException e) {
             //  We come here if the thread was interrupted by the user clicking "Cancel"
+            this.console("Session Cancelled", 1);
             this.cleanUpFromCancel();
-            e.printStackTrace();
         }
-        System.out.println("SessionThread/run exits");
         this.console("Session Ended", 1);
         this.parent.acquisitionThreadEnded();
     }
 
     /**
      * User clicked "Cancel".  Do any clean-up needed before ending the task.  Be quick.
+     * Chores done here:
      */
     private void cleanUpFromCancel() {
         // todo cleanUpFromCancel
@@ -66,7 +64,7 @@ public class SessionThread implements Runnable {
      * - Turn tracking off
      */
     private void preSessionMountControl() {
-        // todo     preSessionMountControl
+        // todo preSessionMountControl
         System.out.println("preSessionMountControl");
     }
 
@@ -77,7 +75,7 @@ public class SessionThread implements Runnable {
     private void measureDownloadTimes() throws InterruptedException {
         // todo measureDownloadTimes
         System.out.println("measureDownloadTimes");
-        Thread.sleep(10 * 1000);  // To force exception signature
+        Thread.sleep(20 * 1000);  // To force exception signature
     }
 
     /**
@@ -111,7 +109,6 @@ public class SessionThread implements Runnable {
      * @param indentationLevel      Indentation level.  1 = leftmost, 2+ are indented
      */
     private void console(String messageText, int indentationLevel) {
-        // todo console
-        System.out.println("console");
+        this.parent.console(messageText, indentationLevel);
     }
 }
