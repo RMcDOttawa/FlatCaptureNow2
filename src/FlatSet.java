@@ -34,4 +34,12 @@ public class FlatSet {
     public int getBinning() { return binning; }
     public void setBinning(int binning) { this.binning = binning; }
 
+    /**
+     * Brief string description of this set suitable for displaying in session console
+     * @return
+     */
+    public String describe() {
+        return String.format("%d %s flats binned %d x %d",
+                this.numberOfFrames, this.filterSpec.getName(), this.binning, this.binning);
+    }
 }

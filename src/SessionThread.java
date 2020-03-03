@@ -67,6 +67,32 @@ public class SessionThread implements Runnable {
     private void processWorkList() {
         // todo processWorkList
         System.out.println("processWorkList");
+        for (int itemIndex = 0; itemIndex < this.flatsToAcquire.size(); itemIndex++) {
+            //  Tell the user interface to highlight this row in the table
+            this.parent.highlightSessionTableRow(itemIndex);
+            //  Tell the console what set we're beginning
+            FlatSet thisSet = this.flatsToAcquire.get(itemIndex);
+            console("Acquiring " + thisSet.describe() + ".", 1);
+            //  Acquire all the flats in this set
+            this.acquireOneFlatsSet(thisSet);
+        }
+    }
+
+    /**
+     * Acquire all the frames in the given flats set.
+     * This involves the following steps:
+     *      - Determine an exposure that results in ADU level in the specified target range
+     *      - Acquire all the required flats, adjusting ADU after each, and discarding any
+     *          that fall out of range.  So more than the needed number of exposures may be needed
+     *      - Keep track of retries caused by flats being out of range, and give up after a limit is reached.
+     *          (This might happen if the lighting conditions change dramatically, such as a light coming on in
+     *          the observatory)
+     *      - If dithering is in use, do a dither move after each successful frame
+     * @param thisSet   Specifications for the Flats set wanted
+     */
+    private void acquireOneFlatsSet(FlatSet thisSet) {
+        // todo acquireOneFlatsSet
+        System.out.println("acquireOneFlatsSet");
     }
 
     /**

@@ -168,115 +168,131 @@ public class Session extends JDialog {
         }
     }
 
+    /**
+     * Highlight the row in the session table that we are informed the thread is starting
+     * @param rowIndex      Zero-based index of row in session table
+     */
+    public void highlightSessionTableRow(int rowIndex) {
+        this.consoleLock.lock();
+        try {
+            // todo highlightSessionTableRow
+            System.out.println("highlightSessionTableRow: " + rowIndex);
+        }
+        finally {
+            //  Use try-finally to ensure unlock happens even if some kind of exception occurs
+            this.consoleLock.unlock();
+        }
+    }
+
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner non-commercial license
-        dialogPane = new JPanel();
-        contentPanel = new JPanel();
-        label4 = new JLabel();
-        label5 = new JLabel();
-        scrollPane1 = new JScrollPane();
-        sessionConsole = new JList();
-        scrollPane2 = new JScrollPane();
-        sessionTable = new JTable();
-        showADUsCheckbox = new JCheckBox();
-        closeButton = new JButton();
-        cancelButton = new JButton();
+		// Generated using JFormDesigner non-commercial license
+		dialogPane = new JPanel();
+		contentPanel = new JPanel();
+		label4 = new JLabel();
+		label5 = new JLabel();
+		scrollPane1 = new JScrollPane();
+		sessionConsole = new JList();
+		scrollPane2 = new JScrollPane();
+		sessionTable = new JTable();
+		showADUsCheckbox = new JCheckBox();
+		closeButton = new JButton();
+		cancelButton = new JButton();
 
-        //======== this ========
-        setMinimumSize(new Dimension(755, 630));
-        var contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
+		//======== this ========
+		setMinimumSize(new Dimension(755, 630));
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
 
-        //======== dialogPane ========
-        {
-            dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
-            dialogPane.setLayout(new BorderLayout());
+		//======== dialogPane ========
+		{
+			dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+			dialogPane.setLayout(new BorderLayout());
 
-            //======== contentPanel ========
-            {
-                contentPanel.setLayout(new GridBagLayout());
-                ((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {76, 370, 0, 165, 88, 0};
-                ((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {54, 534, 0, 0, 0, 0};
-                ((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 1.0E-4};
-                ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+			//======== contentPanel ========
+			{
+				contentPanel.setLayout(new GridBagLayout());
+				((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {76, 437, 73, 73, 34, 0};
+				((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {54, 534, 0, 0, 0, 0};
+				((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 1.0E-4};
+				((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
-                //---- label4 ----
-                label4.setText("Session Console");
-                label4.setFont(new Font(".SF NS Text", Font.PLAIN, 14));
-                contentPanel.add(label4, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
-                    GridBagConstraints.NORTH, GridBagConstraints.NONE,
-                    new Insets(0, 0, 5, 5), 0, 0));
+				//---- label4 ----
+				label4.setText("Session Console");
+				label4.setFont(new Font(".SF NS Text", Font.PLAIN, 14));
+				contentPanel.add(label4, new GridBagConstraints(0, 0, 2, 1, 0.0, 0.0,
+					GridBagConstraints.NORTH, GridBagConstraints.NONE,
+					new Insets(0, 0, 5, 5), 0, 0));
 
-                //---- label5 ----
-                label5.setText("Frames to Acquire");
-                label5.setFont(new Font(".SF NS Text", Font.PLAIN, 14));
-                contentPanel.add(label5, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0,
-                    GridBagConstraints.NORTH, GridBagConstraints.NONE,
-                    new Insets(0, 0, 5, 0), 0, 0));
+				//---- label5 ----
+				label5.setText("Frames to Acquire");
+				label5.setFont(new Font(".SF NS Text", Font.PLAIN, 14));
+				contentPanel.add(label5, new GridBagConstraints(2, 0, 3, 1, 0.0, 0.0,
+					GridBagConstraints.NORTH, GridBagConstraints.NONE,
+					new Insets(0, 0, 5, 0), 0, 0));
 
-                //======== scrollPane1 ========
-                {
-                    scrollPane1.setViewportView(sessionConsole);
-                }
-                contentPanel.add(scrollPane1, new GridBagConstraints(0, 1, 2, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 5), 0, 0));
+				//======== scrollPane1 ========
+				{
+					scrollPane1.setViewportView(sessionConsole);
+				}
+				contentPanel.add(scrollPane1, new GridBagConstraints(0, 1, 2, 1, 3.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
-                //======== scrollPane2 ========
-                {
+				//======== scrollPane2 ========
+				{
 
-                    //---- sessionTable ----
-                    sessionTable.setRowSelectionAllowed(false);
-                    sessionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                    sessionTable.setEnabled(false);
-                    scrollPane2.setViewportView(sessionTable);
-                }
-                contentPanel.add(scrollPane2, new GridBagConstraints(2, 1, 3, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 0), 0, 0));
+					//---- sessionTable ----
+					sessionTable.setRowSelectionAllowed(false);
+					sessionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+					sessionTable.setEnabled(false);
+					scrollPane2.setViewportView(sessionTable);
+				}
+				contentPanel.add(scrollPane2, new GridBagConstraints(2, 1, 3, 1, 1.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 0), 0, 0));
 
-                //---- showADUsCheckbox ----
-                showADUsCheckbox.setText("Show ADU values in log");
-                showADUsCheckbox.addActionListener(e -> showADUsCheckboxActionPerformed());
-                contentPanel.add(showADUsCheckbox, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 5), 0, 0));
+				//---- showADUsCheckbox ----
+				showADUsCheckbox.setText("Show ADU values in log");
+				showADUsCheckbox.addActionListener(e -> showADUsCheckboxActionPerformed());
+				contentPanel.add(showADUsCheckbox, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
-                //---- closeButton ----
-                closeButton.setText("Close");
-                closeButton.addActionListener(e -> closeButtonActionPerformed());
-                contentPanel.add(closeButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 5, 5), 0, 0));
+				//---- closeButton ----
+				closeButton.setText("Close");
+				closeButton.addActionListener(e -> closeButtonActionPerformed());
+				contentPanel.add(closeButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+					new Insets(0, 0, 5, 5), 0, 0));
 
-                //---- cancelButton ----
-                cancelButton.setText("Cancel");
-                cancelButton.addActionListener(e -> cancelButtonActionPerformed());
-                contentPanel.add(cancelButton, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
-                    GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
-                    new Insets(0, 0, 5, 0), 0, 0));
-            }
-            dialogPane.add(contentPanel, BorderLayout.CENTER);
-        }
-        contentPane.add(dialogPane, BorderLayout.CENTER);
-        pack();
-        setLocationRelativeTo(getOwner());
+				//---- cancelButton ----
+				cancelButton.setText("Cancel");
+				cancelButton.addActionListener(e -> cancelButtonActionPerformed());
+				contentPanel.add(cancelButton, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
+					GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
+					new Insets(0, 0, 5, 0), 0, 0));
+			}
+			dialogPane.add(contentPanel, BorderLayout.CENTER);
+		}
+		contentPane.add(dialogPane, BorderLayout.CENTER);
+		pack();
+		setLocationRelativeTo(getOwner());
 		// JFormDesigner - End of component initialization  //GEN-END:initComponents
 	}
 
 	// JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner non-commercial license
-    private JPanel dialogPane;
-    private JPanel contentPanel;
-    private JLabel label4;
-    private JLabel label5;
-    private JScrollPane scrollPane1;
-    private JList sessionConsole;
-    private JScrollPane scrollPane2;
-    private JTable sessionTable;
-    private JCheckBox showADUsCheckbox;
-    private JButton closeButton;
-    private JButton cancelButton;
+	// Generated using JFormDesigner non-commercial license
+	private JPanel dialogPane;
+	private JPanel contentPanel;
+	private JLabel label4;
+	private JLabel label5;
+	private JScrollPane scrollPane1;
+	private JList sessionConsole;
+	private JScrollPane scrollPane2;
+	private JTable sessionTable;
+	private JCheckBox showADUsCheckbox;
+	private JButton closeButton;
+	private JButton cancelButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
