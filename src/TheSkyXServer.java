@@ -278,8 +278,11 @@ public class TheSkyXServer {
     /**
      * Send command to TheSkyX to connect to and home the mount. No response.
      */
-    public void homeMount() {
-        // todo homeMount
-        System.out.println("homeMount");
+    public void homeMount() throws IOException {
+        String commandNoReturn = "sky6RASCOMTele.Connect();"
+        + "sky6RASCOMTele.Asynchronous=false;"
+        + "Out=sky6RASCOMTele.FindHome();"
+        + "Out += \"\\n\";";
+        this.sendCommandNoReturn(commandNoReturn);
     }
 }
