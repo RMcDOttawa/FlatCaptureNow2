@@ -79,6 +79,12 @@ public class FrameTableModel extends DefaultTableModel {
         }
     }
 
+    /**
+     * Get string used as the header above a given column.  Note that column "0" is the
+     * pseudo-row-headers and doesn't have a column title.
+     * @param column        Zero-based column index.
+     * @return (String)
+     */
     @Override
     public String getColumnName(int column) {
         if (column == 0) {

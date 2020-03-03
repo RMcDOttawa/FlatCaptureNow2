@@ -8,7 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Data Model for a flats capture plan.
+ * Data Model for a flats capture plan.  Saved to a file, this contains all the information
+ * needed to repeat the same acquisition plan at another time.
  */
 public class DataModel  implements Serializable {
 
@@ -63,14 +64,32 @@ public class DataModel  implements Serializable {
         return this.filtersInUse.get(filterIndex);
     }
 
+    /**
+     * Get the binning specification in use at a given index (column in plan table)
+     * @param binningIndex      zero-based index of which binning spec is wanted
+     * @return (BinningSpec)
+     */
     public BinningSpec getBinningInUse(int binningIndex) { return this.binningsInUse.get(binningIndex);}
 
+    /**
+     * Get the frame count from a particular cell in the plan table.  The row index will be the
+     * filter to use and column index is the binning to use
+     * @param rowIndex          Filter to use
+     * @param columnIndex       Binning to use
+     * @return (Integer)        Number of frames to take with these settings
+     */
     public Integer getFrameCountAt(int rowIndex, int columnIndex) {
         ArrayList<Integer> entireRow = this.frameTableData.get(rowIndex);
         return entireRow.get(columnIndex);
     }
 
-
+    /**
+     * Set the frame count for a particular cell in the plan table.  The row index will be the
+     * filter to use and column index is the binning to use
+     * @param rowIndex          Filter to use
+     * @param columnIndex       Binning to use
+     * @param frameCount        Number of frames to take with these settings
+     */
     public void setFrameCountAt(int rowIndex, int columnIndex, int frameCount) {
         ArrayList<Integer> entireRow = this.frameTableData.get(rowIndex);
         entireRow.set(columnIndex, Integer.valueOf(frameCount));
@@ -192,9 +211,13 @@ public class DataModel  implements Serializable {
         return newModel;
     }
 
-    //  Generate the tables of filters, binning, and main table.  Do this outside the initialization
-    //  method so it shows up as a difference from a just-initialized table for serialization
-
+    /**
+     * Generate the tables of filters, binning, and main table.  Do this outside the initialization
+     * method so it shows up as a difference from a just-initialized table for serialization.
+     * (Doing it in the creator would mean it doesn't end up in the XML file, which would mean we were tied
+     * to those preferences forever in order to be backward-compatible with saved files.)
+     * @param preferences       Generate data tables about filters and binnings
+     */
     public void generateDataTables(AppPreferences preferences) {
         //  Get and store the filters in us
         //  These will be used for the left-margin "row headers" in the main table
@@ -292,6 +315,15 @@ public class DataModel  implements Serializable {
         return false;
     }
 
+    /**
+     * XML-serialize this data model for writing to a file.  Note that the built-in serializer
+     * only records the differences between the model and its default state from the constructor,
+     * which is sufficient to rebuild it. This can be surprising because if you look in the saved
+     * file you don't see xml items for all the model's fields - only for those which are
+     * different from the default constructor values.  Personally I wouldn't have implemented it
+     * this way - disk space is cheap - but it works.
+     * @return (String)
+     */
     public String serialize() {
 
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();

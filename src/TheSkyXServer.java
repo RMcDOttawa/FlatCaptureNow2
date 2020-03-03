@@ -252,6 +252,11 @@ public class TheSkyXServer {
         this.sendCommandNoReturn(commandNoReturn);
     }
 
+    /**
+     * Ask TheSkyX whether the recently-started slew operation is complete
+     * @return (boolean)
+     * @throws IOException
+     */
     public boolean scopeSlewComplete() throws IOException {
         String commandWithReturn = "sky6RASCOMTele.Connect();"
                 + "Out=sky6RASCOMTele.IsSlewComplete;"
@@ -260,6 +265,10 @@ public class TheSkyXServer {
         return returnString.trim().equals("1");
     }
 
+    /**
+     * Ask TheSkyX to abort the recently-starte mount operation (a slew in our case)
+     * @throws IOException
+     */
     public void abortSlew() throws IOException {
         String commandNoReturn = "Out=sky6RASCOMTele.Abort();"
                 + "Out+=\"\\n\";";

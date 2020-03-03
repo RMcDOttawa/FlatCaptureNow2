@@ -15,8 +15,8 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
  */
 
 
-
 /**
+ * UI window controller for editing applicaton Preferences
  * @author Richard McDonald
  */
 public class PrefsWindow extends JDialog {

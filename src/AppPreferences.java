@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 
+/**
+ * A Preferences object for this application, using the java Preferences class to keep
+ * application-specific settings between sessions.  The information is stored in a standard
+ * system-dependent location managed by the Java runtime.
+ */
 public class AppPreferences {
     private Preferences preferences;
 
@@ -38,7 +43,7 @@ public class AppPreferences {
 
     // Getters and Setters for the preference values
 
-    // Does the camera have, and do we use, an automated filter wheel?
+    //  Does the camera have, and do we use, an automated filter wheel?
     public boolean getUseFilterWheel() {
         return this.preferences.getBoolean(USE_FILTER_WHEEL, true);
     }

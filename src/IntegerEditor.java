@@ -32,6 +32,10 @@
 /*
  * IntegerEditor is used by TableFTFEditDemo.java.
  */
+/**
+ * JTable Cell Editor that enforces integer content.
+ * Modified and simplified from an open-source version from Oracle
+ */
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
@@ -66,17 +70,6 @@ public class IntegerEditor extends DefaultCellEditor {
     public IntegerEditor(int min, int max) {
         super(new JFormattedTextField());
         ftf = (JFormattedTextField)getComponent();
-
-/*
-        //  Enter a field selects all of it
-        ftf.addFocusListener((new FocusAdapter()
-        {
-            public void focusGained (final FocusEvent e) {
-                System.out.println("Focus Gained");
-
-            }
-        }));
-*/
 
         minimum = new Integer(min);
         maximum = new Integer(max);

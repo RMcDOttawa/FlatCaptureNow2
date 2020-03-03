@@ -7,12 +7,20 @@ public class FlatSet {
     FilterSpec  filterSpec = null;
     int         binning = 0;
 
+    /**
+     * Constructor for a set with given parameters
+     * @param numberWanted      Number of frames to collect
+     * @param filter            Filter to be used for collection
+     * @param binning           Binning level to be used for collection
+     */
     public FlatSet(int numberWanted, FilterSpec filter, int binning) {
         this.numberDone = 0;
         this.numberOfFrames = numberWanted;
         this.filterSpec = filter;
         this.binning = binning;
     }
+
+    //  Getters and setters
 
     public int getNumberOfFrames() { return numberOfFrames; }
     public void setNumberOfFrames(int numberOfFrames) { this.numberOfFrames = numberOfFrames; }

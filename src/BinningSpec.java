@@ -10,10 +10,18 @@ public class BinningSpec implements Serializable {
 
     public BinningSpec() { }
 
+    /**
+     * Constructor for a spec with given values
+     * @param binningValue          Binning value (1, 2, 3, or 4)
+     * @param availability
+     */
     public BinningSpec(int binningValue, BinningAvailability availability) {
+        assert (binningValue >= 1) && (binningValue <= 4);
         this.binningValue = binningValue;
         this.availability = availability;
     }
+
+    //  Getters and setters
 
     public Integer getBinningValue() { return binningValue; }
     public void setBinningValue(Integer binningValue) { this.binningValue = binningValue; }

@@ -49,7 +49,11 @@ public class MainWindow extends JFrame {
 
     private String filePath = "";
 
-
+    /**
+     * Main constructor for this class.  Provide it with a copy of the application
+     * Preferences object since some initialization is drawn from the prefs.
+     * @param preferences   Application preferences object
+     */
     public MainWindow ( AppPreferences preferences) {
         this.preferences = preferences;
         this.dataModel = dataModel;
@@ -63,6 +67,11 @@ public class MainWindow extends JFrame {
         initComponents();
     }
 
+    /**
+     * Set up the visual UI from the given data model
+     * @param dataModel     Data model to load to UI
+     * @param windowTitle   Title to assign to window
+     */
     public void setUiFromDataModel(DataModel dataModel, String windowTitle) {
         this.setTitle(windowTitle);
         this.dataModel = dataModel;
@@ -149,6 +158,9 @@ public class MainWindow extends JFrame {
         prefsWindow.setVisible(true);
     }
 
+    /**
+     * User has modified the Server Address field.  Validate and store in data model.
+     */
     private void serverAddressFieldActionPerformed() {
         String proposedServerAddress = this.serverAddressField.getText().trim();
         boolean valid = false;
@@ -166,6 +178,9 @@ public class MainWindow extends JFrame {
         this.enableProceedButton();
     }
 
+    /**
+     * User has modified the Port Number field.  Validate and store in data model.
+     */
     private void portNumberFieldActionPerformed() {
         String proposedValue = this.portNumberField.getText().trim();
         boolean valid = false;
@@ -182,6 +197,9 @@ public class MainWindow extends JFrame {
         this.enableProceedButton();
     }
 
+    /**
+     * User has modified the Target ADUs field.  Validate and store in data model.
+     */
     private void targetADUfieldActionPerformed() {
         String proposedValue = this.targetADUfield.getText().trim();
         boolean valid = false;
@@ -198,6 +216,9 @@ public class MainWindow extends JFrame {
         this.enableProceedButton();
     }
 
+    /**
+     * User has modified the ADU Tolerance field.  Validate and store in data model.
+     */
     private void aduToleranceFieldActionPerformed() {
         String proposedValue = this.aduToleranceField.getText().trim();
         boolean valid = false;
@@ -214,6 +235,9 @@ public class MainWindow extends JFrame {
         this.enableProceedButton();
     }
 
+    /**
+     * User has modified the Light Source Altitude field.  Validate and store in data model.
+     */
     private void lightSourceAltFieldActionPerformed() {
         String proposedValue = this.lightSourceAltField.getText().trim();
         boolean valid = false;
@@ -231,6 +255,9 @@ public class MainWindow extends JFrame {
         this.enableSlewControls();
     }
 
+    /**
+     * User has modified the Light Source Azimuth field.  Validate and store in data model.
+     */
     private void lightSourceAzFieldActionPerformed() {
         String proposedValue = this.lightSourceAzField.getText().trim();
         boolean valid = false;
@@ -248,6 +275,9 @@ public class MainWindow extends JFrame {
         this.enableSlewControls();
     }
 
+    /**
+     * User has modified the Dithering Radius field.  Validate and store in data model.
+     */
     private void ditherRadiusFieldActionPerformed() {
         String proposedValue = this.ditherRadiusField.getText().trim();
         boolean valid = false;
@@ -264,6 +294,9 @@ public class MainWindow extends JFrame {
         this.enableProceedButton();
     }
 
+    /**
+     * User has modified the Dithering Maximum Radius field.  Validate and store in data model.
+     */
     private void ditherMaximumFieldActionPerformed() {
         String proposedValue = this.ditherMaximumField.getText().trim();
         boolean valid = false;
@@ -605,6 +638,10 @@ public class MainWindow extends JFrame {
 
     }
 
+    /**
+     * The timer that is running to "pulse" the slewing message has fired.
+     * Alternate the message between two colours to provide a visual pulsing effect.
+     */
     public void fireSlewFeedbackTimer() {
         Color messageColour = this.slewMessageIsPulsed ? Color.RED : Color.BLACK;
         this.slewMessageIsPulsed = !this.slewMessageIsPulsed;
@@ -746,6 +783,10 @@ public class MainWindow extends JFrame {
         sessionWindow.spawnAcquisitionTask(sessionWindow, flatsToAcquire);
     }
 
+    /**
+     * Respond to "Save As" menu item.  Prompt user for a file name and location and,
+     * if they don't cancel, write an XML-encoded version of the data model to the file.
+     */
     private void saveAsMenuItemActionPerformed() {
 
          //  Get file to save to
@@ -948,6 +989,9 @@ public class MainWindow extends JFrame {
         }
     }
 
+    /**
+     * Quit action invoked.  Check for unsaved data before quitting.
+     */
     private void quitMenuItemActionPerformed() {
         if (this.protectedSaveProceed(false)) {
             //  If the acquisition subtask is running, stop it

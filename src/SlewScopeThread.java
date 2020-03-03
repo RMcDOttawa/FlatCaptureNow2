@@ -15,6 +15,14 @@ public class SlewScopeThread implements  Runnable {
     TheSkyXServer server;
     boolean oldTrackingState = true;
 
+    /**
+     * Constructor with the parameters needed for the slewing action
+     * @param parent            Main window controller that invoked this action
+     * @param serverAddress     Address (name or IP) of TheSkyX server
+     * @param portNumber        Port number where TheSkyX is listening
+     * @param targetAltitude    Altitude of coordinates to which to slew
+     * @param targetAzimuth     Azimuth of coordinates to which to slew
+     */
     public SlewScopeThread(MainWindow parent,
                            String serverAddress,
                            int portNumber,
@@ -28,6 +36,9 @@ public class SlewScopeThread implements  Runnable {
         this.targetAzimuth = targetAzimuth;
     }
 
+    /**
+     * Main program of this task, invoked automatically by starting the thread
+     */
     @Override
     public void run() {
 

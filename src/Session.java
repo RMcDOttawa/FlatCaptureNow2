@@ -16,6 +16,9 @@ import javax.swing.table.DefaultTableModel;
 
 
 /**
+ * Window controller for the dialog that opens during an acquisition session.  It contains a table
+ * showing all the flat frame sets that will be acquired in the session (with the one currently
+ * being acquired highlighted), and a console log.  Also a Cancel button that will interrupt acquisition.
  * @author Richard McDonald
  */
 public class Session extends JDialog {
@@ -98,21 +101,36 @@ public class Session extends JDialog {
         this.sessionConsoleModel.addElement("Last line");
     }
 
+    /**
+     * Store the "Show ADUs" setting from the checkbox.  This is used to determine
+     * whether to display the additional detail line reporting the ADUs of a just-acquired flat frame
+     */
     private void showADUsCheckboxActionPerformed() {
         // TODO showADUsCheckboxActionPerformed
         System.out.println("showADUsCheckboxActionPerformed");
     }
 
+    /**
+     * User clicked "close" - close the dialog.  Disabled while the acquisition thread is running.
+     */
     private void closeButtonActionPerformed() {
         // TODO closeButtonActionPerformed
         System.out.println("closeButtonActionPerformed");
     }
 
+    /**
+     * user clicked "Cancel".  Cancel the running acquisition thread.
+     */
     private void cancelButtonActionPerformed() {
         // TODO cancelButtonActionPerformed
         System.out.println("cancelButtonActionPerformed");
     }
 
+    /**
+     * Start the thread to do the flat frame acquisition
+     * @param sessionWindow     This window
+     * @param flatsToAcquire    The list of flat frames to acquire
+     */
     public void spawnAcquisitionTask(Session sessionWindow, ArrayList<FlatSet> flatsToAcquire) {
         this.consoleLock = new ReentrantLock();
         console("Started acquisition session.", 1);
@@ -121,6 +139,9 @@ public class Session extends JDialog {
         this.sessionThread.start();
     }
 
+    /**
+     * Receive a message from the acquisition thread that it is finished, so we can clean up
+     */
     public void acquisitionThreadEnded() {
         // todo acquisitionThreadEnded
         System.out.println("acquisitionThreadEnded");
@@ -263,6 +284,5 @@ public class Session extends JDialog {
     private JCheckBox showADUsCheckbox;
     private JButton closeButton;
     private JButton cancelButton;
-
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
