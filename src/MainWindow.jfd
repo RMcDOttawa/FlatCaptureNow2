@@ -515,7 +515,7 @@ new FormModel {
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "framesTable"
 							"rowSelectionAllowed": false
-							"toolTipText": "Number of flat frames to be acquired for each filter/binning combination. Click one to change it."
+							"toolTipText": "<html>Number of flat frames to be acquired for each filter/binning combination. Click a cell to set it to zero. Click and type to change it to a different value.</html>"
 							"gridColor": new java.awt.Color( 100, 100, 100, 255 )
 							"intercellSpacing": new java.awt.Dimension( 1, 10 )
 							"selectionMode": 0

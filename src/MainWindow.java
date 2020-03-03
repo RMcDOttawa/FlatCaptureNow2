@@ -1,23 +1,24 @@
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.beansbinding.BeanProperty;
+import org.jdesktop.beansbinding.BindingGroup;
+import org.jdesktop.beansbinding.Bindings;
+
+import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.desktop.QuitEvent;
 import java.awt.desktop.QuitResponse;
 import java.awt.desktop.QuitStrategy;
+import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.awt.event.*;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.*;
-import javax.swing.border.*;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.jdesktop.beansbinding.*;
-import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import java.util.Timer;
 /*
  * Created by JFormDesigner on Tue Feb 25 15:18:41 EST 2020
  */
@@ -771,16 +772,42 @@ public class MainWindow extends JFrame {
      * that is used for the session console, then spawn the thread that does the acquisition.
      */
     public void proceedButtonActionPerformed() {
-        // todo Absorb any edit in progress before proceeding (and re-check enablement first)
+        //  In case they have a table cell edit in progress and haven't hit Enter, absorb it
+        this.endInProgressTableCellEdits();
+        if (this.proceedButton.isEnabled()) {
 
-        //  Session console window
-        this.sessionWindow = new Session(this);
-        ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire();
-        sessionWindow.setUpUI(this.dataModel, flatsToAcquire);
-        sessionWindow.setVisible(true);
+            //  Session console window
+            this.sessionWindow = new Session(this);
+            ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire();
+            sessionWindow.setUpUI(this.dataModel, flatsToAcquire);
+            sessionWindow.setVisible(true);
 
-        //  Start the acquisition thread
-        sessionWindow.spawnAcquisitionTask(sessionWindow, flatsToAcquire);
+            //  Start the acquisition thread
+            sessionWindow.spawnAcquisitionTask(sessionWindow, flatsToAcquire);
+        }
+    }
+
+    /**
+     * Swing has the unfortunate habit of not processing changes to text fields until their action is
+     * triggered by hitting enter or changing focus.  So if the user starts to type something into a text
+     * field and then clicks a button, the change they've typed will be lost.  We've handled that for all
+     * the regular text fields by catching their "focus lost" actions.  Here we'll detect that a table cell
+     * has an edit in progress, and close the edit.
+     */
+    private void endInProgressTableCellEdits() {
+        CellEditor tableCellEditor = this.framesTable.getCellEditor();
+
+        if (tableCellEditor != null) {
+            // A cell edit is in progress.  Tell the editor to stop and save.
+            assert(tableCellEditor instanceof IntegerEditor);
+            IntegerEditor activeEditor = (IntegerEditor) tableCellEditor;
+            activeEditor.stopCellEditing();
+            this.makeDirty();
+        }
+
+        //  Finishing that edit might have changed enablement of certain controls
+        this.enableProceedButton();
+        this.enableSlewControls();
     }
 
     /**
@@ -813,7 +840,9 @@ public class MainWindow extends JFrame {
      * @param fileToSave        File object of file to be saved
      */
     private void writeToFile(File fileToSave) {
-        // todo absorb any edit in process
+        // Absorb any table cell edit in process
+        this.endInProgressTableCellEdits();
+
         // Write serialized data model to file
         String serialized = this.dataModel.serialize();
 
@@ -1638,7 +1667,7 @@ public class MainWindow extends JFrame {
 
                     //---- framesTable ----
                     framesTable.setRowSelectionAllowed(false);
-                    framesTable.setToolTipText("Number of flat frames to be acquired for each filter/binning combination. Click one to change it.");
+                    framesTable.setToolTipText("<html>Number of flat frames to be acquired for each filter/binning combination. Click a cell to set it to zero. Click and type to change it to a different value.</html>");
                     framesTable.setGridColor(new Color(100, 100, 100));
                     framesTable.setIntercellSpacing(new Dimension(1, 10));
                     framesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

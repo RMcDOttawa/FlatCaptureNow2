@@ -76,7 +76,7 @@ public class Session extends JDialog {
      * @param flatSetList     Array of the flat sets to be acquired
      */
     private void setUpSessionTable(ArrayList<FlatSet> flatSetList) {
-//todo set up a click listener to ignore clicks in rows so they don't get selected
+
         //  Set up a table model with this many rows and appropriate columns
         String columnNames[] = {"Number", "Filter", "Binning", "Done"};
         this.sessionTableModel = new SessionSetsTableModel(columnNames, 0);
