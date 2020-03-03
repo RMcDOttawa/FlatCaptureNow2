@@ -285,4 +285,32 @@ public class TheSkyXServer {
         + "Out += \"\\n\";";
         this.sendCommandNoReturn(commandNoReturn);
     }
+
+    /**
+     * Expose a bias frame at the given binning size
+     * @param binning           Binning level for bias frame
+     * @param asynchronous      Start image asynchronously?  (false=wait)
+     * @param autosave          Auto-save image to defined directory?
+     */
+    public void exposeBiasFrame(Integer binning, boolean asynchronous, boolean autosave) throws IOException {
+        String command = "ccdsoftCamera.Autoguider=false;"        //  Use main camera
+                + "ccdsoftCamera.Asynchronous=" + boolToJS(asynchronous) + ";"   //  Wait for camera?
+                + "ccdsoftCamera.Frame=2;"
+                + "ccdsoftCamera.ImageReduction=0;"       // No autodark or calibration
+                + "ccdsoftCamera.ToNewWindow=false;"      // Reuse window, not new one
+                + "ccdsoftCamera.ccdsoftAutoSaveAs=0;"    //  0 = FITS format
+                + "ccdsoftCamera.AutoSaveOn=" + boolToJS(autosave) + ";"
+                + "ccdsoftCamera.BinX=" + binning + ";"
+                + "ccdsoftCamera.BinY=" + binning + ";"
+                + "ccdsoftCamera.ExposureTime=0;"
+                + "var cameraResult = ccdsoftCamera.TakeImage();"
+                + "var Out;Out=cameraResult+\"\\n\";";
+
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            System.out.println("Error returned from camera: " + result);
+            throw new IOException("Error from camera");
+        }
+    }
 }

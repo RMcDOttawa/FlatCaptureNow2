@@ -771,6 +771,7 @@ public class MainWindow extends JFrame {
      * that is used for the session console, then spawn the thread that does the acquisition.
      */
     public void proceedButtonActionPerformed() {
+        // todo Absorb any edit in progress before proceeding (and re-check enablement first)
 
         //  Session console window
         this.sessionWindow = new Session(this);
@@ -812,6 +813,7 @@ public class MainWindow extends JFrame {
      * @param fileToSave        File object of file to be saved
      */
     private void writeToFile(File fileToSave) {
+        // todo absorb any edit in process
         // Write serialized data model to file
         String serialized = this.dataModel.serialize();
 

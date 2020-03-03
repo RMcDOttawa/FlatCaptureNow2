@@ -1,5 +1,8 @@
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SessionThread implements Runnable {
 
@@ -7,6 +10,7 @@ public class SessionThread implements Runnable {
     private final DataModel dataModel;
     private final ArrayList<FlatSet> flatsToAcquire;
     private TheSkyXServer server;
+    private HashMap<Integer, Double> downloadTimes;
 
     public SessionThread(Session parent, DataModel dataModel, ArrayList<FlatSet> flatsToAcquire) {
         this.parent = parent;
@@ -89,11 +93,43 @@ public class SessionThread implements Runnable {
     /**
      * To ascynchronously manage the camera, we need to know how long the downloads of finished images take.
      * These vary with the binning setting.  We'll time them here, by taking zero-length bias frames at each binning.
+     * They are stored in a HashMap indexed by the binning number.  Use of a hashmap allows us to check if a given
+     * binning has already been measured (key will exist) so we only measure each one once.
      */
-    private void measureDownloadTimes() throws InterruptedException {
-        // todo measureDownloadTimes
-        System.out.println("measureDownloadTimes");
-        Thread.sleep(20 * 1000);  // To force exception signature
+    private void measureDownloadTimes() throws InterruptedException, IOException {
+        this.console("Measuring download times for each binning level needed.", 1);
+        this.downloadTimes = new HashMap<Integer, Double>(4);
+        for (FlatSet flatSet : this.flatsToAcquire) {
+            Integer binning = flatSet.getBinning();
+            if (this.downloadTimes.containsKey(binning)) {
+                // We already have a time for this binning, don't need to do another
+                ;
+            } else {
+                Double downloadTime = this.timeDownloadFor(binning);
+                this.downloadTimes.put(binning, downloadTime);
+            }
+        }
+    }
+
+    /**
+     * Measure the dowload time for the given binning value by taking, and timing, a
+     * zero-second bias frame.  Since bias frames are zero length, the time elapsed will be
+     * just the download time for an image binned to that size.
+     * @param binning       Binning value to take and time
+     * @return (Double)     Elapsed time in seconds
+     */
+    private Double timeDownloadFor(Integer binning) throws IOException {
+        LocalDateTime timeBefore = LocalDateTime.now();
+        this.exposeBiasFrame(binning, false, false);
+        LocalDateTime timeAfter = LocalDateTime.now();
+        Duration timeTaken = Duration.between(timeAfter, timeBefore).abs();
+        double downloadSeconds = timeTaken.getSeconds();
+        this.console(String.format("Binned %d x %d: %.02f seconds.", binning, binning, downloadSeconds), 2);
+        return downloadSeconds;
+    }
+
+    private void exposeBiasFrame(Integer binning, boolean asynchronous, boolean autosave) throws IOException {
+        this.server.exposeBiasFrame(binning, asynchronous, autosave);
     }
 
     /**
