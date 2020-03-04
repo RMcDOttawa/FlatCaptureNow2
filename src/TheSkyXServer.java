@@ -96,8 +96,13 @@ public class TheSkyXServer {
      * @throws IOException          I/O error from network
      */
     public void connectToCamera() throws IOException {
-        String command = "ccdsoftCamera.Connect();";
-        this.sendCommandNoReturn(command);
+        String command = "var Out=ccdsoftCamera.Connect();"
+                + "Out+=\"\\n\";";
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -105,8 +110,13 @@ public class TheSkyXServer {
      * @throws IOException          I/O error from network
      */
     public void disconnectFromCamera() throws IOException {
-        String command = "ccdsoftCamera.Disconnect();";
-        this.sendCommandNoReturn(command);
+        String command = "var Out=ccdsoftCamera.Disconnect();"
+                + "Out+=\"\\n\";";
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -114,21 +124,21 @@ public class TheSkyXServer {
      * @param commandToSend     Command to send to server
      * @throws IOException      I/O error from network
      */
-    private void sendCommandNoReturn(String commandToSend) throws IOException {
-        String commandPacket =  "/* Java Script */"
-                + "/* Socket Start Packet */"
-                + commandToSend
-                + "var Out;"
-                + "Out=\"0\\n\";"
-                + "/* Socket End Packet */";
-        try {
-            this.serverLock.lock();
-            this.sendCommandPacket(commandPacket);
-        } finally {
-            this.serverLock.unlock();
-        }
-
-    }
+//    private void sendCommandNoReturn(String commandToSend) throws IOException {
+//        String commandPacket =  "/* Java Script */"
+//                + "/* Socket Start Packet */"
+//                + commandToSend
+//                + "var Out;"
+//                + "Out=\"0\\n\";"
+//                + "/* Socket End Packet */";
+//        try {
+//            this.serverLock.lock();
+//            this.sendCommandPacket(commandPacket);
+//        } finally {
+//            this.serverLock.unlock();
+//        }
+//
+//    }
 
     /**
      * Convert a Java boolean to the text used by JavaScript
@@ -172,8 +182,13 @@ public class TheSkyXServer {
     */
 
     public void abortImageInProgress() throws IOException {
-        String command = "ccdsoftCamera.Abort();";
-        this.sendCommandNoReturn(command);
+        String command = "var Out=ccdsoftCamera.Abort();"
+                + "Out+=\"\\n\";";
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -227,7 +242,11 @@ public class TheSkyXServer {
                     + String.valueOf(targetAzimuth) + ","
                     + String.valueOf(targetAltitude) + ",'');"
                 + "Out+=\"\\n\";";
-        this.sendCommandNoReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(commandNoReturn);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -249,7 +268,11 @@ public class TheSkyXServer {
     public void setScopeTracking(boolean oldTrackingState) throws IOException {
         String commandNoReturn = "sky6RASCOMTele.Connect();"
                 + "sky6RASCOMTele.IsTracking=" + boolToJS(oldTrackingState) + ";";
-        this.sendCommandNoReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(commandNoReturn);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -272,7 +295,11 @@ public class TheSkyXServer {
     public void abortSlew() throws IOException {
         String commandNoReturn = "Out=sky6RASCOMTele.Abort();"
                 + "Out+=\"\\n\";";
-        this.sendCommandNoReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(commandNoReturn);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -283,7 +310,11 @@ public class TheSkyXServer {
         + "sky6RASCOMTele.Asynchronous=false;"
         + "Out=sky6RASCOMTele.FindHome();"
         + "Out += \"\\n\";";
-        this.sendCommandNoReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(commandNoReturn);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 
     /**
@@ -312,5 +343,24 @@ public class TheSkyXServer {
             System.out.println("Error returned from camera: " + result);
             throw new IOException("Error from camera");
         }
+    }
+
+    /**
+     * Select the filter that will be used with the next acquired image(s).
+     * Note that with most setups this does not move the filter wheel.  It will move when the
+     * first image acquisition is started.
+     * @param slotNumber     1-based slot number for the filter to use
+     */
+    public void selectFilter(Integer slotNumber) throws IOException {
+        // todo selectFilter
+        System.out.println("selectFilter: " + slotNumber);
+        String commandNoReturn = "ccdsoftCamera.filterWheelConnect();"
+                + "ccdsoftCamera.FilterIndexZeroBased=" + (String.valueOf(slotNumber - 1)) + ";"
+                + "var Out;Out=cameraResult+\"\\n\";";
+        String result = this.sendCommandWithReturn(commandNoReturn);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        };
     }
 }

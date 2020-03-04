@@ -64,7 +64,7 @@ public class SessionThread implements Runnable {
      * slightly before each acquired frame.  Acquired frames are not saved immediately upon acquisition -
      * instead we will inspect the frame to see if the ADU average is in range, and save only if it is.
      */
-    private void processWorkList() throws InterruptedException {
+    private void processWorkList() throws InterruptedException, IOException {
 
         for (int itemIndex = 0; itemIndex < this.flatsToAcquire.size(); itemIndex++) {
             //  Tell the user interface to highlight this row in the table
@@ -90,12 +90,19 @@ public class SessionThread implements Runnable {
      *      - If dithering is in use, do a dither move after each successful frame
      * @param thisSet   Specifications for the Flats set wanted
      */
-    private void acquireOneFlatsSet(FlatSet thisSet) throws InterruptedException {
+    private void acquireOneFlatsSet(FlatSet thisSet) throws InterruptedException, IOException {
         // todo acquireOneFlatsSet
         System.out.println("acquireOneFlatsSet");
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
-            // Still frames to be acquired for this set
+            // Connect camera
+            this.server.connectToCamera();
 
+            // Set up filter if in use
+            if (this.dataModel.getUseFilterWheel()) {
+                this.server.selectFilter(thisSet.getFilterSpec().getSlotNumber());
+            }
+
+            // Acquire the frames
         }
     }
 
