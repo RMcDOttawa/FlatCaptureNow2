@@ -218,17 +218,24 @@ public class DataModel  implements Serializable {
      * to those preferences forever in order to be backward-compatible with saved files.)
      * @param preferences       Generate data tables about filters and binnings
      */
-    public void generateDataTables(AppPreferences preferences) {
+    public void generateDataTables(AppPreferences preferences, boolean useFilterWheel) {
         //  Get and store the filters in us
         //  These will be used for the left-margin "row headers" in the main table
         this.filtersInUse = new ArrayList<FilterSpec>();
-        List<Integer> filterSlotNumbers = preferences.getFilterSlotNumbers();
-        for (int slotNumber : filterSlotNumbers) {
-            if (preferences.getFilterUse(slotNumber)) {
-                String name = preferences.getFilterName(slotNumber);
-                FilterSpec newFilter = new FilterSpec(slotNumber, name);
-                this.filtersInUse.add(newFilter);
+        if (useFilterWheel) {
+            List<Integer> filterSlotNumbers;
+            filterSlotNumbers = preferences.getFilterSlotNumbers();
+            for (int slotNumber : filterSlotNumbers) {
+                if (preferences.getFilterUse(slotNumber)) {
+                    String name = preferences.getFilterName(slotNumber);
+                    FilterSpec newFilter = new FilterSpec(slotNumber, name);
+                    this.filtersInUse.add(newFilter);
+                }
             }
+        } else {
+            //  If we're not using the filter wheel, we just hard-code a single filter
+            FilterSpec noFilter = new FilterSpec(1, "No_Filter");
+            this.filtersInUse.add(noFilter);
         }
 
         //  Get and store a list of binning values that are set to "default" or "available"

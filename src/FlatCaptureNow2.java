@@ -23,7 +23,7 @@ public class FlatCaptureNow2 {
         try {
             AppPreferences prefs = AppPreferences.createPreferences();
             DataModel dataModel = DataModel.newInstance(prefs);
-            dataModel.generateDataTables(prefs);
+            dataModel.generateDataTables(prefs, prefs.getUseFilterWheel());
             MainWindow mainWindow = new MainWindow(prefs);
             mainWindow.setUiFromDataModel(dataModel, Common.UNSAVED_FILE_TITLE);
 

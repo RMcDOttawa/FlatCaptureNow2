@@ -65,8 +65,7 @@ public class SessionThread implements Runnable {
      * instead we will inspect the frame to see if the ADU average is in range, and save only if it is.
      */
     private void processWorkList() throws InterruptedException {
-        // todo processWorkList
-        System.out.println("processWorkList");
+
         for (int itemIndex = 0; itemIndex < this.flatsToAcquire.size(); itemIndex++) {
             //  Tell the user interface to highlight this row in the table
             this.parent.highlightSessionTableRow(itemIndex);
@@ -76,6 +75,7 @@ public class SessionThread implements Runnable {
             //  Acquire all the flats in this set
             this.acquireOneFlatsSet(thisSet);
         }
+        
     }
 
     /**
@@ -93,7 +93,10 @@ public class SessionThread implements Runnable {
     private void acquireOneFlatsSet(FlatSet thisSet) throws InterruptedException {
         // todo acquireOneFlatsSet
         System.out.println("acquireOneFlatsSet");
-        Thread.sleep(2 * 1000);
+        if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
+            // Still frames to be acquired for this set
+
+        }
     }
 
     /**

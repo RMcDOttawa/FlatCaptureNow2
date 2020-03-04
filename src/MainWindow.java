@@ -430,6 +430,11 @@ public class MainWindow extends JFrame {
      */
     private void useFilterWheelCheckboxActionPerformed() {
         this.dataModel.setUseFilterWheel(this.useFilterWheelCheckbox.isSelected());
+        //  Re-do table to reflect change to filter wheel setting, since this has a large
+        //  impact on the plan (removing all filters or adding them back)
+        this.dataModel.generateDataTables(this.preferences, this.dataModel.getUseFilterWheel());
+        this.frameTableModel = new FrameTableModel(this, dataModel);
+        this.framesTable.setModel(frameTableModel);
         this.makeDirty();
     }
 
@@ -1000,7 +1005,7 @@ public class MainWindow extends JFrame {
     private void newMenuItemActionPerformed() {
         if (protectedSaveProceed(true)) {
             DataModel newDataModel = DataModel.newInstance(this.preferences);
-            newDataModel.generateDataTables(this.preferences);
+            newDataModel.generateDataTables(this.preferences, this.preferences.getUseFilterWheel());
             this.dataModel = null;
             this.setUiFromDataModel(newDataModel, Common.UNSAVED_FILE_TITLE);
             this.filePath = "";
