@@ -73,7 +73,7 @@ public class SessionThread implements Runnable {
             FlatSet thisSet = this.flatsToAcquire.get(itemIndex);
             console("Acquiring " + thisSet.describe() + ".", 1);
             //  Acquire all the flats in this set
-            this.acquireOneFlatsSet(thisSet);
+            this.acquireOneFlatsSet(itemIndex, thisSet);
         }
         
     }
@@ -90,20 +90,62 @@ public class SessionThread implements Runnable {
      *      - If dithering is in use, do a dither move after each successful frame
      * @param thisSet   Specifications for the Flats set wanted
      */
-    private void acquireOneFlatsSet(FlatSet thisSet) throws InterruptedException, IOException {
+    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet) throws InterruptedException, IOException {
         // todo acquireOneFlatsSet
         System.out.println("acquireOneFlatsSet");
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
             // Connect camera
             this.server.connectToCamera();
 
-            // Set up filter if in use
-            if (this.dataModel.getUseFilterWheel()) {
-                this.server.selectFilter(thisSet.getFilterSpec().getSlotNumber());
-            }
-
             // Acquire the frames
+            this.acquireFrames(workItemIndex, thisSet);
         }
+    }
+
+    /**
+     * Acquire the number of frames, of the specification, in the given work item.
+     * We start with an estimate of the right exposure, based on what worked last time.
+     * After each frame we measure the average ADUs, and keep the frame only if it is within
+     * spec.  Then we refine the exposure.  This way the first one or two frames may be rejected
+     * as we search for a good exposure, then the others will adjust as acquisition proceeds.  This
+     * will allow for changes such as the sky (if sky flats) gradually brightening, or allows
+     * the operator to adjust the brightness of a light panel.
+     *
+     * In case conditions become unworkable, we will keep track of how many frames IN A ROW have
+     * been rejected, and fail if a threshold is exceeded.
+     *
+     * Because we don't want to save FITs files for frames that are rejected, we take frames with
+     * autosave OFF, then manually save each frame after it is analyzed and once we know we like it.
+     * @param workItemIndex     Index in work list (for updating UI)
+     * @param thisSet           Details of the frame set to be acquired
+     */
+    private void acquireFrames(int workItemIndex, FlatSet thisSet) throws IOException, InterruptedException {
+        // todo acquireFrames
+
+        // Set up filter if in use. We only need do this once, since all the frames
+        // we are about to take are identical.
+        if (this.dataModel.getUseFilterWheel()) {
+            this.server.selectFilter(thisSet.getFilterSpec().getSlotNumber());
+        }
+
+        // Get initial exposure estimate saved into preferences from last time we did this
+        double exposureSeconds = thisSet.getEstimatedExposure();
+
+        // Loop until we have successfully saved the desired number of frames, or we fail because
+        // of a number of exposure ADU out-of-spec failures in a row.
+        int rejectedConsecutively = 0;
+
+        //  We'll run a progress bar measuring the number of frames to collect, not their exposure, because
+        //  flat-frame exposures will likely be quite short and it's the total collection of frames that
+        //  has a meaningful elapsed time.
+        this.parent.startProgressBar(thisSet.getNumberOfFrames());
+        // stub
+        for (int i = 0; i < thisSet.getNumberOfFrames(); i++) {
+            Thread.sleep(1000);
+            this.parent.updateProgressBar(i);
+        }
+        this.parent.stopProgressBar();
+
     }
 
     /**

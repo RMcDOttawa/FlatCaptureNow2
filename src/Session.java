@@ -206,7 +206,33 @@ public class Session extends JDialog {
         }
     }
 
-    private void initComponents() {
+    /**
+     * Make the progress bar visible and set it to the given maximum value.
+     * @param maxValue      Value that 100% fills the bar
+     */
+    public void startProgressBar(int maxValue) {
+        this.progressBar.setValue(0);
+        this.progressBar.setMaximum(maxValue);
+    }
+
+    /**
+     * Set the progress bar to invisible, as we're done with it
+     */
+    public void stopProgressBar() {
+        this.progressBar.setValue(0);
+        this.progressBar.setMaximum(0);
+    }
+
+    /**
+     * Update progress bar with given value toward the predefined maximum
+     * @param value
+     */
+    public void updateProgressBar(int value) {
+        this.progressBar.setValue(value);
+    }
+
+
+        private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
         dialogPane = new JPanel();
@@ -218,6 +244,7 @@ public class Session extends JDialog {
         scrollPane2 = new JScrollPane();
         sessionTable = new JTable();
         showADUsCheckbox = new JCheckBox();
+        progressBar = new JProgressBar();
         closeButton = new JButton();
         cancelButton = new JButton();
 
@@ -235,9 +262,9 @@ public class Session extends JDialog {
             {
                 contentPanel.setLayout(new GridBagLayout());
                 ((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {76, 437, 73, 73, 34, 0};
-                ((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {54, 534, 0, 0, 0, 0};
+                ((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {54, 534, 0, 0, 0, 0, 0};
                 ((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 1.0E-4};
-                ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+                ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
 
                 //---- label4 ----
                 label4.setText("Session Console");
@@ -283,12 +310,15 @@ public class Session extends JDialog {
                 contentPanel.add(showADUsCheckbox, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
+                contentPanel.add(progressBar, new GridBagConstraints(0, 3, 5, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- closeButton ----
                 closeButton.setText("Close");
                 closeButton.setToolTipText("Close this session window.");
                 closeButton.addActionListener(e -> closeButtonActionPerformed());
-                contentPanel.add(closeButton, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
+                contentPanel.add(closeButton, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
@@ -296,7 +326,7 @@ public class Session extends JDialog {
                 cancelButton.setText("Cancel");
                 cancelButton.setToolTipText("Cancel the running acquisition session (make take a few seconds).");
                 cancelButton.addActionListener(e -> cancelButtonActionPerformed());
-                contentPanel.add(cancelButton, new GridBagConstraints(4, 3, 1, 1, 0.0, 0.0,
+                contentPanel.add(cancelButton, new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0,
                     GridBagConstraints.EAST, GridBagConstraints.VERTICAL,
                     new Insets(0, 0, 5, 0), 0, 0));
             }
@@ -319,6 +349,7 @@ public class Session extends JDialog {
     private JScrollPane scrollPane2;
     private JTable sessionTable;
     private JCheckBox showADUsCheckbox;
+    private JProgressBar progressBar;
     private JButton closeButton;
     private JButton cancelButton;
     // JFormDesigner - End of variables declaration  //GEN-END:variables

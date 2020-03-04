@@ -42,4 +42,16 @@ public class FlatSet {
         return String.format("%d %s flats binned %d x %d",
                 this.numberOfFrames, this.filterSpec.getName(), this.binning, this.binning);
     }
+
+    /**
+     * Get a good guess at an appropriate exposure for this frame set by looking in the saved
+     * preferences for what we used the last time we exposed frames with these specifications.
+     * (Let the preferences provide a default value if we have never done this before.)
+     * @return (double)     Exposure estimate in seconds
+     */
+    public double getEstimatedExposure() {
+        // todo getEstimatedExposure
+        System.out.println("getEstimatedExposure");
+        return 12345;
+    }
 }
