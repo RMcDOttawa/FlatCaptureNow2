@@ -13,7 +13,7 @@ public class BinningSpec implements Serializable {
     /**
      * Constructor for a spec with given values
      * @param binningValue          Binning value (1, 2, 3, or 4)
-     * @param availability
+     * @param availability          Code for whether this binning value is available, default, or hidden
      */
     public BinningSpec(int binningValue, BinningAvailability availability) {
         assert (binningValue >= 1) && (binningValue <= 4);

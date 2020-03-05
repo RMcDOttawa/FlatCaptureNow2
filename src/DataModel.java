@@ -92,7 +92,7 @@ public class DataModel  implements Serializable {
      */
     public void setFrameCountAt(int rowIndex, int columnIndex, int frameCount) {
         ArrayList<Integer> entireRow = this.frameTableData.get(rowIndex);
-        entireRow.set(columnIndex, Integer.valueOf(frameCount));
+        entireRow.set(columnIndex, frameCount);
     }
     //  Getters and Setters
 
@@ -191,7 +191,7 @@ public class DataModel  implements Serializable {
      *
      * Create a new instance of data model by decoding the provided xml string
      * * @param serialized      String containing xml-encoded data model
-     * @return
+     * @return (DataModel)      Data model created from the xml string
      */
     public static DataModel newFromXml(String serialized) {
         DataModel newModel = null;
@@ -221,7 +221,7 @@ public class DataModel  implements Serializable {
     public void generateDataTables(AppPreferences preferences, boolean useFilterWheel) {
         //  Get and store the filters in us
         //  These will be used for the left-margin "row headers" in the main table
-        this.filtersInUse = new ArrayList<FilterSpec>();
+        this.filtersInUse = new ArrayList<>();
         if (useFilterWheel) {
             List<Integer> filterSlotNumbers;
             filterSlotNumbers = preferences.getFilterSlotNumbers();
@@ -240,7 +240,7 @@ public class DataModel  implements Serializable {
 
         //  Get and store a list of binning values that are set to "default" or "available"
         //  These will become the column headings of the main table
-        this.binningsInUse = new ArrayList<BinningSpec>();
+        this.binningsInUse = new ArrayList<>();
         List<Integer> binningNumbers = preferences.getBinningNumbers();
         for (int binning : binningNumbers) {
             BinningAvailability binningAvailability = preferences.getBinningAvailability(binning);
@@ -255,7 +255,7 @@ public class DataModel  implements Serializable {
         this.frameTableData = new ArrayList<>(numTableRows);
         for (int rowIndex = 0; rowIndex < numTableRows; rowIndex++) {
             // Create a set of columns for this row
-            ArrayList<Integer> thisRowOfColumns = new ArrayList<Integer>(Collections.nCopies(numTableColumns,Integer.valueOf(0)));
+            ArrayList<Integer> thisRowOfColumns = new ArrayList<>(Collections.nCopies(numTableColumns, 0));
             this.frameTableData.add(thisRowOfColumns);
         }
 
@@ -269,14 +269,13 @@ public class DataModel  implements Serializable {
      * all the rows in the given table since it already has been set up with only filters (rows) needed
       */
     private  void setDefaultFrameCounts() {
-        for (int rowIndex = 0; rowIndex < frameTableData.size(); rowIndex++) {
-            ArrayList<Integer> thisRow = frameTableData.get(rowIndex);
+        for (ArrayList<Integer> thisRow : frameTableData) {
             for (int columnIndex = 0; columnIndex < binningsInUse.size(); columnIndex++) {
                 BinningAvailability binningAvailability = binningsInUse.get(columnIndex).getAvailability();
                 if (binningAvailability == BinningAvailability.DEFAULT) {
                     thisRow.set(columnIndex, defaultFrameCount);
                 } else {
-                    thisRow.set(columnIndex, Integer.valueOf(0));
+                    thisRow.set(columnIndex, 0);
                 }
             }
         }
@@ -301,7 +300,7 @@ public class DataModel  implements Serializable {
     /**
      * Get the n'th (zero based) binning value that is in use
      * @param index     zero-based index of needed binning
-     * @return
+     * @return (int)    Binning value at this index in list
      */
     public int getBinning(int index) {
         return this.binningsInUse.get(index).getBinningValue();
@@ -309,7 +308,7 @@ public class DataModel  implements Serializable {
 
     /**
      * Determine if there are any non-zero frame counts in the frame plan
-     * @return
+     * @return (boolean)    true if at least one frame set is requested
      */
     public boolean atLeastOneFrameSetWanted() {
         for (ArrayList<Integer> thisRow : this.frameTableData) {
@@ -345,9 +344,8 @@ public class DataModel  implements Serializable {
             System.out.println("Exception serializing data model: " + e.getMessage());
             e.printStackTrace();
         }
-        String resultString = byteStream.toString();
 
-        return resultString;
+        return byteStream.toString();
     }
 
     /**
@@ -355,7 +353,7 @@ public class DataModel  implements Serializable {
      * number of frames at that intersection is > 0.
      * @return (array)
      */
-    public ArrayList<FlatSet> getFlatSetsToAcquire() {
+    public ArrayList<FlatSet> getFlatSetsToAcquire(AppPreferences preferences) {
         ArrayList<FlatSet> result = new ArrayList<>(this.filtersInUse.size() * this.binningsInUse.size());
         for (int rowIndex = 0; rowIndex < this.filtersInUse.size(); rowIndex++) {
             FilterSpec thisFilter = this.filtersInUse.get(rowIndex);
@@ -363,7 +361,9 @@ public class DataModel  implements Serializable {
             for (int columnIndex = 0; columnIndex < this.binningsInUse.size(); columnIndex++) {
                 int thisCount = thisRow.get(columnIndex);
                 if (thisCount > 0) {
-                    FlatSet thisSet = new FlatSet(thisCount, thisFilter, this.binningsInUse.get(columnIndex).getBinningValue());
+                    FlatSet thisSet = new FlatSet(thisCount, thisFilter,
+                            this.binningsInUse.get(columnIndex).getBinningValue(),
+                            preferences);
                     result.add(thisSet);
                 }
             }

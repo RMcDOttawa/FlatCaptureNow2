@@ -210,7 +210,7 @@ public class MainWindow extends JFrame {
             ImmutablePair<Boolean, Integer> validation = Validators.validIntInRange(proposedValue, 0, 65535);
             valid = validation.left;
             if (valid) {
-                this.dataModel.setPortNumber(validation.right);
+                this.dataModel.setTargetADUs(validation.right);
                 this.makeDirty();
             }
         }
@@ -783,7 +783,7 @@ public class MainWindow extends JFrame {
 
             //  Session console window
             this.sessionWindow = new Session(this);
-            ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire();
+            ArrayList<FlatSet> flatsToAcquire = this.dataModel.getFlatSetsToAcquire(this.preferences);
             sessionWindow.setUpUI(this.dataModel, flatsToAcquire);
             sessionWindow.setVisible(true);
 
@@ -1028,16 +1028,16 @@ public class MainWindow extends JFrame {
      * Quit action invoked.  Check for unsaved data before quitting.
      */
     private void quitMenuItemActionPerformed() {
+        if (this.sessionWindow != null) {
+            this.sessionWindow.cancelButtonActionPerformed();
+            try {
+                // Give the cancel a moment to take effect
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+            }
+        }
         if (this.protectedSaveProceed(false)) {
             //  If the acquisition subtask is running, stop it
-            if (this.sessionWindow != null) {
-                this.sessionWindow.cancelButtonActionPerformed();
-                try {
-                    // Give the cancel a moment to take effect
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                }
-            }
             System.exit(0);
         }
     }

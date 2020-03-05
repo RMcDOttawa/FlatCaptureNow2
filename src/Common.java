@@ -13,8 +13,21 @@ public class Common {
     //  How often do we pulse the "Slewing" message on the user interface?
     public static final long SLEWING_FEEDBACK_INTERVAL_MILLISECONDS = 500;
 
+    //  When taking flats, how many failed exposures in a row causes an abort?
+    public static final int ADU_FAILURE_RETRY_LIMIT = 10;
+
+    //  When exposing a flat, how long after the exposure should be finished do we consider
+    //  continued non-completion a timeout error?
+    public static final double FRAME_COMPLETION_POLL_INTERVAL_SECONDS = 0.5;
+    public static final double FRAME_COMPLETION_TIMEOUT_SECONDS = 60.0;
+
+    //  Are we simulating ADU measurement rather than using the server?
+    public static final boolean SIMULATE_ADU_MEASUREMENT = true;
+    public static final double SIMULATION_NOISE_FRACTION = 0.05;  // 5% noise
+
     //  Information about files saved from the application
 
     public static final String DATA_FILE_SUFFIX = "fcn2";
     public static final String UNSAVED_FILE_TITLE = "(Unsaved File)";
+    public static final boolean FEEDBACK_EXPOSURE_ADJUSTMENT = true;
 }

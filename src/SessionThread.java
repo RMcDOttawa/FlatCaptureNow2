@@ -1,8 +1,11 @@
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeoutException;
 
 public class SessionThread implements Runnable {
 
@@ -36,10 +39,19 @@ public class SessionThread implements Runnable {
             this.postSessionMountControl();
         } catch (IOException e) {
             this.console("I/O Error: " + e.getMessage(), 1);
+            e.printStackTrace();
         } catch (InterruptedException e) {
             //  We come here if the thread was interrupted by the user clicking "Cancel"
-            this.console("Session Cancelled", 1);
+            System.out.println("Cancelled caught in main loop");
+            e.printStackTrace();
             this.cleanUpFromCancel();
+            this.console("Session Cancelled", 1);
+        } catch (ADUExposureException e) {
+            e.printStackTrace();
+            this.console("Too many failed exposures, aborting session.", 1);
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+            this.console(e.getMessage(), 1);
         }
         this.console("Session Ended", 1);
         this.parent.acquisitionThreadEnded();
@@ -52,6 +64,10 @@ public class SessionThread implements Runnable {
     private void cleanUpFromCancel() {
         try {
             this.server.abortSlew();
+        } catch (IOException e) {
+            // Ignore any errors, we're quitting anyway
+        }
+        try {
             this.server.abortImageInProgress();
         } catch (IOException e) {
             // Ignore any errors, we're quitting anyway
@@ -64,7 +80,7 @@ public class SessionThread implements Runnable {
      * slightly before each acquired frame.  Acquired frames are not saved immediately upon acquisition -
      * instead we will inspect the frame to see if the ADU average is in range, and save only if it is.
      */
-    private void processWorkList() throws InterruptedException, IOException {
+    private void processWorkList() throws InterruptedException, IOException, ADUExposureException, TimeoutException {
 
         for (int itemIndex = 0; itemIndex < this.flatsToAcquire.size(); itemIndex++) {
             //  Tell the user interface to highlight this row in the table
@@ -90,7 +106,7 @@ public class SessionThread implements Runnable {
      *      - If dithering is in use, do a dither move after each successful frame
      * @param thisSet   Specifications for the Flats set wanted
      */
-    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet) throws InterruptedException, IOException {
+    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet) throws InterruptedException, IOException, ADUExposureException, TimeoutException {
         // todo acquireOneFlatsSet
         System.out.println("acquireOneFlatsSet");
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
@@ -119,7 +135,7 @@ public class SessionThread implements Runnable {
      * @param workItemIndex     Index in work list (for updating UI)
      * @param thisSet           Details of the frame set to be acquired
      */
-    private void acquireFrames(int workItemIndex, FlatSet thisSet) throws IOException, InterruptedException {
+    private void acquireFrames(int workItemIndex, FlatSet thisSet) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
         // todo acquireFrames
 
         // Set up filter if in use. We only need do this once, since all the frames
@@ -131,21 +147,121 @@ public class SessionThread implements Runnable {
         // Get initial exposure estimate saved into preferences from last time we did this
         double exposureSeconds = thisSet.getEstimatedExposure();
 
-        // Loop until we have successfully saved the desired number of frames, or we fail because
-        // of a number of exposure ADU out-of-spec failures in a row.
-        int rejectedConsecutively = 0;
-
         //  We'll run a progress bar measuring the number of frames to collect, not their exposure, because
         //  flat-frame exposures will likely be quite short and it's the total collection of frames that
         //  has a meaningful elapsed time.
         this.parent.startProgressBar(thisSet.getNumberOfFrames());
-        // stub
-        for (int i = 0; i < thisSet.getNumberOfFrames(); i++) {
-            Thread.sleep(1000);
-            this.parent.updateProgressBar(i);
+
+        // Loop until we have successfully saved the desired number of frames, or we fail because
+        // of a number of exposure ADU out-of-spec failures in a row.
+        int rejectedConsecutively = 0;
+        int frameNumberTrying = 1;
+
+        while (thisSet.getNumberDone() < thisSet.getNumberOfFrames()) {
+            this.console(String.format("Frame %d of %d: %.3f seconds", frameNumberTrying,
+                    thisSet.getNumberOfFrames(), exposureSeconds), 2);
+            int frameAverageADUs = this.exposeFlatFrame(thisSet.getBinning(), exposureSeconds);
+            if (this.ADUsInRange(frameAverageADUs, this.dataModel.getTargetADUs(), this.dataModel.getAduTolerance())) {
+                this.parent.reportFrameADUs(frameAverageADUs, true);
+                thisSet.setNumberDone(1 + thisSet.getNumberDone());
+                thisSet.rememberSuccessfulExposure(exposureSeconds);
+                //  todo    keep frame,
+                //  todo    remember exposure,
+                //   todo   advance progress bar,
+                rejectedConsecutively = 0;
+                frameNumberTrying++;
+            } else{
+                this.parent.reportFrameADUs(frameAverageADUs, false);
+                rejectedConsecutively += 1;
+                if (rejectedConsecutively > Common.ADU_FAILURE_RETRY_LIMIT) {
+                    throw new ADUExposureException();
+                }
+            }
+            exposureSeconds = this.refineExposure(exposureSeconds, frameAverageADUs, this.dataModel.getTargetADUs());
         }
         this.parent.stopProgressBar();
 
+    }
+
+    /**
+     * Improve the estimated exposure for the next attempt.  We assume exposure-to-ADU response is linear, so
+     * the amount by which the ADU value missed the target is the amount to adjust the exposure to improve it.
+     * @param exposureSeconds       Exposure usd last time
+     * @param frameAverageADUs      ADUs that resulted from that exposure
+     * @param targetADUs            Desired ADU level
+     * @return (double)             Improved exposure estimate
+     */
+    private double refineExposure(double exposureSeconds, int frameAverageADUs, Integer targetADUs) {
+        double missFactor = ((double)frameAverageADUs) / ((double)targetADUs);
+        double newExposure = exposureSeconds / missFactor;
+        System.out.println(String.format("Exposure %f gave %d target %d, refined to %f",
+                exposureSeconds, frameAverageADUs, targetADUs, newExposure));
+        if (Common.FEEDBACK_EXPOSURE_ADJUSTMENT) {
+            if (frameAverageADUs > targetADUs) {
+                this.console(String.format("Reducing exposure to %f", newExposure), 4);
+            } else {
+                this.console(String.format("Increasing exposure to %f", newExposure), 4);
+            }
+        }
+        return newExposure;
+    }
+
+    /**
+     * Expose a single flat frame with given binning and exposure.  (Filter has already been set.)
+     * Start the exposure asynchronously, then wait for it to complete.  This allows us to detect that
+     * the thread has been interrrupted via the Cancel button and send an Abort to the camera.
+     * Once the image has been acquired, ask TheSky to calculate the average ADUs and return that.
+     * @param binning               Binning level for the frame
+     * @param exposureSeconds       Exposure time for the frame
+     * @return (int)                The average ADUs of the acquired frame.
+     */
+    private int exposeFlatFrame(int binning, double exposureSeconds) throws InterruptedException, IOException, TimeoutException {
+        this.server.exposeFlatFrame(exposureSeconds, binning, true, false);
+        this.waitForExposureCompletion(exposureSeconds, binning);
+        return this.server.getLastImageADUs();
+    }
+
+    /**
+     * Wait for the camera exposure, which is running ascynchronously, to complete.  We'll sleep for
+     * the exposure time plus the measured download time, then start polling the camera at brief
+     * intervals until it reports done.  Time out after a long wait.
+     * @param exposureSeconds       How long was the actual exposure
+     * @param binning               Binning in use (to look up download time)
+     */
+    private void waitForExposureCompletion(double exposureSeconds, int binning) throws InterruptedException, IOException, TimeoutException {
+
+        //  Wait as long as it should take
+        double downloadTime = this.downloadTimes.get(binning);
+        double totalWaitSeconds = downloadTime + exposureSeconds;
+        long waitMilliseconds = (long) Math.round(totalWaitSeconds * 1000.0 );
+        if (waitMilliseconds > 0) {
+            Thread.sleep(waitMilliseconds);
+        }
+
+        double timeWaited = 0.0;
+        //  Now poll the camera until complete or timeout
+        while (!this.server.exposureIsComplete()) {
+            // Exposure is not finished.  Have we waited long enough?
+            if (timeWaited > Common.FRAME_COMPLETION_TIMEOUT_SECONDS) {
+                throw new TimeoutException("Exposure timed out");
+            } else {
+                Thread.sleep((long)Math.round(1000.0 * Common.FRAME_COMPLETION_POLL_INTERVAL_SECONDS));
+                timeWaited += Common.FRAME_COMPLETION_POLL_INTERVAL_SECONDS;
+            }
+        }
+    }
+
+    /**
+     * Determine if the given ADU value is close enough to the target, within the given tolerance
+     * @param frameAverageADUs      ADU value to test
+     * @param targetADUs            Target ADU value
+     * @param aduTolerance          Tolerance, as a percentage, as a value between 0 and 1
+     * @return (boolean)            Value is within acceptable range
+     */
+    private boolean ADUsInRange(int frameAverageADUs, int targetADUs, double aduTolerance) {
+        double difference = Math.abs(frameAverageADUs - targetADUs);
+        double differenceRatio = difference / targetADUs;
+        return differenceRatio <= aduTolerance;
     }
 
     /**
@@ -170,13 +286,16 @@ public class SessionThread implements Runnable {
     }
 
     /**
-     * To ascynchronously manage the camera, we need to know how long the downloads of finished images take.
+     * To asynchronously manage the camera, we need to know how long the downloads of finished images take.
      * These vary with the binning setting.  We'll time them here, by taking zero-length bias frames at each binning.
      * They are stored in a HashMap indexed by the binning number.  Use of a hashmap allows us to check if a given
      * binning has already been measured (key will exist) so we only measure each one once.
      */
     private void measureDownloadTimes() throws InterruptedException, IOException {
         this.console("Measuring download times for each binning level needed.", 1);
+        //  Connect to camera so we're not measuring connect time with the first download test
+        this.server.connectToCamera();
+        // Create store for the measured times, and measure each binning in use
         this.downloadTimes = new HashMap<Integer, Double>(4);
         for (FlatSet flatSet : this.flatsToAcquire) {
             Integer binning = flatSet.getBinning();

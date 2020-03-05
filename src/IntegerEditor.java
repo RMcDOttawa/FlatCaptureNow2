@@ -32,30 +32,20 @@
 /*
  * IntegerEditor is used by TableFTFEditDemo.java.
  */
-/**
+
+/*
  * JTable Cell Editor that enforces integer content.
  * Modified and simplified from an open-source version from Oracle
  */
 
-import javax.swing.AbstractAction;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.Component;
-import java.awt.Toolkit;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.EventObject;
+import javax.swing.*;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * Implements a cell editor that uses a formatted text field
@@ -65,14 +55,13 @@ public class IntegerEditor extends DefaultCellEditor {
     JFormattedTextField ftf;
     NumberFormat integerFormat;
     private Integer minimum, maximum;
-    private boolean DEBUG = false;
 
     public IntegerEditor(int min, int max) {
         super(new JFormattedTextField());
         ftf = (JFormattedTextField)getComponent();
 
-        minimum = new Integer(min);
-        maximum = new Integer(max);
+        minimum = min;
+        maximum = max;
 
         //Set up the editor for the integer cells.
         integerFormat = NumberFormat.getIntegerInstance();
@@ -102,7 +91,7 @@ public class IntegerEditor extends DefaultCellEditor {
                 } else try {              //The text is valid,
                     ftf.commitEdit();     //so use it.
                     ftf.postActionEvent(); //stop editing
-                } catch (java.text.ParseException exc) { }
+                } catch (java.text.ParseException ignored) { }
             }
         });
     }
@@ -132,18 +121,15 @@ public class IntegerEditor extends DefaultCellEditor {
         if (o instanceof Integer) {
             return o;
         } else if (o instanceof Number) {
-            return new Integer(((Number)o).intValue());
+            return ((Number) o).intValue();
         } else {
-            if (DEBUG) {
-                System.out.println("getCellEditorValue: o isn't a Number");
-            }
             try {
                 return integerFormat.parseObject(o.toString());
             } catch (ParseException exc) {
                 System.err.println("getCellEditorValue: can't parse o: " + o);
                 return null;
             } catch (NullPointerException exc) {
-                return Integer.valueOf(0);
+                return 0;
             }
         }
     }
@@ -160,7 +146,7 @@ public class IntegerEditor extends DefaultCellEditor {
         if (ftf.isEditValid()) {
             try {
                 ftf.commitEdit();
-            } catch (java.text.ParseException exc) { }
+            } catch (java.text.ParseException ignored) { }
 
         } else { //text is invalid
             if (!userSaysRevert()) { //user wants to edit
@@ -180,7 +166,7 @@ public class IntegerEditor extends DefaultCellEditor {
         Toolkit.getDefaultToolkit().beep();
         ftf.selectAll();
         Object[] options = {"Edit"};
-        int answer = JOptionPane.showOptionDialog(
+        JOptionPane.showOptionDialog(
                 SwingUtilities.getWindowAncestor(ftf),
                 "The value must be an integer between "
                         + minimum + " and "

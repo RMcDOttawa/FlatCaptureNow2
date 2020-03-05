@@ -2,22 +2,25 @@
  * Description of one set of flat frames (a number of frames with identical specifications)
  */
 public class FlatSet {
-    int         numberOfFrames = 0;
-    int         numberDone = 0;
-    FilterSpec  filterSpec = null;
-    int         binning = 0;
+    private int         numberOfFrames;
+    private int         numberDone;
+    private FilterSpec  filterSpec;
+    private int         binning;
+    private AppPreferences preferences;
 
     /**
      * Constructor for a set with given parameters
      * @param numberWanted      Number of frames to collect
      * @param filter            Filter to be used for collection
      * @param binning           Binning level to be used for collection
+     * @param preferences       Application preferences (for saveing exposure estimates)
      */
-    public FlatSet(int numberWanted, FilterSpec filter, int binning) {
+    public FlatSet(int numberWanted, FilterSpec filter, int binning, AppPreferences preferences) {
         this.numberDone = 0;
         this.numberOfFrames = numberWanted;
         this.filterSpec = filter;
         this.binning = binning;
+        this.preferences = preferences;
     }
 
     //  Getters and setters
@@ -36,7 +39,7 @@ public class FlatSet {
 
     /**
      * Brief string description of this set suitable for displaying in session console
-     * @return
+     * @return (String)     Description of this set suitable for console log message
      */
     public String describe() {
         return String.format("%d %s flats binned %d x %d",
@@ -50,8 +53,19 @@ public class FlatSet {
      * @return (double)     Exposure estimate in seconds
      */
     public double getEstimatedExposure() {
-        // todo getEstimatedExposure
         System.out.println("getEstimatedExposure");
-        return 12345;
+        double exposure = this.preferences.getInitialExposure(this.filterSpec.getSlotNumber(), this.binning);
+        System.out.println("  Returns " + exposure);
+        return exposure;
+    }
+
+    /**
+     * A frame has been acquired with an acceptable ADU level.  Remember the exposure that did that,
+     * in the app preferences, for using as an initial estimate next time
+     * @param exposureSeconds
+     */
+    public void rememberSuccessfulExposure(double exposureSeconds) {
+        System.out.println(String.format("rememberSuccessfulExposure(%f)", exposureSeconds));
+        this.preferences.setInitialExposure(this.filterSpec.getSlotNumber(), this.binning, exposureSeconds);
     }
 }

@@ -63,6 +63,7 @@ new FormModel {
 						name: "showADUsCheckbox"
 						"text": "Show ADU values in log"
 						"toolTipText": "Show additional detail about the ADU levels for acquired frames."
+						"selected": true
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "showADUsCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2

@@ -1,5 +1,3 @@
-import java.util.List;
-
 /**
  * Program to control TheSkyX, over its TCP server connection, and have it capture
  * a large number of Flat calibration frames - sets of frames for different filter

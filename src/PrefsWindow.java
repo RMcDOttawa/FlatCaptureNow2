@@ -228,7 +228,7 @@ public class PrefsWindow extends JDialog {
      * "Use Filter Wheel" checkbox changed.  Record the preference.
      */
     private void filterWheelCheckboxActionPerformed() {
-        this.preferences.setUseFiterWheel(this.filterWheelCheckbox.isSelected());
+        this.preferences.setUseFilterWheel(this.filterWheelCheckbox.isSelected());
     }
 
     /**

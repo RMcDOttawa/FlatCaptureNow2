@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -47,7 +46,7 @@ public class AppPreferences {
     public boolean getUseFilterWheel() {
         return this.preferences.getBoolean(USE_FILTER_WHEEL, true);
     }
-    public void setUseFiterWheel(boolean flag) {
+    public void setUseFilterWheel(boolean flag) {
         this.preferences.putBoolean(USE_FILTER_WHEEL, flag);
     }
 
@@ -137,17 +136,15 @@ public class AppPreferences {
     public List<Integer> getFilterSlotNumbers() {
         String slotNumbersEncoded = this.preferences.get(FILTER_SLOT_NUMBERS, "1,2,3,4,5,6,7,8");
         List<String> slotNumberStringsList = Arrays.asList(slotNumbersEncoded.split(","));
-        List<Integer> slotNumbers = slotNumberStringsList.stream()
+        return slotNumberStringsList.stream()
                                     .map(Integer::valueOf)
                                     .collect(Collectors.toList());
-        return slotNumbers;
     }
 
     //  For every filter slot number we store a name.  Get and Set these with single methods
     public String getFilterName(int slotNumber) {
         String key = FILTER_NAME_PREFIX + ":" + slotNumber;
-        String filterName = this.preferences.get(key, "Filter" + slotNumber);
-        return filterName ;
+        return this.preferences.get(key, "Filter" + slotNumber);
     }
 
     public void setFilterName(int slotNumber, String name) {
@@ -158,8 +155,7 @@ public class AppPreferences {
     //  For every filter slot number we store a "use" flag.  Get and Set these with single methods
     public boolean getFilterUse(int slotNumber) {
         String key = FILTER_USE_PREFIX + ":" + slotNumber;
-        boolean inUse = this.preferences.getBoolean(key, false);
-        return inUse ;
+        return this.preferences.getBoolean(key, false);
     }
 
     public void setFilterUse(int slotNumber, boolean useFilter) {
@@ -172,10 +168,9 @@ public class AppPreferences {
     public List<Integer> getBinningNumbers() {
         String binningNumbersEncoded = this.preferences.get(BINNING_NUMBERS, "1,2,3,4");
         List<String> binningNumberStringsList = Arrays.asList(binningNumbersEncoded.split(","));
-        List<Integer> binningNumbers = binningNumberStringsList.stream()
+        return binningNumberStringsList.stream()
                 .map(Integer::valueOf)
                 .collect(Collectors.toList());
-        return binningNumbers;
     }
 
     //  Each binning number has an Availability value stored for it.  In the preferences we store
@@ -209,7 +204,7 @@ public class AppPreferences {
                 codeNumber = 0;
                 break;
             case AVAILABLE:
-                codeNumber = 1;
+                //codeNumber = 1;
                 break;
             case DEFAULT:
                 codeNumber = 2;

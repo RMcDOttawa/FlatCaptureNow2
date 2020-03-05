@@ -19,6 +19,9 @@ public class TheSkyXServer {
     private ReentrantLock serverLock = null;
 
     private InetSocketAddress inetSocketAddress;
+    private double rememberedExposureForSimulation = 10.0;
+    private int rememberedBinningForSimulation = 1;
+    private Integer rememberedFilterSlotForSimulation = 1;
 
     /**
      * Constructor, taking address and port number, create socket for trial connection
@@ -182,7 +185,10 @@ public class TheSkyXServer {
     */
 
     public void abortImageInProgress() throws IOException {
-        String command = "var Out=ccdsoftCamera.Abort();"
+        String command = "var Out=\"0\";"
+                + "if (!ccdsoftCamera.IsExposureComplete) {"
+                +       "Out=ccdsoftCamera.Abort();"
+                + "}"
                 + "Out+=\"\\n\";";
         String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
@@ -293,7 +299,10 @@ public class TheSkyXServer {
      * @throws IOException
      */
     public void abortSlew() throws IOException {
-        String commandNoReturn = "Out=sky6RASCOMTele.Abort();"
+        String commandNoReturn = "var Out=\"0\";"
+                + "if (!sky6RASCOMTele.IsSlewComplete) {"
+                +       "Out=sky6RASCOMTele.Abort();"
+                + "}"
                 + "Out+=\"\\n\";";
         String result = this.sendCommandWithReturn(commandNoReturn);
         int errorCode = this.errorCheckResult(result);
@@ -352,8 +361,6 @@ public class TheSkyXServer {
      * @param slotNumber     1-based slot number for the filter to use
      */
     public void selectFilter(Integer slotNumber) throws IOException {
-        // todo selectFilter
-        System.out.println("selectFilter: " + slotNumber);
         String commandNoReturn = "ccdsoftCamera.filterWheelConnect();"
                 + "ccdsoftCamera.FilterIndexZeroBased=" + (String.valueOf(slotNumber - 1)) + ";"
                 + "var Out;Out=cameraResult+\"\\n\";";
@@ -362,5 +369,117 @@ public class TheSkyXServer {
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
         };
+        this.rememberedFilterSlotForSimulation = slotNumber;
+    }
+
+    /**
+     * Expose a flat frame with the given exposure and binning.  We assume the filter has already been set.
+     * Arguments determine if the exposure is synchronous or asynchronous, and if we autosave the result
+     * @param exposureSeconds       Exposure time in seconds (with fractions)
+     * @param binning               Binning value (1-4)
+     * @param asynchronous          true if exposure should be started asynchronously
+     * @param autosave              true if camera should write exposure to autosave folder
+     */
+    public void exposeFlatFrame(double exposureSeconds, int binning, boolean asynchronous, boolean autosave) throws IOException {
+        String command = "ccdsoftCamera.Autoguider=false;"        //  Use main camera
+                + "ccdsoftCamera.Asynchronous=" + boolToJS(asynchronous) + ";"   //  Wait for camera?
+                + "ccdsoftCamera.Frame=4;"      // Magic code for flat frame
+                + "ccdsoftCamera.ImageReduction=0;"       // No autodark or calibration
+                + "ccdsoftCamera.ToNewWindow=false;"      // Reuse window, not new one
+                + "ccdsoftCamera.ccdsoftAutoSaveAs=0;"    //  0 = FITS format
+                + "ccdsoftCamera.AutoSaveOn=" + boolToJS(autosave) + ";"
+                + "ccdsoftCamera.BinX=" + binning + ";"
+                + "ccdsoftCamera.BinY=" + binning + ";"
+                + "ccdsoftCamera.ExposureTime=" + String.valueOf(exposureSeconds) + ";"
+                + "var cameraResult = ccdsoftCamera.TakeImage();"
+                + "var Out;Out=cameraResult+\"\\n\";";
+
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            System.out.println("Error returned from camera: " + result);
+            throw new IOException("Error from camera");
+        }
+
+        //  Remember the exposure information we just used, in case we need it for the simulation
+        //  of ADU calculation
+        this.rememberedExposureForSimulation = exposureSeconds;
+        this.rememberedBinningForSimulation = binning;
+    }
+
+    /**
+     * Get the average ADU value of the last-acquired image
+     * Note that testing this function without a live camera and a real flat target is difficult, as
+     * the ADU value returned will not be typical.  (From TheSkyX's camera simulator, it is a constant value).
+     * So, we have an optional testing simulator that can return ADUs empirically calculated from testing.
+     * @return (int)    Average ADU value of the image
+     */
+    public int getLastImageADUs() throws IOException {
+        // todo getLastImageADUs
+        System.out.println("getLastImageADUs");
+        if (Common.SIMULATE_ADU_MEASUREMENT) {
+            return this.getSimulatedADUMeasurement();
+        } else {
+            // Not a simulation - get the value from the server
+            String command = "ccdsoftCameraImage.AttachToActive();"
+                + "var averageAdu = ccdsoftCameraImage.averagePixelValue();"
+                + "var Out;"
+                + "Out=averageAdu+\"\\n\";";
+            String returnString = this.sendCommandWithReturn(command);
+            try {
+                Double averageADU = Double.valueOf(returnString);
+                return (int) Math.round(averageADU);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid response from querying camera average pixel value: " + returnString);
+                throw new IOException("Invalid response querying ADUs");
+            }
+        }
+    }
+
+    /**
+     * The Simulator flag is on, so instead of asking the server for the last frame's ADU measurement,
+     * we're going to calculate a realistic one.  I empirically measured a bunch of cases to get some
+     * regression parameters, which we'll use here.
+     * @return (int)    Simulated ADU value
+     */
+    private int getSimulatedADUMeasurement() {
+        // Get the regression values.  Only measured them for certain data.
+        double exposure = this.rememberedExposureForSimulation;
+        int binning = this.rememberedBinningForSimulation;
+        int filter = this.rememberedFilterSlotForSimulation;
+        Double slope;
+        Double intercept;
+        if ((binning == 1) && (filter == 4)) {
+            // Luminance, binned 1x1
+            slope = 721.8;
+            intercept = 19817.0;
+        } else if ((binning == 2) && (filter == 1)) {
+            // Red filter, binned 2x2
+            slope = 7336.7;
+            intercept = -100.48;
+        } else if ((binning == 2) && (filter == 2)) {
+            // Green filter, binned 2x2
+            slope = 11678.0;
+            intercept = -293.09;
+        } else if ((binning == 2) && (filter == 3)) {
+            // Blue filter, binned 2x2
+            slope = 6820.4;
+            intercept = 1858.3;
+        } else if ((binning == 1) && (filter == 5)) {
+            // H-alpha filter, binned 1x1
+            slope = 67.247;
+            intercept = 2632.7;
+        } else {
+            slope = 721.8;
+            intercept = 19817.0;
+        }
+        double calculatedResult = slope * exposure + intercept;
+
+        // Now we'll put a small percentage noise into the value so it has some variability for realism
+        double randFactorZeroCentered = Common.SIMULATION_NOISE_FRACTION * (Math.random() - 0.5);
+        double noisyResult = calculatedResult + randFactorZeroCentered * calculatedResult;
+
+        int clippedAt16Bits = Math.min((int) Math.round(noisyResult), 65535);
+        return clippedAt16Bits;
     }
 }

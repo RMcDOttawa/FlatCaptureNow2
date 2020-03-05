@@ -81,9 +81,10 @@ public class Session extends JDialog {
         String columnNames[] = {"Number", "Filter", "Binning", "Done"};
         this.sessionTableModel = new SessionSetsTableModel(columnNames, 0);
         for (FlatSet thisSet : flatSetList) {
+            String binningValue = String.format("%d x %d", thisSet.getBinning(), thisSet.getBinning());
             String[] rowValues = {String.valueOf(thisSet.getNumberOfFrames()),
             thisSet.getFilterSpec().getName(),
-            String.valueOf(thisSet.getBinning()),
+            binningValue,
             String.valueOf(thisSet.getNumberDone())};
             this.sessionTableModel.addRow(rowValues);
         }
@@ -160,8 +161,12 @@ public class Session extends JDialog {
      * Receive a message from the acquisition thread that it is finished, so we can clean up
      */
     public void acquisitionThreadEnded() {
+        // Revert the close and cancel buttons to their normal form
         this.closeButton.setEnabled(true);
         this.cancelButton.setEnabled(false);
+        // Clear visual indicators that were only meaningful while the session was running
+        this.stopProgressBar();
+        this.sessionTable.clearSelection();
     }
 
     private static final String INDENTATION_BLANKS = "    ";
@@ -196,7 +201,6 @@ public class Session extends JDialog {
     public void highlightSessionTableRow(int rowIndex) {
         this.consoleLock.lock();
         try {
-            System.out.println("highlightSessionTableRow: " + rowIndex);
             this.sessionTable.clearSelection();
             this.sessionTable.setRowSelectionInterval(rowIndex, rowIndex);
         }
@@ -211,16 +215,30 @@ public class Session extends JDialog {
      * @param maxValue      Value that 100% fills the bar
      */
     public void startProgressBar(int maxValue) {
-        this.progressBar.setValue(0);
-        this.progressBar.setMaximum(maxValue);
+        this.consoleLock.lock();
+        try {
+            this.progressBar.setValue(0);
+            this.progressBar.setMaximum(maxValue);
+        }
+        finally {
+            //  Use try-finally to ensure unlock happens even if some kind of exception occurs
+            this.consoleLock.unlock();
+        }
     }
 
     /**
      * Set the progress bar to invisible, as we're done with it
      */
     public void stopProgressBar() {
-        this.progressBar.setValue(0);
-        this.progressBar.setMaximum(0);
+        this.consoleLock.lock();
+        try {
+            this.progressBar.setValue(0);
+            this.progressBar.setMaximum(0);
+        }
+        finally {
+            //  Use try-finally to ensure unlock happens even if some kind of exception occurs
+            this.consoleLock.unlock();
+        }
     }
 
     /**
@@ -228,7 +246,29 @@ public class Session extends JDialog {
      * @param value
      */
     public void updateProgressBar(int value) {
-        this.progressBar.setValue(value);
+        this.consoleLock.lock();
+        try {
+            this.progressBar.setValue(value);
+        }
+        finally {
+            //  Use try-finally to ensure unlock happens even if some kind of exception occurs
+            this.consoleLock.unlock();
+        }
+    }
+
+    /**
+     * Receive a report from the session of a frame being acquired, and its average ADUs, and whether
+     * that ADU value is in the acceptable range.  Always report out-of-range ADUs in the console.  In-range
+     * depend on the "show ADUs" switch.
+     * @param frameAverageADUs      ADUs of frame just acquired
+     * @param isWithinRange         Is the ADU level within the target range?
+     */
+    public void reportFrameADUs(int frameAverageADUs, boolean isWithinRange) {
+        if (this.showADUsCheckbox.isSelected() || !isWithinRange) {
+            String conclusion = isWithinRange ? ": within range, keeping this frame."
+                    : ": out of range, discarding frame, adjusting exposure.";
+            this.console(String.format("%d ADUs%s", frameAverageADUs, conclusion), 3);
+        }
     }
 
 
@@ -306,6 +346,7 @@ public class Session extends JDialog {
                 //---- showADUsCheckbox ----
                 showADUsCheckbox.setText("Show ADU values in log");
                 showADUsCheckbox.setToolTipText("Show additional detail about the ADU levels for acquired frames.");
+                showADUsCheckbox.setSelected(true);
                 showADUsCheckbox.addActionListener(e -> showADUsCheckboxActionPerformed());
                 contentPanel.add(showADUsCheckbox, new GridBagConstraints(0, 2, 3, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
