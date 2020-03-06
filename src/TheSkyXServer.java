@@ -273,7 +273,9 @@ public class TheSkyXServer {
      */
     public void setScopeTracking(boolean oldTrackingState) throws IOException {
         String commandNoReturn = "sky6RASCOMTele.Connect();"
-                + "sky6RASCOMTele.IsTracking=" + boolToJS(oldTrackingState) + ";";
+                + "sky6RASCOMTele.IsTracking=" + boolToJS(oldTrackingState) + ";"
+                + "var Out=sky6RASCOMTele.IsTracking;"
+                + "Out+=\"\\n\";";
         String result = this.sendCommandWithReturn(commandNoReturn);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {

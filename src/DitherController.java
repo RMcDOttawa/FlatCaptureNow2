@@ -1,3 +1,6 @@
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+
 /*
 *   Object to control dithering of flat frames.
 *   Dithering is moving the scope slightly between frames, so that any small irregularities in the
@@ -29,6 +32,7 @@ public class DitherController {
 
     public DitherController(double startAltDeg, double startAzDeg,
                             double radiusArcSeconds, double maxRadiusArcSeconds) {
+//        System.out.println(String.format("Creating DitherController at (%f,%f)", startAltDeg, startAzDeg));
         this.startAltDeg = startAltDeg;
         this.startAzDeg = startAzDeg;
         this.ditherRadiusArcSeconds = radiusArcSeconds;
@@ -39,6 +43,95 @@ public class DitherController {
         this.ditherMaxRadiusRadians = Math.toRadians(this.ditherMaxRadiusArcSeconds / ARC_SECONDS_IN_DEGREE);
 
         //  Set the position variables to force a new cycle to start on first use
+        this.reset();
+    }
+
+    /**
+     * String description of the dither parameters for use in console log
+     * @return (String)
+     */
+    public String description() {
+        return String.format("radius %.2f arcseconds, maximum %.2f arcseconds", this.ditherRadiusArcSeconds,
+                this.ditherMaxRadiusArcSeconds);
+    }
+
+    public double getStartAltDeg() {
+        return startAltDeg;
+    }
+
+    public double getStartAzDeg() {
+        return startAzDeg;
+    }
+
+    /**
+     * Calculate what should happen for the next dithered frame.  Return whether the scope should be moved
+     * and, if so, the Alt and Az coordinates to slew to
+     * @return (triple)     Move scope?   Alt coordinates?   Az Coordinates?
+     */
+    public ImmutableTriple<Boolean, Double, Double> calculateNextFrame() {
+        boolean slewScope;
+        double targetAlt;
+        double targetAz;
+        this.countInSet += 1;
+        if (this.countInSet == 1) {
+            // First frame in set so we don't move the scope
+            slewScope = false;
+            targetAlt = this.startAltDeg;
+            targetAz = this.startAzDeg;
+        } else {
+            //  We're beyond the first frame so we will do a dithering move
+            ImmutablePair<Double,Double> ditherOffset = this.calcNextDitherOffset();
+            double altOffset = ditherOffset.left;
+            double azOffset = ditherOffset.right;
+            //  Conver offset in radians to degrees, then offset original location
+            slewScope = true;
+            targetAlt = this.startAltDeg + Math.toDegrees(altOffset);
+            targetAz = this.startAzDeg + Math.toDegrees(azOffset);
+        }
+        return ImmutableTriple.of(slewScope, targetAlt, targetAz);
+    }
+
+    /**
+     * Calculate the next dithering offset, in radians, around the concentric circles that
+     * build outward from the original point.
+     * @return
+     */
+    private ImmutablePair<Double, Double> calcNextDitherOffset() {
+        double xOffset, yOffset;
+        // Calc next dither offset from (0,0) in radians
+//        System.out.println(String.format("calc_next_dither_location old angle = %f", this.angleRadians));
+        if (this.angleRadians > (2.0 * Math.PI)) {
+            //  We have finished a circle, move to a bigger one.
+//            System.out.println(String.format("  Angle %f > 2pi, resetting", this.angleRadians));
+            this.angleRadians = 0.0;        //  Reset rotation
+            this.steps *= 2;                //  Double steps on circle
+//            System.out.println(String.format("  Steps increased to %d", this.steps));
+            this.currentRadiusRadians += this.ditherRadiusRadians;       //  Increment radius of circle by dither space
+//            System.out.println(String.format("  Radius increased to %f", this.currentRadiusRadians));
+            if (this.currentRadiusRadians > this.ditherMaxRadiusRadians) {
+                // We 've grown the circle larger than the specified maximum.  Reset to first
+                this.steps = 8;  // First circle out from centre gets 8 divisions
+                this.currentRadiusRadians = this.ditherRadiusRadians;
+//                System.out.println(String.format("  Radius too large, reset to %f", this.currentRadiusRadians));
+            }
+        } else {
+            //  We're still circumnavigating this circle
+            this.angleRadians += ((2.0 * Math.PI) / this.steps);        //  Next step in same circle
+//            System.out.println(String.format("  Angle in same circle rotated to %f", this.angleRadians));
+        }
+
+        //  Compute next dither location
+        xOffset = Math.cos(this.angleRadians) * this.currentRadiusRadians;
+        yOffset = Math.sin(this.angleRadians) * this.currentRadiusRadians;
+//        System.out.println(String.format("Returning offsets ({%f},{%f})", xOffset, yOffset));
+
+        return ImmutablePair.of(xOffset, yOffset);
+    }
+
+    /**
+     * Reset the dithering parameters for a fresh run.
+     */
+    public void reset() {
         this.countInSet = 0;
         this.angleRadians = 3.0 * Math.PI;  // More than the 2-pi that is a complete circle
         this.steps = 4;                     // New cycle will double this to 8

@@ -1,4 +1,7 @@
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -31,10 +34,10 @@ public class SessionThread implements Runnable {
         try {
             this.server = new TheSkyXServer(this.dataModel.getServerAddress(), this.dataModel.getPortNumber());
             this.console("Session Started", 1);
-            this.preSessionMountControl();
+            DitherController dither = this.preSessionMountControl();
             this.measureDownloadTimes();
-            this.setUpDithering();
-            this.processWorkList();
+            this.setUpDithering(dither);
+            this.processWorkList(dither);
             this.postSessionWarmUp();
             this.postSessionMountControl();
         } catch (IOException e) {
@@ -78,8 +81,9 @@ public class SessionThread implements Runnable {
      * the complete list, acquire each set.  Optionally, if Dithering selected, we move the scope
      * slightly before each acquired frame.  Acquired frames are not saved immediately upon acquisition -
      * instead we will inspect the frame to see if the ADU average is in range, and save only if it is.
+     * @param dither    Dither controller (null if no dithering)
      */
-    private void processWorkList() throws InterruptedException, IOException, ADUExposureException, TimeoutException {
+    private void processWorkList(DitherController dither) throws InterruptedException, IOException, ADUExposureException, TimeoutException {
 
         for (int itemIndex = 0; itemIndex < this.flatsToAcquire.size(); itemIndex++) {
             //  Tell the user interface to highlight this row in the table
@@ -88,7 +92,8 @@ public class SessionThread implements Runnable {
             FlatSet thisSet = this.flatsToAcquire.get(itemIndex);
             console("Acquiring " + thisSet.describe() + ".", 1);
             //  Acquire all the flats in this set
-            this.acquireOneFlatsSet(itemIndex, thisSet);
+            this.acquireOneFlatsSet(itemIndex, thisSet, dither);
+            this.resetDithering(dither);
         }
         
     }
@@ -104,14 +109,16 @@ public class SessionThread implements Runnable {
      *          the observatory)
      *      - If dithering is in use, do a dither move after each successful frame
      * @param thisSet   Specifications for the Flats set wanted
+     * @param dither    Dithering controller (null if no dithering)
      */
-    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet) throws InterruptedException, IOException, ADUExposureException, TimeoutException {
+    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet, DitherController dither)
+            throws InterruptedException, IOException, ADUExposureException, TimeoutException {
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
             // Connect camera
             this.server.connectToCamera();
 
             // Acquire the frames
-            this.acquireFrames(workItemIndex, thisSet);
+            this.acquireFrames(workItemIndex, thisSet, dither);
         }
     }
 
@@ -131,8 +138,9 @@ public class SessionThread implements Runnable {
      * autosave OFF, then manually save each frame after it is analyzed and once we know we like it.
      * @param workItemIndex     Index in work list (for updating UI)
      * @param thisSet           Details of the frame set to be acquired
+     * @param dither            Dithering controller (null if no dithering)
      */
-    private void acquireFrames(int workItemIndex, FlatSet thisSet) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
+    private void acquireFrames(int workItemIndex, FlatSet thisSet, DitherController dither) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
 
         // Set up filter if in use. We only need do this once, since all the frames
         // we are about to take are identical.
@@ -152,8 +160,14 @@ public class SessionThread implements Runnable {
         // of a number of exposure ADU out-of-spec failures in a row.
         int rejectedConsecutively = 0;
         int frameNumberTrying = 1;
+        int lastDitheredFrameNumber = 0;
 
         while (thisSet.getNumberDone() < thisSet.getNumberOfFrames()) {
+            // Don't dither if we're trying the same frame again, only new frames
+            if (lastDitheredFrameNumber != frameNumberTrying) {
+                lastDitheredFrameNumber = frameNumberTrying;
+                this.ditherNextFrame(dither);
+            }
             this.console(String.format("Frame %d of %d: %.3f seconds", frameNumberTrying,
                     thisSet.getNumberOfFrames(), exposureSeconds), 2);
             int frameAverageADUs = this.exposeFlatFrame(thisSet.getBinning(), exposureSeconds);
@@ -165,7 +179,6 @@ public class SessionThread implements Runnable {
                 rejectedConsecutively = 0;
                 frameNumberTrying++;
                 this.parent.updateProgressBar(frameNumberTrying);
-                // todo dither for next frame
             } else{
                 this.parent.reportFrameADUs(frameAverageADUs, false);
                 rejectedConsecutively += 1;
@@ -176,8 +189,46 @@ public class SessionThread implements Runnable {
             exposureSeconds = this.refineExposure(exposureSeconds, frameAverageADUs, this.dataModel.getTargetADUs());
         }
         this.parent.stopProgressBar();
-        //  todo reset dithering
 
+    }
+
+    /**
+     * Dither the next frame.  If dithering is on (non-null controller) calculate where the scope should
+     * be pointed for the next frame and move it there.
+     * @param dither    Dither controller
+     */
+    private void ditherNextFrame(DitherController dither) throws IOException {
+        if (dither != null) {
+            ImmutableTriple<Boolean, Double, Double> ditherResponse = dither.calculateNextFrame();
+            boolean moveScope = ditherResponse.left;
+            double moveToAlt = ditherResponse.middle;
+            double moveToAz = ditherResponse.right;
+            if (moveScope) {
+                System.out.println(String.format("Dither slew to: %f, %f", moveToAlt, moveToAz));
+                this.server.slewToAltAz(moveToAlt, moveToAz, false);
+                if (this.dataModel.getTrackingOff()) {
+                    this.server.setScopeTracking(false);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reset the dithering controller at the end of a set of frames, so the next set starts from
+     * the target centre again.  Slew the scope back to the centre.
+     * @param dither    Dither controller
+     */
+    private void resetDithering(DitherController dither) throws IOException {
+        if (dither != null) {
+            double originalAlt = dither.getStartAltDeg();
+            double originalAz = dither.getStartAzDeg();
+            System.out.println(String.format("Dither reset slew to: %f, %f", originalAlt, originalAz));
+            this.server.slewToAltAz(originalAlt, originalAz, false);
+            if (this.dataModel.getTrackingOff()) {
+                this.server.setScopeTracking(false);
+            }
+            dither.reset();
+        }
     }
 
     /**
@@ -187,8 +238,6 @@ public class SessionThread implements Runnable {
      * @param exposureSeconds   Exposure to include in generated file name
      */
     private void saveAcquiredFrame(double exposureSeconds, int sequenceNumber, FlatSet thisSet) throws IOException {
-        // todo saveAcquiredFrame
-        System.out.println("saveAcquiredFrame: " + exposureSeconds);
         String fileName = this.makeLocalFileName(exposureSeconds, sequenceNumber, thisSet);
         if (this.dataModel.getUseTheSkyAutosave()) {
             this.server.saveImageToAutoSave(fileName);
@@ -299,8 +348,10 @@ public class SessionThread implements Runnable {
      * - Home the mount
      * - Slew to the location of a fixed light source
      * - Turn tracking off
+     * @return (DitherController)   Dither controller if dithering in use, otherwise null
      */
-    private void preSessionMountControl() throws IOException {
+    private DitherController preSessionMountControl() throws IOException {
+        DitherController dither = null;
         if (this.dataModel.getControlMount()) {
             if (this.dataModel.getHomeMount()) {
                 this.server.homeMount();
@@ -311,7 +362,15 @@ public class SessionThread implements Runnable {
             if (this.dataModel.getTrackingOff()) {
                 this.server.setScopeTracking(false);
             }
+            if (this.dataModel.getDitherFlats()) {
+                // We assume scope is now pointed at target, either manually or by the slew above
+                ImmutablePair<Double,Double> scopeCoordinates = this.server.getScopeAltAz();
+                dither = new DitherController(scopeCoordinates.left, scopeCoordinates.right,
+                        this.dataModel.getDitherRadius(), this.dataModel.getDitherMaximum());
+                this.console("Dithering flats: " + dither.description() + ".", 1);
+            }
         }
+        return dither;
     }
 
     /**
@@ -361,10 +420,13 @@ public class SessionThread implements Runnable {
 
     /**
      * If optional dithering is in use, set up the data structure used to manage it
+     * @param dither    Dither controller (null if no dithering)
      */
-    private void setUpDithering() {
-        // todo setUpDithering
-        System.out.println("setUpDithering");
+    private void setUpDithering(DitherController dither) {
+        if (dither != null) {
+            System.out.println("setUpDithering");
+            // Nothing to do; left here for possible future use
+        }
     }
 
     /**
