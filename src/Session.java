@@ -1,18 +1,14 @@
-import java.awt.event.*;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.time.LocalDateTime;
+import java.awt.event.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.table.DefaultTableModel;
 /*
  * Created by JFormDesigner on Wed Feb 26 14:14:57 EST 2020
  */
@@ -25,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
  * being acquired highlighted), and a console log.  Also a Cancel button that will interrupt acquisition.
  * @author Richard McDonald
  */
+@SuppressWarnings({"FieldCanBeLocal", "rawtypes"})
 public class Session extends JDialog {
     DefaultTableModel sessionTableModel = null;
     DefaultListModel<String> sessionConsoleModel = null;
@@ -82,7 +79,7 @@ public class Session extends JDialog {
     private void setUpSessionTable(ArrayList<FlatSet> flatSetList) {
 
         //  Set up a table model with this many rows and appropriate columns
-        String columnNames[] = {"Number", "Filter", "Binning", "Done"};
+        String[] columnNames = {"Number", "Filter", "Binning", "Done"};
         this.sessionTableModel = new SessionSetsTableModel(columnNames, 0);
         for (FlatSet thisSet : flatSetList) {
             String binningValue = String.format("%d x %d", thisSet.getBinning(), thisSet.getBinning());
@@ -98,10 +95,7 @@ public class Session extends JDialog {
         //  Ignore clicking in table rows
         //  Remove any existing mouse listeners except tool tips
         for (MouseListener listener : this.sessionTable.getMouseListeners()) {
-            if (listener instanceof ToolTipManager) {
-                // We like tool tips - leave this listener in place
-                ;
-            } else {
+            if (!(listener instanceof ToolTipManager)) {
                 this.sessionTable.removeMouseListener(listener);
             }
         }
@@ -119,6 +113,7 @@ public class Session extends JDialog {
      */
     private void setUpSessionConsole() {
         this.sessionConsoleModel = new DefaultListModel<>();
+        //noinspection unchecked
         this.sessionConsole.setModel(this.sessionConsoleModel);
     }
 
@@ -266,7 +261,7 @@ public class Session extends JDialog {
 
     /**
      * Update progress bar with given value toward the predefined maximum
-     * @param value
+     * @param value     Value that is some amount of the way to the defined maximum
      */
     public void updateProgressBar(int value) {
         this.consoleLock.lock();
@@ -295,6 +290,7 @@ public class Session extends JDialog {
     }
 
 
+        @SuppressWarnings("rawtypes")
         private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license

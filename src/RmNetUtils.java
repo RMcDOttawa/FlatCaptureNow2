@@ -10,7 +10,7 @@ public class RmNetUtils {
 
     static final int CONNECT_TIMEOUT = 3000;
 
-    //  Specifications from wikipedia:
+    //  Specifications from Wikipedia:
     //      A domain name is a series of tokens separated by dots.
     //      Each token is from 1 to 63 characters, and the entire name is max 253 characters.
     //      Each token can contain letters, digits, hyphens.  May not start with hyphen.
@@ -334,8 +334,7 @@ public class RmNetUtils {
      */
     private static String getOurIpAddress() throws UnknownHostException {
         InetAddress thisAddress = InetAddress.getLocalHost();
-        String addressAsString = thisAddress.getHostAddress();
-        return addressAsString;
+        return thisAddress.getHostAddress();
     }
 
     /**
@@ -344,7 +343,7 @@ public class RmNetUtils {
      * @return (String)     IP address in form 192.168.1.123
      */
     private static String getIpOfHostAsString(String hostName) {
-        InetAddress hostAddress = null;
+        InetAddress hostAddress;
         try {
             hostAddress = InetAddress.getByName(hostName);
         } catch (UnknownHostException e) {

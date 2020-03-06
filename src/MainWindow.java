@@ -29,9 +29,10 @@ import java.util.Timer;
  * Main window controller for the application
  * @author Richard McDonald
  */
+@SuppressWarnings({"FieldCanBeLocal", "DuplicatedCode"})
 public class MainWindow extends JFrame {
 
-    private AppPreferences preferences = null;
+    private AppPreferences preferences;
     private DataModel dataModel = null;
 
     //  Map to record valid/invalid state of validated fields in the UI
@@ -58,7 +59,6 @@ public class MainWindow extends JFrame {
      */
     public MainWindow ( AppPreferences preferences) {
         this.preferences = preferences;
-        this.dataModel = dataModel;
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //  Catch main Quit menu so we can check for unsaved data
         if (Desktop.isDesktopSupported()) {
@@ -77,7 +77,7 @@ public class MainWindow extends JFrame {
     public void setUiFromDataModel(DataModel dataModel, String windowTitle) {
         this.setTitle(windowTitle);
         this.dataModel = dataModel;
-        this.fieldValidity = new HashMap<JTextField, Boolean>();
+        this.fieldValidity = new HashMap<>();
 
         this.serverAddressField.setText(dataModel.getServerAddress());
         this.portNumberField.setText(String.valueOf(dataModel.getPortNumber()));
@@ -383,11 +383,7 @@ public class MainWindow extends JFrame {
      */
 
     private boolean fieldIsValid(JTextField fieldToCheck) {
-        if (this.fieldValidity.containsKey(fieldToCheck)) {
-            return this.fieldValidity.get(fieldToCheck);
-        } else {
-            return true;
-        }
+        return this.fieldValidity.getOrDefault(fieldToCheck, true);
     }
 
     /**
@@ -492,8 +488,7 @@ public class MainWindow extends JFrame {
         String message;
         try {
             TheSkyXServer server = new TheSkyXServer(this.dataModel.getServerAddress(), this.dataModel.getPortNumber());
-            String path = server.getCameraAutosavePath();
-            message = path;
+            message = server.getCameraAutosavePath();
         } catch (IOException e) {
             message = "I/O Error";
         }
@@ -604,7 +599,7 @@ public class MainWindow extends JFrame {
     /**
      * Manually-manage the enablement of the slewing controls - the cancel and slew buttons and the alt/az fields
      * We do this manually so we can manually suspend them during slew.  Doing them with bindings, as most of the
-     * other controls are handled, prevents manual adjustement.
+     * other controls are handled, prevents manual adjustment.
      */
     private void enableSlewControls() {
 
@@ -642,19 +637,14 @@ public class MainWindow extends JFrame {
         this.lightSourceAzField.setEnabled(false);
 
         //  Do the slew, wait for it to end or be cancelled
-        try {
-            this.slewScopeToLightSource();
-        } catch (InterruptedException e) {
-            // Slew was interrupted - nothing we need to do
-        }
+        this.slewScopeToLightSource();
 
     }
 
     /**
      * Spawn a sub-thread to slew the scope
-     * @throws InterruptedException
      */
-    private void slewScopeToLightSource() throws InterruptedException {
+    private void slewScopeToLightSource()  {
 
         //  Start the slew thread
         this.slewScopeRunnable = new SlewScopeThread(this, this.dataModel.getServerAddress(),
@@ -669,8 +659,8 @@ public class MainWindow extends JFrame {
         this.slewingFeedbackTask = new SlewingFeedbackTask(this);
         this.slewingFeedbackTimer = new Timer();
         this.slewingFeedbackTimer.scheduleAtFixedRate(this.slewingFeedbackTask,
-                (long) Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS,
-                (long) Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS);
+                Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS,
+                Common.SLEWING_FEEDBACK_INTERVAL_MILLISECONDS);
 
     }
 
@@ -709,6 +699,7 @@ public class MainWindow extends JFrame {
         }
 
         this.slewMessage.setForeground(Color.BLACK);
+        //noinspection ReplaceNullCheck
         if (finishedMessage == null) {
             this.slewMessage.setText(" ");
         } else {
@@ -734,7 +725,7 @@ public class MainWindow extends JFrame {
     private void allOnButtonActionPerformed() {
         //  Set all the table cells to the default value
         // Skip column 1, the pseudo-header column
-        Integer cellValue = Integer.valueOf(this.dataModel.getDefaultFrameCount());
+        Integer cellValue = this.dataModel.getDefaultFrameCount();
         for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
             for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
                 this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
@@ -749,8 +740,8 @@ public class MainWindow extends JFrame {
     private void defaultsButtonActionPerformed() {
         //  Set all the table cells to the default value or zero depending on the binning availability
         // Skip column 0, the pseudo-header column
-        Integer defaultValue = Integer.valueOf(this.dataModel.getDefaultFrameCount());
-        Integer zeroValue = Integer.valueOf(0);
+        Integer defaultValue = this.dataModel.getDefaultFrameCount();
+        Integer zeroValue = 0;
         for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
             for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
                 BinningSpec binningSpec = this.dataModel.getBinningInUse(columnIndex - 1);
@@ -772,7 +763,7 @@ public class MainWindow extends JFrame {
     private void allOffButtonActionPerformed() {
         //  Set all the table cells to zero
         // Skip column 1, the pseudo-header column
-        Integer cellValue = Integer.valueOf(0);
+        Integer cellValue = 0;
         for (int rowIndex = 0; rowIndex < this.frameTableModel.getRowCount(); rowIndex++) {
             for (int columnIndex = 1; columnIndex < this.frameTableModel.getColumnCount(); columnIndex++) {
                 this.frameTableModel.setValueAt(cellValue, rowIndex, columnIndex);
@@ -893,7 +884,7 @@ public class MainWindow extends JFrame {
             writer.close();
 
             //  Content is now in temporary file.   Delete original file name and rename temporary.
-            boolean deleteResult = fileToSave.delete();
+            @SuppressWarnings("unused") boolean ignored = fileToSave.delete();
             if (!tempFile.renameTo(fileToSave)) {
                 JOptionPane.showMessageDialog(null,
                         "Unable to rename temporary file after writing.");
@@ -919,8 +910,8 @@ public class MainWindow extends JFrame {
      * Given a full path, get just the file name, without the extension.
      * Funny, I thought there was a built-in function with exactly this function somewhere
      * in a Java library, but I couldn't find it after looking for as long as i cared to.
-     * @param fullPath
-     * @return
+     * @param fullPath      Absolute path to file whose name is to be extracted
+     * @return (String)     Just the file name
      */
     public static String simpleFileNameFromPath(String fullPath) {
         Path path = Paths.get(fullPath);
@@ -964,7 +955,7 @@ public class MainWindow extends JFrame {
             DataModel newDataModel = DataModel.newFromXml(encodedData);
             if (newDataModel != null) {
                 this.dataModel = null;
-                this.setUiFromDataModel(newDataModel, this.simpleFileNameFromPath(fullPath));
+                this.setUiFromDataModel(newDataModel, simpleFileNameFromPath(fullPath));
                 this.filePath = fullPath;
                 this.makeNotDirty();
             }
@@ -1063,6 +1054,7 @@ public class MainWindow extends JFrame {
                 // Give the cancel a moment to take effect
                 Thread.sleep(500);
             } catch (InterruptedException e) {
+                System.out.println("Ignoring interrupt while quitting");
             }
         }
         if (this.protectedSaveProceed(false)) {
@@ -1071,6 +1063,7 @@ public class MainWindow extends JFrame {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void initComponents() {
 		// JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner non-commercial license
@@ -1329,7 +1322,7 @@ public class MainWindow extends JFrame {
                     new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- label9 ----
-                label9.setText(" WIthin:");
+                label9.setText(" Within:");
                 aduPanel.add(label9, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 0, 5), 0, 0));
@@ -1374,7 +1367,7 @@ public class MainWindow extends JFrame {
                     new Insets(0, 0, 5, 0), 0, 0));
 
                 //---- useFilterWheelCheckbox ----
-                useFilterWheelCheckbox.setText("Use FIlter Wheel");
+                useFilterWheelCheckbox.setText("Use Filter Wheel");
                 useFilterWheelCheckbox.addActionListener(e -> useFilterWheelCheckboxActionPerformed());
                 optionsPanel.add(useFilterWheelCheckbox, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,

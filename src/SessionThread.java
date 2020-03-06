@@ -283,7 +283,7 @@ public class SessionThread implements Runnable {
     /**
      * Expose a single flat frame with given binning and exposure.  (Filter has already been set.)
      * Start the exposure asynchronously, then wait for it to complete.  This allows us to detect that
-     * the thread has been interrrupted via the Cancel button and send an Abort to the camera.
+     * the thread has been interrupted via the Cancel button and send an Abort to the camera.
      * Once the image has been acquired, ask TheSky to calculate the average ADUs and return that.
      * @param binning               Binning level for the frame
      * @param exposureSeconds       Exposure time for the frame
@@ -296,7 +296,7 @@ public class SessionThread implements Runnable {
     }
 
     /**
-     * Wait for the camera exposure, which is running ascynchronously, to complete.  We'll sleep for
+     * Wait for the camera exposure, which is running asynchronously, to complete.  We'll sleep for
      * the exposure time plus the measured download time, then start polling the camera at brief
      * intervals until it reports done.  Time out after a long wait.
      * @param exposureSeconds       How long was the actual exposure
@@ -391,7 +391,7 @@ public class SessionThread implements Runnable {
     }
 
     /**
-     * Measure the dowload time for the given binning value by taking, and timing, a
+     * Measure the download time for the given binning value by taking, and timing, a
      * zero-second bias frame.  Since bias frames are zero length, the time elapsed will be
      * just the download time for an image binned to that size.
      * @param binning       Binning value to take and time
@@ -407,6 +407,7 @@ public class SessionThread implements Runnable {
         return downloadSeconds;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void exposeBiasFrame(Integer binning, boolean asynchronous, boolean autosave) throws IOException {
         this.server.exposeBiasFrame(binning, asynchronous, autosave);
     }
@@ -415,6 +416,7 @@ public class SessionThread implements Runnable {
      * If optional dithering is in use, set up the data structure used to manage it
      * @param dither    Dither controller (null if no dithering)
      */
+    @SuppressWarnings("unused")
     private void setUpDithering(DitherController dither) {
         // Nothing to do; left here for possible future use
     }

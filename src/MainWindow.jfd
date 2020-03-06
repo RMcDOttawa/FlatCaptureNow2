@@ -121,7 +121,7 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "label9"
-						"text": " WIthin:"
+						"text": " Within:"
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 2
 					} )
@@ -164,7 +164,7 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormComponent( "javax.swing.JCheckBox" ) {
 						name: "useFilterWheelCheckbox"
-						"text": "Use FIlter Wheel"
+						"text": "Use Filter Wheel"
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "useFilterWheelCheckboxActionPerformed", false ) )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridy": 1

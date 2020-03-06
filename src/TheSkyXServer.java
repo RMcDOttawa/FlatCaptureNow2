@@ -74,7 +74,7 @@ public class TheSkyXServer {
     String sendCommandPacket(String commandPacket) throws IOException {
 
         this.serverLock.lock();
-        String serverAnswer = "";
+        String serverAnswer;
         try {
             //  Create socket and connect
             Socket socket = new Socket();
@@ -94,13 +94,12 @@ public class TheSkyXServer {
             toServerStream.close();
             socket.close();
 
-            return serverAnswer;
-        } catch (Exception e) {
-            throw e;
-        } finally {
+        } catch (IOException e) {
             this.serverLock.unlock();
-            return serverAnswer;
+            throw e;
         }
+        this.serverLock.unlock();
+        return serverAnswer;
 
     }
 
@@ -287,7 +286,7 @@ public class TheSkyXServer {
     }
 
     /**
-     * Ask TheSkyX to abort the recently-starte mount operation (a slew in our case)
+     * Ask TheSkyX to abort the recently-started mount operation (a slew in our case)
      * @throws IOException      I/O error from socket
      */
     public void abortSlew() throws IOException {

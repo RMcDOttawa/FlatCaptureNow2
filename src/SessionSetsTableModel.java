@@ -1,9 +1,9 @@
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Extension of Default Table Model used for the table displayed in the Sesison window
+ * Extension of Default Table Model used for the table displayed in the Session window
  * that shows the planned frames, and highlights the set in collection.
- * The extension is so that the "is Editable" method can be overriden to always return false.
+ * The extension is so that the "is Editable" method can be overridden to always return false.
  */
 public class SessionSetsTableModel extends DefaultTableModel {
 

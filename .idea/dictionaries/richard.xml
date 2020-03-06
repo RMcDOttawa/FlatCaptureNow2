@@ -3,13 +3,26 @@
     <words>
       <w>adus</w>
       <w>arcseconds</w>
+      <w>autodark</w>
+      <w>autoguider</w>
       <w>autosave</w>
       <w>binnings</w>
+      <w>binningxbinning</w>
       <w>ccdsoft</w>
+      <w>cfitsio</w>
       <w>enablement</w>
+      <w>filtername</w>
+      <w>grande</w>
+      <w>hashmap</w>
       <w>imager</w>
+      <w>lucida</w>
       <w>prefs</w>
+      <w>sublan</w>
+      <w>subtask</w>
       <w>tele</w>
+      <w>typeerror</w>
+      <w>ufield</w>
+      <w>wikipedia</w>
     </words>
   </dictionary>
 </component>

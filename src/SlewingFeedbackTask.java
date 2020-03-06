@@ -1,7 +1,7 @@
 import java.util.TimerTask;
 
 public class SlewingFeedbackTask extends TimerTask {
-    private MainWindow parent = null;
+    private MainWindow parent;
 
     /**
      * Constructor for timer task to update the slewing message
