@@ -516,12 +516,29 @@ public class TheSkyXServer {
      * Send Park command to mount
      */
     public void parkMount() throws IOException {
-        // todo parkMount
-        System.out.println("parkMount");
         String command = "sky6RASCOMTele.Connect();"
                 + "sky6RASCOMTele.Asynchronous=false;"
                 + "Out=sky6RASCOMTele.Park();"
                 + "Out += \"\\n\";";
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
+        }
+    }
+    /**
+     * Turn camera cooling on or off.  If on, set temperature target;
+     * @param coolingOn                 True for cooling on, false for off
+     * @param temperatureTarget         Target temperature if turning cooling on, ignored if not
+     * @throws IOException              I/O error from network
+     */
+    public void setCameraCooling(boolean coolingOn, Double temperatureTarget) throws IOException {
+        String command  = "";
+        if (coolingOn) {
+            command = "ccdsoftCamera.TemperatureSetPoint=" + temperatureTarget + ";";
+        }
+        command += "ccdsoftCamera.RegulateTemperature=" + boolToJS(coolingOn) + ";"
+                + "var Out = \"0\\n\";";
         String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {

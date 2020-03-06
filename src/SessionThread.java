@@ -416,18 +416,16 @@ public class SessionThread implements Runnable {
      * @param dither    Dither controller (null if no dithering)
      */
     private void setUpDithering(DitherController dither) {
-        if (dither != null) {
-            System.out.println("setUpDithering");
-            // Nothing to do; left here for possible future use
-        }
+        // Nothing to do; left here for possible future use
     }
 
     /**
      * Optionally turn off the camera's cooler at the end of the session so the CCD can warm up gradually.
      */
-    private void postSessionWarmUp() {
-        // todo postSessionWarmUp
-        System.out.println("postSessionWarmUp");
+    private void postSessionWarmUp() throws IOException {
+        if (this.dataModel.getWarmUpWhenDone()) {
+            this.server.setCameraCooling(false, 0.0);
+        }
     }
 
     /**
