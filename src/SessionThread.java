@@ -433,9 +433,10 @@ public class SessionThread implements Runnable {
     /**
      * Optionally park the mount after the session
      */
-    private void postSessionMountControl() {
-        // todo postSessionMountControl
-        System.out.println("postSessionMountControl");
+    private void postSessionMountControl() throws IOException {
+        if (this.dataModel.getParkWhenDone()) {
+            this.server.parkMount();
+        }
     }
 
     /**

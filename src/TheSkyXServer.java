@@ -232,13 +232,13 @@ public class TheSkyXServer {
      * @param asynchronous          Attempt to do it asynchronously?  (May not have any effect)
      */
     public void slewToAltAz(double targetAltitude, double targetAzimuth, boolean asynchronous) throws IOException {
-        String commandNoReturn = "sky6RASCOMTele.Connect();"
+        String command = "sky6RASCOMTele.Connect();"
                 + "sky6RASCOMTele.Asynchronous=" + boolToJS(asynchronous) + ";"
                 + "Out=sky6RASCOMTele.SlewToAzAlt("
                     + targetAzimuth + ","
                     + targetAltitude + ",'');"
                 + "Out+=\"\\n\";";
-        String result = this.sendCommandWithReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
@@ -262,11 +262,11 @@ public class TheSkyXServer {
      * @param oldTrackingState      true or false for tracking
      */
     public void setScopeTracking(boolean oldTrackingState) throws IOException {
-        String commandNoReturn = "sky6RASCOMTele.Connect();"
+        String command = "sky6RASCOMTele.Connect();"
                 + "sky6RASCOMTele.IsTracking=" + boolToJS(oldTrackingState) + ";"
                 + "var Out=sky6RASCOMTele.IsTracking;"
                 + "Out+=\"\\n\";";
-        String result = this.sendCommandWithReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
@@ -291,12 +291,12 @@ public class TheSkyXServer {
      * @throws IOException      I/O error from socket
      */
     public void abortSlew() throws IOException {
-        String commandNoReturn = "var Out=\"0\";"
+        String command = "var Out=\"0\";"
                 + "if (!sky6RASCOMTele.IsSlewComplete) {"
                 +       "Out=sky6RASCOMTele.Abort();"
                 + "}"
                 + "Out+=\"\\n\";";
-        String result = this.sendCommandWithReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
@@ -307,11 +307,11 @@ public class TheSkyXServer {
      * Send command to TheSkyX to connect to and home the mount. No response.
      */
     public void homeMount() throws IOException {
-        String commandNoReturn = "sky6RASCOMTele.Connect();"
+        String command = "sky6RASCOMTele.Connect();"
         + "sky6RASCOMTele.Asynchronous=false;"
         + "Out=sky6RASCOMTele.FindHome();"
         + "Out += \"\\n\";";
-        String result = this.sendCommandWithReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
@@ -353,10 +353,10 @@ public class TheSkyXServer {
      * @param slotNumber     1-based slot number for the filter to use
      */
     public void selectFilter(Integer slotNumber) throws IOException {
-        String commandNoReturn = "ccdsoftCamera.filterWheelConnect();"
+        String command = "ccdsoftCamera.filterWheelConnect();"
                 + "ccdsoftCamera.FilterIndexZeroBased=" + (slotNumber - 1) + ";"
                 + "var Out;Out=cameraResult+\"\\n\";";
-        String result = this.sendCommandWithReturn(commandNoReturn);
+        String result = this.sendCommandWithReturn(command);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
@@ -509,6 +509,23 @@ public class TheSkyXServer {
         if (errorCode != 0) {
             System.out.println("Error returned from camera: " + result);
             throw new IOException("Error from camera");
+        }
+    }
+
+    /**
+     * Send Park command to mount
+     */
+    public void parkMount() throws IOException {
+        // todo parkMount
+        System.out.println("parkMount");
+        String command = "sky6RASCOMTele.Connect();"
+                + "sky6RASCOMTele.Asynchronous=false;"
+                + "Out=sky6RASCOMTele.Park();"
+                + "Out += \"\\n\";";
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            throw new IOException("I/O error code " + errorCode);
         }
     }
 }
