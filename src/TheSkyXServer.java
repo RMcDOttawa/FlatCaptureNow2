@@ -16,7 +16,7 @@ public class TheSkyXServer {
     private static final int SOCKET_TIMEOUT = 5 * 1000;
 
     //  We use a lock for server commands since more than one task may be asking the server to act
-    private ReentrantLock serverLock = null;
+    private ReentrantLock serverLock;
 
     private InetSocketAddress inetSocketAddress;
     private double rememberedExposureForSimulation = 10.0;
@@ -73,25 +73,35 @@ public class TheSkyXServer {
 
     String sendCommandPacket(String commandPacket) throws IOException {
 
-        //  Create socket and connect
-        Socket socket = new Socket();
-        socket.connect(this.inetSocketAddress, SOCKET_TIMEOUT);
+        this.serverLock.lock();
+        String serverAnswer = "";
+        try {
+            //  Create socket and connect
+            Socket socket = new Socket();
+            socket.connect(this.inetSocketAddress, SOCKET_TIMEOUT);
 
-        //  Send the command to the server
-        PrintStream toServerStream = new PrintStream(socket.getOutputStream());
-        toServerStream.println(commandPacket);
+            //  Send the command to the server
+            PrintStream toServerStream = new PrintStream(socket.getOutputStream());
+            toServerStream.println(commandPacket);
 
-        //  Read the response
-        InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
-        BufferedReader response = new BufferedReader(inputStreamReader);
-        String serverAnswer = response.readLine();
+            //  Read the response
+            InputStreamReader inputStreamReader = new InputStreamReader(socket.getInputStream());
+            BufferedReader response = new BufferedReader(inputStreamReader);
+            serverAnswer = response.readLine();
 
-        response.close();
-        inputStreamReader.close();
-        toServerStream.close();
-        socket.close();
+            response.close();
+            inputStreamReader.close();
+            toServerStream.close();
+            socket.close();
 
-        return serverAnswer;
+            return serverAnswer;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            this.serverLock.unlock();
+            return serverAnswer;
+        }
+
     }
 
     /**
@@ -105,7 +115,7 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
@@ -119,29 +129,9 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
-    /**
-     * Send to the server a command that is not expecting a returned string
-     * @param commandToSend     Command to send to server
-     * @throws IOException      I/O error from network
-     */
-//    private void sendCommandNoReturn(String commandToSend) throws IOException {
-//        String commandPacket =  "/* Java Script */"
-//                + "/* Socket Start Packet */"
-//                + commandToSend
-//                + "var Out;"
-//                + "Out=\"0\\n\";"
-//                + "/* Socket End Packet */";
-//        try {
-//            this.serverLock.lock();
-//            this.sendCommandPacket(commandPacket);
-//        } finally {
-//            this.serverLock.unlock();
-//        }
-//
-//    }
 
     /**
      * Convert a Java boolean to the text used by JavaScript
@@ -194,7 +184,7 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
@@ -245,19 +235,19 @@ public class TheSkyXServer {
         String commandNoReturn = "sky6RASCOMTele.Connect();"
                 + "sky6RASCOMTele.Asynchronous=" + boolToJS(asynchronous) + ";"
                 + "Out=sky6RASCOMTele.SlewToAzAlt("
-                    + String.valueOf(targetAzimuth) + ","
-                    + String.valueOf(targetAltitude) + ",'');"
+                    + targetAzimuth + ","
+                    + targetAltitude + ",'');"
                 + "Out+=\"\\n\";";
         String result = this.sendCommandWithReturn(commandNoReturn);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
      * Get and return whether the scope's tracking is on
-     * @return
+     * @return (boolean)        Is scope tracking?
      */
     public boolean getScopeTracking() throws IOException {
         String commandWithReturn = "sky6RASCOMTele.Connect();"
@@ -280,13 +270,13 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
      * Ask TheSkyX whether the recently-started slew operation is complete
-     * @return (boolean)
-     * @throws IOException
+     * @return (boolean)        Is the slew complete
+     * @throws IOException      I/O error from socket
      */
     public boolean scopeSlewComplete() throws IOException {
         String commandWithReturn = "sky6RASCOMTele.Connect();"
@@ -298,7 +288,7 @@ public class TheSkyXServer {
 
     /**
      * Ask TheSkyX to abort the recently-starte mount operation (a slew in our case)
-     * @throws IOException
+     * @throws IOException      I/O error from socket
      */
     public void abortSlew() throws IOException {
         String commandNoReturn = "var Out=\"0\";"
@@ -310,7 +300,7 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
@@ -325,7 +315,7 @@ public class TheSkyXServer {
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
     }
 
     /**
@@ -364,13 +354,13 @@ public class TheSkyXServer {
      */
     public void selectFilter(Integer slotNumber) throws IOException {
         String commandNoReturn = "ccdsoftCamera.filterWheelConnect();"
-                + "ccdsoftCamera.FilterIndexZeroBased=" + (String.valueOf(slotNumber - 1)) + ";"
+                + "ccdsoftCamera.FilterIndexZeroBased=" + (slotNumber - 1) + ";"
                 + "var Out;Out=cameraResult+\"\\n\";";
         String result = this.sendCommandWithReturn(commandNoReturn);
         int errorCode = this.errorCheckResult(result);
         if (errorCode != 0) {
             throw new IOException("I/O error code " + errorCode);
-        };
+        }
         this.rememberedFilterSlotForSimulation = slotNumber;
     }
 
@@ -392,7 +382,7 @@ public class TheSkyXServer {
                 + "ccdsoftCamera.AutoSaveOn=" + boolToJS(autosave) + ";"
                 + "ccdsoftCamera.BinX=" + binning + ";"
                 + "ccdsoftCamera.BinY=" + binning + ";"
-                + "ccdsoftCamera.ExposureTime=" + String.valueOf(exposureSeconds) + ";"
+                + "ccdsoftCamera.ExposureTime=" + exposureSeconds + ";"
                 + "var cameraResult = ccdsoftCamera.TakeImage();"
                 + "var Out;Out=cameraResult+\"\\n\";";
 
@@ -427,7 +417,7 @@ public class TheSkyXServer {
                 + "Out=averageAdu+\"\\n\";";
             String returnString = this.sendCommandWithReturn(command);
             try {
-                Double averageADU = Double.valueOf(returnString);
+                double averageADU = Double.parseDouble(returnString);
                 return (int) Math.round(averageADU);
             } catch (NumberFormatException e) {
                 System.out.println("Invalid response from querying camera average pixel value: " + returnString);
@@ -447,8 +437,8 @@ public class TheSkyXServer {
         double exposure = this.rememberedExposureForSimulation;
         int binning = this.rememberedBinningForSimulation;
         int filter = this.rememberedFilterSlotForSimulation;
-        Double slope;
-        Double intercept;
+        double slope;
+        double intercept;
         if ((binning == 1) && (filter == 4)) {
             // Luminance, binned 1x1
             slope = 721.8;
@@ -479,8 +469,7 @@ public class TheSkyXServer {
         double randFactorZeroCentered = Common.SIMULATION_NOISE_FRACTION * (Math.random() - 0.5);
         double noisyResult = calculatedResult + randFactorZeroCentered * calculatedResult;
 
-        int clippedAt16Bits = Math.min((int) Math.round(noisyResult), 65535);
-        return clippedAt16Bits;
+        return Math.min((int) Math.round(noisyResult), 65535);
     }
 
     /**

@@ -1,4 +1,3 @@
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 
@@ -7,7 +6,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeoutException;
 
 public class SessionThread implements Runnable {
@@ -92,7 +90,7 @@ public class SessionThread implements Runnable {
             FlatSet thisSet = this.flatsToAcquire.get(itemIndex);
             console("Acquiring " + thisSet.describe() + ".", 1);
             //  Acquire all the flats in this set
-            this.acquireOneFlatsSet(itemIndex, thisSet, dither);
+            this.acquireOneFlatsSet(thisSet, dither);
             this.resetDithering(dither);
         }
         
@@ -111,14 +109,14 @@ public class SessionThread implements Runnable {
      * @param thisSet   Specifications for the Flats set wanted
      * @param dither    Dithering controller (null if no dithering)
      */
-    private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet, DitherController dither)
+    private void acquireOneFlatsSet(FlatSet thisSet, DitherController dither)
             throws InterruptedException, IOException, ADUExposureException, TimeoutException {
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
             // Connect camera
             this.server.connectToCamera();
 
             // Acquire the frames
-            this.acquireFrames(workItemIndex, thisSet, dither);
+            this.acquireFrames(thisSet, dither);
         }
     }
 
@@ -136,11 +134,10 @@ public class SessionThread implements Runnable {
      *
      * Because we don't want to save FITs files for frames that are rejected, we take frames with
      * autosave OFF, then manually save each frame after it is analyzed and once we know we like it.
-     * @param workItemIndex     Index in work list (for updating UI)
      * @param thisSet           Details of the frame set to be acquired
      * @param dither            Dithering controller (null if no dithering)
      */
-    private void acquireFrames(int workItemIndex, FlatSet thisSet, DitherController dither) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
+    private void acquireFrames(FlatSet thisSet, DitherController dither) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
 
         // Set up filter if in use. We only need do this once, since all the frames
         // we are about to take are identical.
@@ -204,7 +201,7 @@ public class SessionThread implements Runnable {
             double moveToAlt = ditherResponse.middle;
             double moveToAz = ditherResponse.right;
             if (moveScope) {
-                System.out.println(String.format("Dither slew to: %f, %f", moveToAlt, moveToAz));
+//                System.out.println(String.format("Dither slew to: %f, %f", moveToAlt, moveToAz));
                 this.server.slewToAltAz(moveToAlt, moveToAz, false);
                 if (this.dataModel.getTrackingOff()) {
                     this.server.setScopeTracking(false);
@@ -222,7 +219,7 @@ public class SessionThread implements Runnable {
         if (dither != null) {
             double originalAlt = dither.getStartAltDeg();
             double originalAz = dither.getStartAzDeg();
-            System.out.println(String.format("Dither reset slew to: %f, %f", originalAlt, originalAz));
+//            System.out.println(String.format("Dither reset slew to: %f, %f", originalAlt, originalAz));
             this.server.slewToAltAz(originalAlt, originalAz, false);
             if (this.dataModel.getTrackingOff()) {
                 this.server.setScopeTracking(false);
@@ -255,12 +252,11 @@ public class SessionThread implements Runnable {
      * @return (String)         File name as absolute path
      */
     private String makeLocalFileName(double exposureSeconds, int sequenceNumber, FlatSet thisSet) {
-        String result =  String.format("Flat-%s-%dx%d-%d-%.2fs.fit",
+        return String.format("Flat-%s-%dx%d-%d-%.2fs.fit",
                 thisSet.getFilterSpec().getName(),
                 thisSet.getBinning(), thisSet.getBinning(),
                 sequenceNumber,
                 exposureSeconds);
-        return result;
     }
 
     /**
@@ -311,7 +307,7 @@ public class SessionThread implements Runnable {
         //  Wait as long as it should take
         double downloadTime = this.downloadTimes.get(binning);
         double totalWaitSeconds = downloadTime + exposureSeconds;
-        long waitMilliseconds = (long) Math.round(totalWaitSeconds * 1000.0 );
+        long waitMilliseconds = Math.round(totalWaitSeconds * 1000.0 );
         if (waitMilliseconds > 0) {
             Thread.sleep(waitMilliseconds);
         }
@@ -323,7 +319,7 @@ public class SessionThread implements Runnable {
             if (timeWaited > Common.FRAME_COMPLETION_TIMEOUT_SECONDS) {
                 throw new TimeoutException("Exposure timed out");
             } else {
-                Thread.sleep((long)Math.round(1000.0 * Common.FRAME_COMPLETION_POLL_INTERVAL_SECONDS));
+                Thread.sleep(Math.round(1000.0 * Common.FRAME_COMPLETION_POLL_INTERVAL_SECONDS));
                 timeWaited += Common.FRAME_COMPLETION_POLL_INTERVAL_SECONDS;
             }
         }
@@ -379,18 +375,15 @@ public class SessionThread implements Runnable {
      * They are stored in a HashMap indexed by the binning number.  Use of a hashmap allows us to check if a given
      * binning has already been measured (key will exist) so we only measure each one once.
      */
-    private void measureDownloadTimes() throws InterruptedException, IOException {
+    private void measureDownloadTimes() throws  IOException {
         this.console("Measuring download times for each binning level needed.", 1);
         //  Connect to camera so we're not measuring connect time with the first download test
         this.server.connectToCamera();
         // Create store for the measured times, and measure each binning in use
-        this.downloadTimes = new HashMap<Integer, Double>(4);
+        this.downloadTimes = new HashMap<>(4);
         for (FlatSet flatSet : this.flatsToAcquire) {
             Integer binning = flatSet.getBinning();
-            if (this.downloadTimes.containsKey(binning)) {
-                // We already have a time for this binning, don't need to do another
-                ;
-            } else {
+            if (!this.downloadTimes.containsKey(binning)) {
                 Double downloadTime = this.timeDownloadFor(binning);
                 this.downloadTimes.put(binning, downloadTime);
             }

@@ -8,7 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutableTriple;
 *   the first frame exactly on-target, then the next several at points around a circle a certain distance
 *   out from the target, then the next several at points around a larger circle, and so on.
 *
-*   This object manages the circle math and counters for this proces.
+*   This object manages the circle math and counters for this process.
  */
 public class DitherController {
     //  Starting point - the "true" target location.
@@ -83,7 +83,7 @@ public class DitherController {
             ImmutablePair<Double,Double> ditherOffset = this.calcNextDitherOffset();
             double altOffset = ditherOffset.left;
             double azOffset = ditherOffset.right;
-            //  Conver offset in radians to degrees, then offset original location
+            //  Convert offset in radians to degrees, then offset original location
             slewScope = true;
             targetAlt = this.startAltDeg + Math.toDegrees(altOffset);
             targetAz = this.startAzDeg + Math.toDegrees(azOffset);
@@ -94,10 +94,10 @@ public class DitherController {
     /**
      * Calculate the next dithering offset, in radians, around the concentric circles that
      * build outward from the original point.
-     * @return
+     * @return 2 doubles        x and y offsets to be added to Alt and Az (doesn't matter which)
      */
     private ImmutablePair<Double, Double> calcNextDitherOffset() {
-        double xOffset, yOffset;
+        double azimuthOffset, altitudeOffset;
         // Calc next dither offset from (0,0) in radians
 //        System.out.println(String.format("calc_next_dither_location old angle = %f", this.angleRadians));
         if (this.angleRadians > (2.0 * Math.PI)) {
@@ -121,11 +121,11 @@ public class DitherController {
         }
 
         //  Compute next dither location
-        xOffset = Math.cos(this.angleRadians) * this.currentRadiusRadians;
-        yOffset = Math.sin(this.angleRadians) * this.currentRadiusRadians;
+        azimuthOffset = Math.cos(this.angleRadians) * this.currentRadiusRadians;
+        altitudeOffset = Math.sin(this.angleRadians) * this.currentRadiusRadians;
 //        System.out.println(String.format("Returning offsets ({%f},{%f})", xOffset, yOffset));
 
-        return ImmutablePair.of(xOffset, yOffset);
+        return ImmutablePair.of(altitudeOffset, azimuthOffset);
     }
 
     /**
