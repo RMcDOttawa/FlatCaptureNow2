@@ -36,10 +36,11 @@ new FormModel {
 						"hAlign": 0
 					} )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane1"
+						name: "sessionConsoleScrollPane"
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "sessionConsole"
 							"toolTipText": "Log of messages from the acquisition session."
+							addEvent( new FormEvent( "java.awt.event.ComponentListener", "componentResized", "sessionConsoleComponentResized", false ) )
 						} )
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"gridwidth": 2

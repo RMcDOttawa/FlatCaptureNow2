@@ -415,8 +415,6 @@ public class TheSkyXServer {
      * @return (int)    Average ADU value of the image
      */
     public int getLastImageADUs() throws IOException {
-        // todo getLastImageADUs
-        System.out.println("getLastImageADUs");
         if (Common.SIMULATE_ADU_MEASUREMENT) {
             return this.getSimulatedADUMeasurement();
         } else {
@@ -481,5 +479,45 @@ public class TheSkyXServer {
 
         int clippedAt16Bits = Math.min((int) Math.round(noisyResult), 65535);
         return clippedAt16Bits;
+    }
+
+    /**
+     * Tell the server to save the last acquired image to its autosave path
+     */
+    public void saveImageToAutoSave(String fileName) throws IOException {
+        String command = "cam = ccdsoftCamera;"
+                + "img = ccdsoftCameraImage;"
+                + "img.AttachToActiveImager();"
+                + "asp = cam.AutoSavePath;"
+                + String.format("img.Path = asp + '/%s';", fileName)
+                + "var Out=img.Save();"
+                + "Out += \"\\n\";";
+
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            System.out.println("Error returned from camera: " + result);
+            throw new IOException("Error from camera");
+        }
+    }
+
+    /**
+     * Tell the server to save the last acquired image to the given path name
+     * @param localPath   Absolute path name of the file to be saved, including file name
+     */
+    public void saveImageToLocalPath(String localPath) throws IOException {
+        String command = "cam = ccdsoftCamera;"
+                + "img = ccdsoftCameraImage;"
+                + "img.AttachToActiveImager();"
+                + String.format("img.Path = '%s';", localPath)
+                + "var Out=img.Save();"
+                + "Out += \"\\n\";";
+
+        String result = this.sendCommandWithReturn(command);
+        int errorCode = this.errorCheckResult(result);
+        if (errorCode != 0) {
+            System.out.println("Error returned from camera: " + result);
+            throw new IOException("Error from camera");
+        }
     }
 }

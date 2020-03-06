@@ -42,7 +42,6 @@ public class SessionThread implements Runnable {
             e.printStackTrace();
         } catch (InterruptedException e) {
             //  We come here if the thread was interrupted by the user clicking "Cancel"
-            System.out.println("Cancelled caught in main loop");
             e.printStackTrace();
             this.cleanUpFromCancel();
             this.console("Session Cancelled", 1);
@@ -107,8 +106,6 @@ public class SessionThread implements Runnable {
      * @param thisSet   Specifications for the Flats set wanted
      */
     private void acquireOneFlatsSet(int workItemIndex, FlatSet thisSet) throws InterruptedException, IOException, ADUExposureException, TimeoutException {
-        // todo acquireOneFlatsSet
-        System.out.println("acquireOneFlatsSet");
         if (thisSet.getNumberOfFrames() > thisSet.getNumberDone()) {
             // Connect camera
             this.server.connectToCamera();
@@ -136,7 +133,6 @@ public class SessionThread implements Runnable {
      * @param thisSet           Details of the frame set to be acquired
      */
     private void acquireFrames(int workItemIndex, FlatSet thisSet) throws IOException, ADUExposureException, InterruptedException, TimeoutException {
-        // todo acquireFrames
 
         // Set up filter if in use. We only need do this once, since all the frames
         // we are about to take are identical.
@@ -165,11 +161,11 @@ public class SessionThread implements Runnable {
                 this.parent.reportFrameADUs(frameAverageADUs, true);
                 thisSet.setNumberDone(1 + thisSet.getNumberDone());
                 thisSet.rememberSuccessfulExposure(exposureSeconds);
-                //  todo    keep frame,
-                //  todo    remember exposure,
-                //   todo   advance progress bar,
+                this.saveAcquiredFrame(exposureSeconds, frameNumberTrying, thisSet);
                 rejectedConsecutively = 0;
                 frameNumberTrying++;
+                this.parent.updateProgressBar(frameNumberTrying);
+                // todo dither for next frame
             } else{
                 this.parent.reportFrameADUs(frameAverageADUs, false);
                 rejectedConsecutively += 1;
@@ -180,7 +176,42 @@ public class SessionThread implements Runnable {
             exposureSeconds = this.refineExposure(exposureSeconds, frameAverageADUs, this.dataModel.getTargetADUs());
         }
         this.parent.stopProgressBar();
+        //  todo reset dithering
 
+    }
+
+    /**
+     * The last acquired frame has been measured and found acceptable.  Tell the server to save it to disk.
+     * We'll either have it save to its defined "autosave directory", or we'll give it a path name
+     * if the server is local to this computer and that option has been selected
+     * @param exposureSeconds   Exposure to include in generated file name
+     */
+    private void saveAcquiredFrame(double exposureSeconds, int sequenceNumber, FlatSet thisSet) throws IOException {
+        // todo saveAcquiredFrame
+        System.out.println("saveAcquiredFrame: " + exposureSeconds);
+        String fileName = this.makeLocalFileName(exposureSeconds, sequenceNumber, thisSet);
+        if (this.dataModel.getUseTheSkyAutosave()) {
+            this.server.saveImageToAutoSave(fileName);
+        } else {
+            this.server.saveImageToLocalPath(this.dataModel.getLocalPath() + "/" + fileName);
+        }
+    }
+
+    /**
+     * Make up a path and file name to receive the acquired image
+     * File name format:   Flat-Filtername-binningxbinning-Sequence-Exposure
+     * @param exposureSeconds   Exposure seconds
+     * @param sequenceNumber    Frame sequence number
+     * @param thisSet           Frame set descriptor for filter and binning
+     * @return (String)         File name as absolute path
+     */
+    private String makeLocalFileName(double exposureSeconds, int sequenceNumber, FlatSet thisSet) {
+        String result =  String.format("Flat-%s-%dx%d-%d-%.2fs.fit",
+                thisSet.getFilterSpec().getName(),
+                thisSet.getBinning(), thisSet.getBinning(),
+                sequenceNumber,
+                exposureSeconds);
+        return result;
     }
 
     /**
@@ -194,8 +225,6 @@ public class SessionThread implements Runnable {
     private double refineExposure(double exposureSeconds, int frameAverageADUs, Integer targetADUs) {
         double missFactor = ((double)frameAverageADUs) / ((double)targetADUs);
         double newExposure = exposureSeconds / missFactor;
-        System.out.println(String.format("Exposure %f gave %d target %d, refined to %f",
-                exposureSeconds, frameAverageADUs, targetADUs, newExposure));
         if (Common.FEEDBACK_EXPOSURE_ADJUSTMENT) {
             if (frameAverageADUs > targetADUs) {
                 this.console(String.format("Reducing exposure to %f", newExposure), 4);

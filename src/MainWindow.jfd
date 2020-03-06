@@ -636,8 +636,6 @@ new FormModel {
 			addBinding( new FormBinding( "controlMountCheckbox", "selected", "ditherFlatsCheckbox", "enabled" ) )
 			addBinding( new FormBinding( "controlMountCheckbox", "selected", "readScopePositionButton", "enabled" ) )
 			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherRadiusField", "enabled" ) )
-			addBinding( new FormBinding( "useAutosaveButton", "selected", "queryAutosaveButton", "enabled" ) )
-			addBinding( new FormBinding( "useLocalFolderButton", "selected", "setLocalFolderButton", "enabled" ) )
 			addBinding( new FormBinding( "ditherFlatsCheckbox", "selected", "ditherMaximumField", "enabled" ) )
 		} )
 	}

@@ -29,5 +29,5 @@ public class Common {
 
     public static final String DATA_FILE_SUFFIX = "fcn2";
     public static final String UNSAVED_FILE_TITLE = "(Unsaved File)";
-    public static final boolean FEEDBACK_EXPOSURE_ADJUSTMENT = true;
+    public static final boolean FEEDBACK_EXPOSURE_ADJUSTMENT = false;
 }

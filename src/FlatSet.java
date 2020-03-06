@@ -53,9 +53,7 @@ public class FlatSet {
      * @return (double)     Exposure estimate in seconds
      */
     public double getEstimatedExposure() {
-        System.out.println("getEstimatedExposure");
         double exposure = this.preferences.getInitialExposure(this.filterSpec.getSlotNumber(), this.binning);
-        System.out.println("  Returns " + exposure);
         return exposure;
     }
 
@@ -65,7 +63,6 @@ public class FlatSet {
      * @param exposureSeconds
      */
     public void rememberSuccessfulExposure(double exposureSeconds) {
-        System.out.println(String.format("rememberSuccessfulExposure(%f)", exposureSeconds));
         this.preferences.setInitialExposure(this.filterSpec.getSlotNumber(), this.binning, exposureSeconds);
     }
 }

@@ -90,8 +90,10 @@ public class MainWindow extends JFrame {
 
         if (dataModel.getUseTheSkyAutosave()) {
             this.useAutosaveButton.setSelected(true);
+            this.useLocalFolderButton.setSelected(false);
         } else {
             this.useLocalFolderButton.setSelected(true);
+            this.useAutosaveButton.setSelected(false);
         }
 
         this.controlMountCheckbox.setSelected(dataModel.getControlMount());
@@ -389,11 +391,29 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * Enable the "Proceed" button only if there are no outstanding invalid fields
+     * Enable the "Proceed" button only if there are no outstanding invalid fields, at least one frame set
+     * to be captured, and a valid destination. (Either autosave, or local folder which has been set).
      */
     public void enableProceedButton() {
-        this.proceedButton.setEnabled(this.allTextFieldsValid()
-        && this.dataModel.atLeastOneFrameSetWanted());
+        boolean destinationOk = this.dataModel.getUseTheSkyAutosave() || (this.dataModel.getLocalPath() != null);
+        boolean allValid = this.allTextFieldsValid();
+        boolean atLeastOne = this.dataModel.atLeastOneFrameSetWanted();
+        String message = null;
+        if (!destinationOk) {
+            message = "you selected \"Use Local Folder\" but have not set a local destination";
+        }
+        if (!allValid) {
+            message = "there are invalid text fields";
+        }
+        if (!atLeastOne) {
+            message = "no frames are requested in the plan";
+        }
+        this.proceedButton.setEnabled(allValid && atLeastOne && destinationOk);
+        if (this.proceedButton.isEnabled()) {
+            this.proceedButton.setToolTipText("Begin the acquisition session");
+        } else {
+            this.proceedButton.setToolTipText("Disabled because " + message + ".");
+        }
     }
 
     /**
@@ -451,6 +471,7 @@ public class MainWindow extends JFrame {
      */
     private void useAutosaveButtonActionPerformed() {
         this.dataModel.setUseTheSkyAutosave(this.useAutosaveButton.isSelected());
+        this.enableProceedButton();
         this.makeDirty();
     }
 
@@ -459,7 +480,8 @@ public class MainWindow extends JFrame {
      * There is no separate setting for this - it is the inverse of the Use TheSkyX Autosave setting
      */
     private void useLocalFolderButtonActionPerformed() {
-        this.dataModel.setUseTheSkyAutosave(!this.useLocalFolderButton.isSelected());
+        this.dataModel.setUseTheSkyAutosave(this.useAutosaveButton.isSelected());
+        this.enableProceedButton();
         this.makeDirty();
     }
 
@@ -476,6 +498,9 @@ public class MainWindow extends JFrame {
             message = "I/O Error";
         }
         this.destinationPath.setText(message);
+        this.useAutosaveButton.setSelected(true);
+        this.useLocalFolderButton.setSelected(false);
+        this.dataModel.setUseTheSkyAutosave(true);
     }
 
     /**
@@ -493,6 +518,10 @@ public class MainWindow extends JFrame {
             this.destinationPath.setText(file.getAbsolutePath());
             this.dataModel.setLocalPath(file.getAbsolutePath());
             this.makeDirty();
+            this.enableProceedButton();
+            this.useAutosaveButton.setSelected(false);
+            this.useLocalFolderButton.setSelected(true);
+            this.dataModel.setUseTheSkyAutosave(false);
         }
     }
 
@@ -1755,12 +1784,6 @@ public class MainWindow extends JFrame {
         bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
             ditherFlatsCheckbox, BeanProperty.create("selected"),
             ditherRadiusField, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            useAutosaveButton, BeanProperty.create("selected"),
-            queryAutosaveButton, BeanProperty.create("enabled")));
-        bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
-            useLocalFolderButton, BeanProperty.create("selected"),
-            setLocalFolderButton, BeanProperty.create("enabled")));
         bindingGroup.addBinding(Bindings.createAutoBinding(UpdateStrategy.READ_WRITE,
             ditherFlatsCheckbox, BeanProperty.create("selected"),
             ditherMaximumField, BeanProperty.create("enabled")));

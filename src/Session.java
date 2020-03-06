@@ -1,3 +1,4 @@
+import java.awt.event.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
@@ -64,6 +65,9 @@ public class Session extends JDialog {
         //  Do allow Cancel
         this.closeButton.setEnabled(false);
         this.cancelButton.setEnabled(true);
+
+        //  Set the row size of the console
+        this.sessionConsoleComponentResized();
 	}
 
     /**
@@ -167,6 +171,25 @@ public class Session extends JDialog {
         // Clear visual indicators that were only meaningful while the session was running
         this.stopProgressBar();
         this.sessionTable.clearSelection();
+    }
+
+    /**
+     * The window, and hence the Console JList, has been resized.  We need to calculate the
+     * number of rows that will fit in the new size and change the visibleRows property to the new value
+     * in order for the console to continue to contain the maximum number of rows that will fit.
+     * Also re-adjust scrolling to ensure last row is still visible.
+     */
+    private void sessionConsoleComponentResized() {
+        JList consoleList = this.sessionConsole;
+        JScrollPane scrollPane = this.sessionConsoleScrollPane;
+        double rowHeight = consoleList.getFixedCellHeight();  // Known by supplied prototype text
+        Dimension dimension = scrollPane.getViewport().getViewSize();
+        int numRowsThatFit = (int) Math.round(dimension.height / rowHeight);
+        consoleList.setVisibleRowCount(numRowsThatFit);
+        if (this.sessionConsoleModel != null) {
+            int numRowsInConsole = this.sessionConsoleModel.getSize();
+            consoleList.ensureIndexIsVisible(numRowsInConsole - 1);
+        }
     }
 
     private static final String INDENTATION_BLANKS = "    ";
@@ -279,7 +302,7 @@ public class Session extends JDialog {
         contentPanel = new JPanel();
         label4 = new JLabel();
         label5 = new JLabel();
-        scrollPane1 = new JScrollPane();
+        sessionConsoleScrollPane = new JScrollPane();
         sessionConsole = new JList();
         scrollPane2 = new JScrollPane();
         sessionTable = new JTable();
@@ -320,14 +343,20 @@ public class Session extends JDialog {
                     GridBagConstraints.NORTH, GridBagConstraints.NONE,
                     new Insets(0, 0, 5, 0), 0, 0));
 
-                //======== scrollPane1 ========
+                //======== sessionConsoleScrollPane ========
                 {
 
                     //---- sessionConsole ----
                     sessionConsole.setToolTipText("Log of messages from the acquisition session.");
-                    scrollPane1.setViewportView(sessionConsole);
+                    sessionConsole.addComponentListener(new ComponentAdapter() {
+                        @Override
+                        public void componentResized(ComponentEvent e) {
+                            sessionConsoleComponentResized();
+                        }
+                    });
+                    sessionConsoleScrollPane.setViewportView(sessionConsole);
                 }
-                contentPanel.add(scrollPane1, new GridBagConstraints(0, 1, 2, 1, 3.0, 0.0,
+                contentPanel.add(sessionConsoleScrollPane, new GridBagConstraints(0, 1, 2, 1, 3.0, 0.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                     new Insets(0, 0, 5, 5), 0, 0));
 
@@ -385,7 +414,7 @@ public class Session extends JDialog {
     private JPanel contentPanel;
     private JLabel label4;
     private JLabel label5;
-    private JScrollPane scrollPane1;
+    private JScrollPane sessionConsoleScrollPane;
     private JList sessionConsole;
     private JScrollPane scrollPane2;
     private JTable sessionTable;
