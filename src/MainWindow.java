@@ -14,7 +14,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +82,7 @@ public class MainWindow extends JFrame {
         this.portNumberField.setText(String.valueOf(dataModel.getPortNumber()));
 
         this.targetADUfield.setText(String.valueOf(dataModel.getTargetADUs()));
-        this.aduToleranceField.setText(String.valueOf(dataModel.getAduTolerance() * 100.0));
+        this.aduToleranceField.setText(String.valueOf(roundFloat(dataModel.getAduTolerance() * 100.0, 2)));
 
         this.useFilterWheelCheckbox.setSelected(dataModel.getUseFilterWheel());
         this.warmWhenDoneCheckbox.setSelected(dataModel.getWarmUpWhenDone());
@@ -124,6 +123,12 @@ public class MainWindow extends JFrame {
         this.enableSlewControls();
         this.enableProceedButton();
         this.makeNotDirty();
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static double roundFloat(double inputValue, int numPlaces) {
+        double multiplier = Math.pow(10.0, numPlaces);
+        return Math.round(inputValue * multiplier) / multiplier;
     }
 
     /**
@@ -875,7 +880,7 @@ public class MainWindow extends JFrame {
         // This way, if system crashes, either old or new file will still exist - no data loss
         String fileNameWithExtension = fileToSave.getName();
         assert(fileNameWithExtension.endsWith("." + Common.DATA_FILE_SUFFIX));
-        String justFileName = simpleFileNameFromPath(fileToSave.getAbsolutePath());
+        String justFileName = Common.simpleFileNameFromPath(fileToSave.getAbsolutePath());
         String directory = fileToSave.getParent();
         try {
             File tempFile = File.createTempFile(justFileName, Common.DATA_FILE_SUFFIX, new File(directory));
@@ -906,23 +911,6 @@ public class MainWindow extends JFrame {
 
     }
 
-    /**
-     * Given a full path, get just the file name, without the extension.
-     * Funny, I thought there was a built-in function with exactly this function somewhere
-     * in a Java library, but I couldn't find it after looking for as long as i cared to.
-     * @param fullPath      Absolute path to file whose name is to be extracted
-     * @return (String)     Just the file name
-     */
-    public static String simpleFileNameFromPath(String fullPath) {
-        Path path = Paths.get(fullPath);
-        Path fileNamePath = path.getFileName();
-        String fileNameString = fileNamePath.toString();
-        if (fileNameString.endsWith("." + Common.DATA_FILE_SUFFIX)) {
-            fileNameString = fileNameString.substring(0,
-                    fileNameString.length() - (1 + Common.DATA_FILE_SUFFIX.length()));
-        }
-        return fileNameString;
-    }
 
     /**
      * User selected the Open menu.
@@ -955,7 +943,7 @@ public class MainWindow extends JFrame {
             DataModel newDataModel = DataModel.newFromXml(encodedData);
             if (newDataModel != null) {
                 this.dataModel = null;
-                this.setUiFromDataModel(newDataModel, simpleFileNameFromPath(fullPath));
+                this.setUiFromDataModel(newDataModel, Common.simpleFileNameFromPath(fullPath));
                 this.filePath = fullPath;
                 this.makeNotDirty();
             }

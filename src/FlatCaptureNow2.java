@@ -1,3 +1,7 @@
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
+import javax.swing.*;
+
 /**
  * Program to control TheSkyX, over its TCP server connection, and have it capture
  * a large number of Flat calibration frames - sets of frames for different filter
@@ -20,19 +24,47 @@ public class FlatCaptureNow2 {
         //  Create and open the main window
         try {
             AppPreferences prefs = AppPreferences.createPreferences();
-            DataModel dataModel = DataModel.newInstance(prefs);
-            dataModel.generateDataTables(prefs, prefs.getUseFilterWheel());
+            ImmutablePair<DataModel, String> modelInfo = makeDataModel(args, prefs);
+            DataModel dataModel = modelInfo.left;
+            String windowTitle = modelInfo.right;
             MainWindow mainWindow = new MainWindow(prefs);
-            mainWindow.setUiFromDataModel(dataModel, Common.UNSAVED_FILE_TITLE);
-
-//            mainWindow.loadDataModel(loadedDataModel, windowTitle);
-//            mainWindow.setFilePath(makeFilePath(windowTitle, args));
-//            mainWindow.makeNotDirty();
+            mainWindow.setUiFromDataModel(dataModel, windowTitle);
             mainWindow.setVisible(true);
         } catch (Exception e) {
             System.out.println("Uncaught exception: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
+    /**
+     * Get a suitable data model.  If a file name argument is provided, try to load it.
+     * Otherwise create a new default model.  Provide a suitable file name in either case.
+     * @param args              Command-line arguments from application invocation
+     * @return  (Pair)          Data model and window title string
+     */
+    private static ImmutablePair<DataModel, String> makeDataModel(String[] args, AppPreferences prefs) {
+        DataModel resultModel;
+        String resultName;
+        if (args.length == 0) {
+            // No command arguments, make a fresh data model
+            resultModel = DataModel.newInstance(prefs);
+            resultModel.generateDataTables(prefs, prefs.getUseFilterWheel());
+            resultName = Common.UNSAVED_FILE_TITLE;
+        } else {
+            //  Try to make a data model from this file
+            resultModel = DataModel.tryLoadFromFile(args[0]);
+            if (resultModel == null) {
+                JOptionPane.showMessageDialog(null,
+                        "File provided does not exist or is not a valid\ndata file. Creating an empty file instead.");
+                resultModel = DataModel.newInstance(prefs);
+                resultModel.generateDataTables(prefs, prefs.getUseFilterWheel());
+                resultName = Common.UNSAVED_FILE_TITLE;
+            } else {
+                resultName = Common.simpleFileNameFromPath(args[0]);
+            }
+        }
+        return ImmutablePair.of(resultModel, resultName);
+    }
 }
+
 

@@ -1,3 +1,6 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Utilities and constants common to the entire application
  */
@@ -30,4 +33,22 @@ public class Common {
     public static final String DATA_FILE_SUFFIX = "fcn2";
     public static final String UNSAVED_FILE_TITLE = "(Unsaved File)";
     public static final boolean FEEDBACK_EXPOSURE_ADJUSTMENT = false;
+
+    /**
+     * Given a full path, get just the file name, without the extension.
+     * Funny, I thought there was a built-in function with exactly this function somewhere
+     * in a Java library, but I couldn't find it after looking for as long as i cared to.
+     * @param fullPath      Absolute path to file whose name is to be extracted
+     * @return (String)     Just the file name
+     */
+    public static String simpleFileNameFromPath(String fullPath) {
+        Path path = Paths.get(fullPath);
+        Path fileNamePath = path.getFileName();
+        String fileNameString = fileNamePath.toString();
+        if (fileNameString.endsWith("." + Common.DATA_FILE_SUFFIX)) {
+            fileNameString = fileNameString.substring(0,
+                    fileNameString.length() - (1 + Common.DATA_FILE_SUFFIX.length()));
+        }
+        return fileNameString;
+    }
 }

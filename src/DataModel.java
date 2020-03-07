@@ -3,6 +3,9 @@ import org.xml.sax.InputSource;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +54,23 @@ public class DataModel  implements Serializable {
     //  tables) have corresponding rows and columns in this table
 
     private ArrayList<ArrayList<Integer>> frameTableData = null;
+
+    /**
+     * Try to create a data model by loading xml-encoding from the file at the given path
+     * @param filePath      Full path to saved file
+     * @return (model)      Data model or null if not readable or invalid
+     */
+    public static DataModel tryLoadFromFile(String filePath) {
+        DataModel result;
+        try {
+            byte[] encoded = Files.readAllBytes(Paths.get(filePath));
+            String encodedData = new String(encoded, StandardCharsets.US_ASCII);
+            result = DataModel.newFromXml(encodedData);
+        } catch (IOException e) {
+            result = null;
+        }
+        return result;
+    }
 
     // Special indexing getters for the filter and binning arrays
 
