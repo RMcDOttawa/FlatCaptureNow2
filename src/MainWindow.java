@@ -62,8 +62,13 @@ public class MainWindow extends JFrame {
         //  Catch main Quit menu so we can check for unsaved data
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();
-            desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
-            desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemActionPerformed());
+            String osName = System.getProperty("os.name").toLowerCase();
+            // the following doesn't work on windows, even though the above "isDesktopSupported"
+            // said it does.  So only set quit strategy on non-windows.
+            if (!osName.toUpperCase().contains("WINDOWS")) {
+                desktop.setQuitStrategy(QuitStrategy.CLOSE_ALL_WINDOWS);
+                desktop.setQuitHandler((QuitEvent evt, QuitResponse res) -> quitMenuItemActionPerformed());
+            }
         }
         initComponents();
     }
@@ -1853,3 +1858,4 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
+// todo reduce height of main window to just hold the frames table
