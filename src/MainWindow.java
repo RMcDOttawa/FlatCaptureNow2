@@ -123,12 +123,12 @@ public class MainWindow extends JFrame {
         //  Set up table to accept edits on single clicks not double
 
         this.setUpFramesTableEditing();
-
         this.setLocalOrRemoteMessage();
         this.enableSlewControls();
         this.enableProceedButton();
         this.makeNotDirty();
     }
+
 
     @SuppressWarnings("SameParameterValue")
     private static double roundFloat(double inputValue, int numPlaces) {
@@ -1127,8 +1127,10 @@ public class MainWindow extends JFrame {
         panel2 = new JPanel();
         destinationPath = new JLabel();
         tablePanel = new JPanel();
-        scrollPane1 = new JScrollPane();
+        hSpacer3 = new JPanel(null);
+        frameTableScrollPane = new JScrollPane();
         framesTable = new JTable();
+        hSpacer4 = new JPanel(null);
         buttonPanel = new JPanel();
         allOnButton = new JButton();
         defaultsButton = new JButton();
@@ -1198,18 +1200,20 @@ public class MainWindow extends JFrame {
 
         //======== contentPanel ========
         {
+            contentPanel.setPreferredSize(new Dimension(857, 600));
+            contentPanel.setMinimumSize(new Dimension(642, 600));
             contentPanel.setLayout(new GridBagLayout());
             ((GridBagLayout)contentPanel.getLayout()).columnWidths = new int[] {0, 0, 0, 0};
             ((GridBagLayout)contentPanel.getLayout()).rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
             ((GridBagLayout)contentPanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
-            ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0E-4};
+            ((GridBagLayout)contentPanel.getLayout()).rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0E-4};
 
             //---- label21 ----
             label21.setText("Flat Capture Now");
             label21.setFont(new Font(".SF NS Text", Font.PLAIN, 24));
             label21.setHorizontalAlignment(SwingConstants.CENTER);
             contentPanel.add(label21, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(0, 0, 5, 0), 0, 0));
             contentPanel.add(vSpacer1, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
@@ -1340,7 +1344,7 @@ public class MainWindow extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             contentPanel.add(aduPanel, new GridBagConstraints(2, 2, 1, 1, 0.5, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(4, 4, 9, 4), 0, 0));
 
             //======== optionsPanel ========
@@ -1374,7 +1378,7 @@ public class MainWindow extends JFrame {
                     new Insets(0, 0, 0, 0), 0, 0));
             }
             contentPanel.add(optionsPanel, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(4, 4, 9, 9), 0, 0));
 
             //======== mountPanel ========
@@ -1670,19 +1674,26 @@ public class MainWindow extends JFrame {
                     new Insets(0, 4, 0, 0), 0, 0));
             }
             contentPanel.add(destinationPanel, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(4, 4, 9, 9), 0, 0));
 
             //======== tablePanel ========
             {
                 tablePanel.setBorder(LineBorder.createBlackLineBorder());
+                tablePanel.setPreferredSize(new Dimension(766, 300));
                 tablePanel.setLayout(new GridBagLayout());
-                ((GridBagLayout)tablePanel.getLayout()).columnWidths = new int[] {0, 0};
+                ((GridBagLayout)tablePanel.getLayout()).columnWidths = new int[] {155, 0, 150, 0};
                 ((GridBagLayout)tablePanel.getLayout()).rowHeights = new int[] {0, 0};
-                ((GridBagLayout)tablePanel.getLayout()).columnWeights = new double[] {0.0, 1.0E-4};
+                ((GridBagLayout)tablePanel.getLayout()).columnWeights = new double[] {0.0, 0.0, 0.0, 1.0E-4};
                 ((GridBagLayout)tablePanel.getLayout()).rowWeights = new double[] {0.0, 1.0E-4};
 
-                //======== scrollPane1 ========
+                //---- hSpacer3 ----
+                hSpacer3.setMinimumSize(new Dimension(100, 12));
+                tablePanel.add(hSpacer3, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //======== frameTableScrollPane ========
                 {
 
                     //---- framesTable ----
@@ -1694,13 +1705,19 @@ public class MainWindow extends JFrame {
                     framesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
                     framesTable.setRowHeight(24);
                     framesTable.setFocusable(false);
-                    scrollPane1.setViewportView(framesTable);
+                    frameTableScrollPane.setViewportView(framesTable);
                 }
-                tablePanel.add(scrollPane1, new GridBagConstraints(0, 0, 1, 1, 1.0, 1.0,
+                tablePanel.add(frameTableScrollPane, new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
                     GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                    new Insets(0, 0, 0, 0), 0, 0));
+                    new Insets(0, 0, 0, 5), 0, 0));
+
+                //---- hSpacer4 ----
+                hSpacer4.setMinimumSize(new Dimension(100, 12));
+                tablePanel.add(hSpacer4, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
+                    GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                    new Insets(0, 0, 0, 5), 0, 0));
             }
-            contentPanel.add(tablePanel, new GridBagConstraints(0, 6, 3, 1, 0.0, 1.0,
+            contentPanel.add(tablePanel, new GridBagConstraints(0, 6, 3, 1, 0.0, 0.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 5, 0), 0, 0));
 
@@ -1735,7 +1752,7 @@ public class MainWindow extends JFrame {
                 buttonPanel.add(proceedButton);
             }
             contentPanel.add(buttonPanel, new GridBagConstraints(0, 7, 3, 1, 0.0, 0.0,
-                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
                 new Insets(4, 4, 4, 4), 0, 0));
         }
         contentPane.add(contentPanel);
@@ -1846,8 +1863,10 @@ public class MainWindow extends JFrame {
     private JPanel panel2;
     private JLabel destinationPath;
     private JPanel tablePanel;
-    private JScrollPane scrollPane1;
+    private JPanel hSpacer3;
+    private JScrollPane frameTableScrollPane;
     private JTable framesTable;
+    private JPanel hSpacer4;
     private JPanel buttonPanel;
     private JButton allOnButton;
     private JButton defaultsButton;
@@ -1858,4 +1877,3 @@ public class MainWindow extends JFrame {
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 
 }
-// todo reduce height of main window to just hold the frames table

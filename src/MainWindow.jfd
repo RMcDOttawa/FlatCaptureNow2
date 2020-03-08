@@ -8,13 +8,15 @@ new FormModel {
 			addEvent( new FormEvent( "java.awt.event.WindowListener", "windowClosing", "thisWindowClosing", false ) )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
 				"$columnSpecs": "0, 0, 0"
-				"$rowSpecs": "0, 0, 0, 0, 0, 0, 0, 0"
+				"$rowSpecs": "top:0, 0, top:0, top:0, top:0, top:0, 0:1.0, top:0"
 				"$hGap": 5
 				"$vGap": 5
 				"$alignLeft": true
 				"$alignTop": true
 			} ) {
 				name: "contentPanel"
+				"preferredSize": new java.awt.Dimension( 857, 600 )
+				"minimumSize": new java.awt.Dimension( 642, 600 )
 				add( new FormComponent( "javax.swing.JLabel" ) {
 					name: "label21"
 					"text": "Flat Capture Now"
@@ -501,7 +503,7 @@ new FormModel {
 					"insets": new java.awt.Insets( 4, 4, 4, 4 )
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridBagLayout ) {
-					"$columnSpecs": "0"
+					"$columnSpecs": "150, 0, 150"
 					"$hGap": 5
 					"$vGap": 5
 					"$alignLeft": true
@@ -510,8 +512,13 @@ new FormModel {
 				} ) {
 					name: "tablePanel"
 					"border": #LineBorder0
+					"preferredSize": new java.awt.Dimension( 766, 300 )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer3"
+						"minimumSize": new java.awt.Dimension( 100, 12 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) )
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane1"
+						name: "frameTableScrollPane"
 						add( new FormComponent( "javax.swing.JTable" ) {
 							name: "framesTable"
 							"rowSelectionAllowed": false
@@ -526,11 +533,17 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 						"weightx": 1.0
 						"weighty": 1.0
+						"gridx": 1
+					} )
+					add( new FormComponent( "com.jformdesigner.designer.wrapper.HSpacer" ) {
+						name: "hSpacer4"
+						"minimumSize": new java.awt.Dimension( 100, 12 )
+					}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
+						"gridx": 1
 					} )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.GridBagConstraintsEx ) {
 					"gridy": 6
 					"gridwidth": 3
-					"weighty": 1.0
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.GridLayout ) ) {
 					name: "buttonPanel"
@@ -620,7 +633,7 @@ new FormModel {
 			}
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 920, 675 )
+			"size": new java.awt.Dimension( 920, 600 )
 		} )
 		add( new FormNonVisual( "javax.swing.ButtonGroup" ) {
 			name: "buttonGroup1"
