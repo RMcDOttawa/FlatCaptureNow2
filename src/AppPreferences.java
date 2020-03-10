@@ -153,9 +153,10 @@ public class AppPreferences {
     }
 
     //  For every filter slot number we store a "use" flag.  Get and Set these with single methods
+    //  As defaults, we'll have the first 4 slots on and the other off
     public boolean getFilterUse(int slotNumber) {
         String key = FILTER_USE_PREFIX + ":" + slotNumber;
-        return this.preferences.getBoolean(key, false);
+        return this.preferences.getBoolean(key, (slotNumber <= 4));
     }
 
     public void setFilterUse(int slotNumber, boolean useFilter) {
@@ -180,10 +181,11 @@ public class AppPreferences {
     //        AVAILABLE,        Store as 1
     //        DEFAULT           Store as 2
     //    }
+    //  As defaults, we'll have binning 1x1 and 2x2 "default", and others "available"
 
     public BinningAvailability getBinningAvailability(int binningLevel) {
         String key = BINNING_AVAILABILITY_PREFIX + ":" + binningLevel;
-        int codeNumber = this.preferences.getInt(key, 1);
+        int codeNumber = this.preferences.getInt(key, (binningLevel <= 2 ? 2 : 1));
         switch (codeNumber) {
             case 0:
                 return BinningAvailability.OFF;
