@@ -25,7 +25,7 @@ public class Common {
     public static final double FRAME_COMPLETION_TIMEOUT_SECONDS = 60.0;
 
     //  Are we simulating ADU measurement rather than using the server?
-    public static final boolean SIMULATE_ADU_MEASUREMENT = true;
+    public static final boolean SIMULATE_ADU_MEASUREMENT = false;
     public static final double SIMULATION_NOISE_FRACTION = 0.05;  // 5% noise
 
     //  Information about files saved from the application
